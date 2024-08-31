@@ -4,4 +4,4 @@ import * as schema from './schema';
 import { env } from 'process';
 
 export const sql = neon(process.env.DATABASE_URL!);
-export const db = drizzle(sql, { schema });
+export const database = drizzle(sql, { schema });

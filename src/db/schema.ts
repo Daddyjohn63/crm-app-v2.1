@@ -227,6 +227,8 @@ export const postsRelationships = relations(posts, ({ one }) => ({
 export type Client = typeof clients.$inferSelect;
 export type NewClient = typeof clients.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type Profile = typeof profiles.$inferSelect;
+export type Notification = typeof notifications.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
