@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { appConfig } from '../app-config';
 import { Header } from './_header/header';
+import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, 'dark')}>
         <div className="flex flex-col w-full">
           {appConfig.mode === 'live' && <Header />}
           <div>{children}</div>

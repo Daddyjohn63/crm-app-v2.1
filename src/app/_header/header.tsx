@@ -17,6 +17,7 @@ import { applicationName } from '@/app-config';
 import { SignOutItem } from '@/app/_header/sign-out-item';
 import { MenuButton } from './menu-button';
 import { getUserProfileUseCase } from '@/use-cases/users';
+import { LightDarkToggle } from '@/components/light-dark-toggle';
 
 export async function Header() {
   const user = await getCurrentUser();
@@ -62,7 +63,7 @@ async function HeaderActions() {
           {/* <Suspense>
             <NotificationsWrapper />
           </Suspense> */}
-
+          <LightDarkToggle className="" />
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Suspense
@@ -94,6 +95,7 @@ async function HeaderActions() {
         </>
       ) : (
         <>
+          <LightDarkToggle />
           <Button asChild variant="secondary">
             <Link href="/sign-in">Sign In</Link>
           </Button>

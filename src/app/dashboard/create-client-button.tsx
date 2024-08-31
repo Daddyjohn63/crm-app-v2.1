@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-//import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { InteractiveOverlay } from '@/components/interactive-overlay';
 import { useState } from 'react';
 
@@ -16,7 +15,7 @@ export function CreateClientButton() {
     <>
       <InteractiveOverlay
         title={'Create a Client'}
-        description={'Create a new client to star managing them.'}
+        description={'Create a new client to start managing them.'}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         form={<CreateClientForm />}
