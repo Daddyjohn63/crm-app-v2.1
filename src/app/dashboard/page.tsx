@@ -1,3 +1,9 @@
+import { CreateClientButton } from './create-client-button';
+
 export default async function DashboardPage() {
-  return <div>dashboard page</div>;
+  return (
+    <div>
+      <CreateClientButton />
+    </div>
+  );
 }
