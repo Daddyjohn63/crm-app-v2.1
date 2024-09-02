@@ -103,12 +103,12 @@ export const clients = pgTable('clients', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   business_name: text('business_name').notNull(),
-  primary_address: varchar('primary_address', { length: 250 }),
-  primary_email: text('primary_email'),
-  primary_phone: text('primary_phone'),
-  business_description: text('business_description'),
-  date_onboarded: timestamp('date', { mode: 'date' }),
-  additional_info: text('additional_info')
+  primary_address: varchar('primary_address', { length: 250 }).notNull(),
+  primary_email: text('primary_email').notNull(),
+  primary_phone: text('primary_phone').notNull(),
+  business_description: text('business_description').notNull(),
+  date_onboarded: timestamp('date', { mode: 'date' }).notNull(),
+  additional_info: text('additional_info').notNull()
 });
 
 export const services = pgTable('services', {
@@ -117,7 +117,7 @@ export const services = pgTable('services', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   name: text('service_name').notNull(),
-  description: varchar('service_description', { length: 500 })
+  description: varchar('service_description', { length: 500 }).notNull()
 });
 
 export const notifications = pgTable('gf_notifications', {
@@ -226,6 +226,7 @@ export const postsRelationships = relations(posts, ({ one }) => ({
 // following wdc schema
 export type Client = typeof clients.$inferSelect;
 export type NewClient = typeof clients.$inferSelect;
+export type NewClientInput = Omit<NewClient, 'id' | 'createdAt' | 'updatedAt'>;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;

@@ -1,11 +1,12 @@
-'user server';
+'use server';
 
 import { rateLimitByKey } from '@/lib/limiter';
 import { authenticatedAction } from '@/lib/safe-action';
 import { createClientUseCase } from '@/use-cases/clients';
-import { schema } from './validation';
 import { revalidatePath } from 'next/cache';
-import { ClientInfo } from '@/use-cases/types';
+
+import { NewClient, NewClientInput } from '@/db/schema';
+import { schema } from './validation';
 
 export const createClientAction = authenticatedAction
   .createServerAction()
@@ -35,7 +36,7 @@ export const createClientAction = authenticatedAction
         business_description,
         date_onboarded,
         additional_info
-      } as ClientInfo);
+      } as NewClientInput);
       revalidatePath('/dashboard');
     }
   );

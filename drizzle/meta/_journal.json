@@ -8,6 +8,20 @@
       "when": 1725020196263,
       "tag": "0000_perfect_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1725204921977,
+      "tag": "0001_true_vargas",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1725204991213,
+      "tag": "0002_broken_venus",
+      "breakpoints": true
     }
   ]
 }
