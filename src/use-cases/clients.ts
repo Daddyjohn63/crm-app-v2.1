@@ -3,17 +3,19 @@
 //call create event
 //handle errors
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
-import { ClientId, NewClientInput } from '@/db/schema';
-import { UserId } from '@/use-cases/types';
+import { ClientId, NewClientInput, NewClient } from '@/db/schema';
 import { UserSession } from './types';
-import { createClient } from '@/data-access/clients';
-import { createUUID } from '@/util/uuid';
+import { createClient, getClientsByUser } from '@/data-access/clients';
 
 //authenticatedUser will be passed when we create the server action and zsa.
 
 export async function createClientUseCase(
   authenticatedUser: UserSession,
-  newClient: NewClientInput
+  newClient: NewClient
 ) {
   await createClient({ ...newClient, userId: authenticatedUser.id });
+}
+
+export async function getClientsUseCase(authenticatedUser: UserSession) {
+  return [...(await getClientsByUser(authenticatedUser.id))];
 }

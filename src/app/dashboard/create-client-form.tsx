@@ -55,6 +55,7 @@ const FormSchema = z.object({
   additional_info: z.string().min(1, {
     message: 'You must enter some additional information.'
   })
+  // additional_info: z.string().optional()
 });
 
 export function CreateClientForm() {
