@@ -31,7 +31,7 @@ export function CreateClientButton() {
         className={btnStyles}
       >
         <PlusCircle className={btnIconStyles} />
-        Create Group
+        Create Client
       </Button>
     </>
   );
