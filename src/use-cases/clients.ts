@@ -5,7 +5,11 @@
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
 import { ClientId, NewClientInput, NewClient } from '@/db/schema';
 import { UserSession } from './types';
-import { createClient, getClientsByUser } from '@/data-access/clients';
+import {
+  createClient,
+  getClientsByUser,
+  searchClientsByName
+} from '@/data-access/clients';
 
 //authenticatedUser will be passed when we create the server action and zsa.
 
@@ -18,4 +22,8 @@ export async function createClientUseCase(
 
 export async function getClientsUseCase(authenticatedUser: UserSession) {
   return [...(await getClientsByUser(authenticatedUser.id))];
+}
+
+export async function searchClientsUseCase(search: string, page: number) {
+  return await searchClientsByName(search, page);
 }
