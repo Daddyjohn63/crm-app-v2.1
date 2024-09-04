@@ -14,15 +14,18 @@ import { btnIconStyles, btnStyles } from '@/styles/icons';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Search } from 'lucide-react';
+import { PageHeader } from '@/components/page-header';
+import { ClientCard } from './client-card';
 
 export default async function DashboardPage() {
   const user = await assertAuthenticated();
   const clients = await getClientsUseCase(user);
+  //console.log(clients);
 
   const hasClients = clients.length > 0;
 
   //call function in clients business use case.
-  if (hasClients) {
+  if (!hasClients) {
     return (
       <div className="space-y-8 container mx-auto py-24 min-h-screen max-w-2xl flex flex-col items-center">
         <div className="flex justify-between items-center">
@@ -50,4 +53,30 @@ export default async function DashboardPage() {
       </div>
     );
   }
+
+  return (
+    <>
+      <PageHeader>
+        <h1
+          className={cn(
+            pageTitleStyles,
+            'flex justify-between items-center flex-wrap gap-4'
+          )}
+        >
+          Your Clients
+          {hasClients && <CreateClientButton />}
+        </h1>
+      </PageHeader>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 container mx-auto py-24 ">
+        {clients.map(client => (
+          <ClientCard
+            key={client.id}
+            client={client}
+            buttonText="View Client"
+          />
+        ))}
+      </div>
+    </>
+  );
 }

@@ -23,8 +23,8 @@ export async function Header() {
   const user = await getCurrentUser();
   console.log('USER FROM AUTH HEADER COMPONENT', user);
   return (
-    <div className="px-5 md:px- bg-slate-200">
-      <div className="mx-auto flex w-full max-w-7xl py-4 justify-between">
+    <div className="bg-slate-200 dark:bg-slate-900">
+      <div className="container mx-auto flex w-full py-4 justify-between">
         <div className="flex justify-between gap-10 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image
