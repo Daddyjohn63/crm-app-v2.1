@@ -23,7 +23,7 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
             className="flex items-center justify-center gap-2"
           >
             <Link href={'/dashboard'}>
-              <UsersIcon className="w-4 h-4" /> Your Groups
+              <UsersIcon className="w-4 h-4" /> Your Clients
             </Link>
           </Button>
 
@@ -32,8 +32,8 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
             asChild
             className="flex items-center justify-center gap-2"
           >
-            <Link href={'/browse'}>
-              <SearchIcon className="w-4 h-4" /> Browse Groups
+            <Link href={'/services'}>
+              <SearchIcon className="w-4 h-4" /> Your Services
             </Link>
           </Button>
 

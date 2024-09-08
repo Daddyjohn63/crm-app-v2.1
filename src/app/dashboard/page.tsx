@@ -45,14 +45,13 @@ export default async function DashboardPage({
   return (
     <>
       <PageHeader>
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-          <div className="flex flex-col gap-4 sm:gap-8 flex-grow">
-            <h1
-              className={`${pageTitleStyles} text-2xl sm:text-3xl md:text-4xl`}
-            >
-              Browse Clients
-            </h1>
-
+        <div className="flex flex-col gap-4">
+          <h1
+            className={`${pageTitleStyles} text-2xl sm:text-3xl md:text-4xl pb-4`}
+          >
+            Browse Clients
+          </h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <form
               key={search}
               action={async (formData: FormData) => {
@@ -64,10 +63,11 @@ export default async function DashboardPage({
                     : '/dashboard'
                 );
               }}
+              className="flex-grow sm:flex-grow-0 sm:w-1/2 max-w-md"
             >
               <div className={formClientStyles}>
                 <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                  <div className="flex relative w-full sm:max-w-md">
+                  <div className="flex relative w-full">
                     <Input
                       defaultValue={search}
                       placeholder="enter all or part of the clients name"
@@ -82,7 +82,7 @@ export default async function DashboardPage({
                         className="absolute right-1"
                         asChild
                       >
-                        <Link href={`/browse`}>
+                        <Link href={`/dashboard`}>
                           <XIcon />
                         </Link>
                       </Button>
@@ -94,10 +94,13 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
+            <CreateClientButton />
           </div>
         </div>
       </PageHeader>
-      <div className={`${pageWrapperStyles} px-4 sm:px-6`}>
+      <div
+        className={`${pageWrapperStyles} px-4 sm:px-6 transition-opacity duration-300`}
+      >
         <Suspense fallback={<ClientsListSkeleton />}>
           <ClientList page={page} search={search} />
         </Suspense>
@@ -108,9 +111,12 @@ export default async function DashboardPage({
 
 function ClientsListSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 min-h-[600px]">
       {new Array(6).fill('').map((v, idx) => (
-        <div key={idx} className="rounded border p-4 space-y-4 h-[300px]">
+        <div
+          key={idx}
+          className="rounded border p-4 space-y-4 h-[300px] transition-opacity duration-300"
+        >
           <Skeleton className="w-[140px] h-[20px] rounded" />
           <Skeleton className="h-[40px] rounded w-full" />
           <Skeleton className="w-[80px] h-[40px] rounded" />
