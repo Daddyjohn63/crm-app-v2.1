@@ -58,3 +58,15 @@ export async function getClientById(userId: UserId, clientId: ClientId) {
   });
   return client ?? null;
 }
+
+export async function updateClientField(
+  userId: UserId,
+  clientId: ClientId,
+  field: string,
+  newValue: string
+) {
+  await database
+    .update(clients)
+    .set({ [field]: newValue })
+    .where(and(eq(clients.id, clientId), eq(clients.userId, userId)));
+}

@@ -9,7 +9,8 @@ import {
   createClient,
   getClientById,
   getClientsByUser,
-  searchClientsByName
+  searchClientsByName,
+  updateClientField
 } from '@/data-access/clients';
 import { NotFoundError } from '@/app/util';
 
@@ -45,4 +46,23 @@ export async function getClientByIdUseCase(
   }
 
   return client;
+}
+
+export async function updateClientFieldUseCase(
+  user: UserSession,
+  clientId: ClientId,
+  field: string,
+  newValue: string
+) {
+  // Implement the logic to update the specified field in the database
+  // This might involve calling a function from your data access layer
+  // For example:
+  await updateClientField(user.id, clientId, field, newValue);
+  console.log(
+    'FROM UPDATE CLIENT FIELD USE CASE',
+    user,
+    clientId,
+    field,
+    newValue
+  );
 }
