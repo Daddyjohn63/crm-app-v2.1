@@ -27,6 +27,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import { ClientPagination } from './pagination';
+import { UserSession } from '@/use-cases/types';
 
 export default async function DashboardPage({
   searchParams
@@ -36,12 +37,74 @@ export default async function DashboardPage({
   const search = searchParams.search;
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
-  const user = await assertAuthenticated();
+  const user = await assertAuthenticated(); //yes, user is authenticated
   const clients = await getClientsUseCase(user);
-  //console.log(clients);
+
+  console.log('DASHBOARD-USER-CHECK', user);
+  console.log('DASHBOARD-CLIENTS-CHECK', clients);
 
   const hasClients = clients.length > 0;
 
+  if (!hasClients) {
+    return (
+      <PageHeader>
+        <div className="flex flex-col gap-4">
+          <h1
+            className={`${pageTitleStyles} text-2xl sm:text-3xl md:text-4xl pb-4`}
+          >
+            Browse Clients
+          </h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <form
+              key={search}
+              action={async (formData: FormData) => {
+                'use server';
+                const searchString = formData.get('search') as string;
+                redirect(
+                  searchString
+                    ? `/dashboard?search=${searchString}`
+                    : '/dashboard'
+                );
+              }}
+              className="flex-grow sm:flex-grow-0 sm:w-1/2 max-w-md"
+            >
+              <div className={formClientStyles}>
+                <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                  <div className="flex relative w-full">
+                    <Input
+                      defaultValue={search}
+                      placeholder="enter all or part of the clients name"
+                      name="search"
+                      id="group"
+                      className="w-full"
+                    />
+                    {search && (
+                      <Button
+                        size="icon"
+                        variant="link"
+                        className="absolute right-1"
+                        asChild
+                      >
+                        <Link href={`/dashboard`}>
+                          <XIcon />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                  <SubmitButton className="w-full sm:w-auto">
+                    Search
+                  </SubmitButton>
+                </div>
+              </div>
+            </form>
+            <CreateClientButton />
+          </div>
+        </div>
+      </PageHeader>
+    );
+  }
+
+  //if we have clients.
   return (
     <>
       <PageHeader>
@@ -101,9 +164,9 @@ export default async function DashboardPage({
       <div
         className={`${pageWrapperStyles} px-4 sm:px-6 transition-opacity duration-300`}
       >
-        <Suspense fallback={<ClientsListSkeleton />}>
-          <ClientList page={page} search={search} />
-        </Suspense>
+        {/* <Suspense fallback={<ClientsListSkeleton />}> */}
+        <ClientList page={page} search={search} user={user} />
+        {/* </Suspense> */}
       </div>
     </>
   );
@@ -126,8 +189,17 @@ function ClientsListSkeleton() {
   );
 }
 
-async function ClientList({ search, page }: { search?: string; page: number }) {
+async function ClientList({
+  search,
+  page,
+  user
+}: {
+  search?: string;
+  page: number;
+  user: UserSession;
+}) {
   const { data, perPage, total } = await searchClientsUseCase(
+    user,
     search ?? '',
     page
   );

@@ -24,6 +24,10 @@ export async function getClientsUseCase(authenticatedUser: UserSession) {
   return [...(await getClientsByUser(authenticatedUser.id))];
 }
 
-export async function searchClientsUseCase(search: string, page: number) {
-  return await searchClientsByName(search, page);
+export async function searchClientsUseCase(
+  user: UserSession,
+  search: string,
+  page: number
+) {
+  return await searchClientsByName(user.id, search, page);
 }

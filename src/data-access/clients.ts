@@ -1,6 +1,6 @@
 import { database } from '@/db/drizzle';
 import { Client, ClientId, NewClient, clients } from '@/db/schema';
-import { asc, eq, ilike, sql } from 'drizzle-orm';
+import { asc, eq, ilike, sql, and } from 'drizzle-orm';
 import { UserId } from '@/use-cases/types';
 
 export async function createClient(newClient: NewClient) {
@@ -9,18 +9,27 @@ export async function createClient(newClient: NewClient) {
 }
 
 export async function getClientsByUser(userId: UserId) {
+  console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
   const userClients = await database.query.clients.findMany({
     where: eq(clients.userId, userId)
   });
+  //console.log('FOUND CLIENTS:', userClients.length);
   return userClients;
 }
 
-export async function searchClientsByName(search: string, page: number) {
+export async function searchClientsByName(
+  userId: UserId,
+  search: string,
+  page: number
+) {
   const CLIENTS_PER_PAGE = 3;
 
   const condition = search
-    ? ilike(clients.business_name, `%${search}%`)
-    : undefined;
+    ? and(
+        eq(clients.userId, userId),
+        ilike(clients.business_name, `%${search}%`)
+      )
+    : eq(clients.userId, userId);
 
   const userClients = await database.query.clients.findMany({
     where: condition,
