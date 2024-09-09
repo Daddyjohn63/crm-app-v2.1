@@ -224,7 +224,9 @@ async function ClientList({
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {data.map(client => (
-          <ClientCard key={client.id} client={client} buttonText="View" />
+          <Link href={`/dashboard/clients/${client.id}`} key={client.id}>
+            <ClientCard client={client} buttonText="View" />
+          </Link>
         ))}
       </div>
 
