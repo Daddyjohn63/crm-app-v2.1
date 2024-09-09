@@ -7,9 +7,11 @@ import { ClientId, NewClientInput, NewClient } from '@/db/schema';
 import { UserSession } from './types';
 import {
   createClient,
+  getClientById,
   getClientsByUser,
   searchClientsByName
 } from '@/data-access/clients';
+import { NotFoundError } from '@/app/util';
 
 //authenticatedUser will be passed when we create the server action and zsa.
 
@@ -30,4 +32,17 @@ export async function searchClientsUseCase(
   page: number
 ) {
   return await searchClientsByName(user.id, search, page);
+}
+
+export async function getClientByIdUseCase(
+  user: UserSession,
+  clientId: ClientId
+) {
+  const client = await getClientById(user.id, clientId);
+
+  if (!client) {
+    throw new NotFoundError('Client not found');
+  }
+
+  return client;
 }

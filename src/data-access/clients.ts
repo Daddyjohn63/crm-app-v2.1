@@ -2,6 +2,7 @@ import { database } from '@/db/drizzle';
 import { Client, ClientId, NewClient, clients } from '@/db/schema';
 import { asc, eq, ilike, sql, and } from 'drizzle-orm';
 import { UserId } from '@/use-cases/types';
+import { NotFoundError } from '@/app/util';
 
 export async function createClient(newClient: NewClient) {
   const [client] = await database.insert(clients).values(newClient).returning();
@@ -9,7 +10,7 @@ export async function createClient(newClient: NewClient) {
 }
 
 export async function getClientsByUser(userId: UserId) {
-  console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
+  // console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
   const userClients = await database.query.clients.findMany({
     where: eq(clients.userId, userId)
   });
@@ -49,4 +50,11 @@ export async function searchClientsByName(
     perPage: CLIENTS_PER_PAGE,
     total: countResult.count
   };
+}
+//get the client information for a single client
+export async function getClientById(userId: UserId, clientId: ClientId) {
+  const client = await database.query.clients.findFirst({
+    where: and(eq(clients.id, clientId), eq(clients.userId, userId))
+  });
+  return client ?? null;
 }

@@ -40,8 +40,8 @@ export default async function DashboardPage({
   const user = await assertAuthenticated(); //yes, user is authenticated
   const clients = await getClientsUseCase(user);
 
-  console.log('DASHBOARD-USER-CHECK', user);
-  console.log('DASHBOARD-CLIENTS-CHECK', clients);
+  //console.log('DASHBOARD-USER-CHECK', user);
+  //console.log('DASHBOARD-CLIENTS-CHECK', clients);
 
   const hasClients = clients.length > 0;
 
