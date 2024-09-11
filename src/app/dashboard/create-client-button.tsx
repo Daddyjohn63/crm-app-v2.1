@@ -7,16 +7,18 @@ import { useState } from 'react';
 
 import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { CreateClientForm } from './create-client-form';
-//import { CreateClientForm } from './create-client-form';
+import { User } from '@/db/schema';
 
 export function CreateClientButton({
-  params
+  params,
+  user
 }: {
   params?: { clientId?: string };
+  user: User;
 }) {
-  //console.log('PARAMS FROM CREATE-CLIENT-BUTTON', params);
   const [isOpen, setIsOpen] = useState(false);
   const isEditing = params && params.clientId;
+  console.log(isEditing);
 
   return (
     <>
@@ -29,7 +31,7 @@ export function CreateClientButton({
         }
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        form={<CreateClientForm id={params?.clientId ?? ''} />}
+        form={<CreateClientForm id={params?.clientId ?? ''} user={user} />}
       />
 
       <Button

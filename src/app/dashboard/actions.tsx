@@ -2,7 +2,11 @@
 
 import { rateLimitByKey } from '@/lib/limiter';
 import { authenticatedAction } from '@/lib/safe-action';
-import { createClientUseCase, editClientUseCase } from '@/use-cases/clients';
+import {
+  createClientUseCase,
+  editClientUseCase,
+  getClientByIdUseCase
+} from '@/use-cases/clients';
 import { revalidatePath } from 'next/cache';
 
 import { NewClient, NewClientInput } from '@/db/schema';
@@ -60,6 +64,21 @@ export const editClientAction = authenticatedAction
       updatedFields as Partial<Omit<NewClient, 'userId'>>
     );
 
-    revalidatePath('/dashboard');
+    revalidatePath(`/dashboard/clients/${client_id}/info`);
     return existingClient;
+  });
+
+// Add this new action
+export const getClientAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ client_id: z.string() }))
+  .handler(async ({ input, ctx: { user } }) => {
+    const client = await getClientByIdUseCase(
+      user,
+      parseInt(input.client_id, 10)
+    );
+    if (!client) {
+      throw new Error('Client not found');
+    }
+    return client;
   });

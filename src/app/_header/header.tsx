@@ -21,7 +21,7 @@ import { LightDarkToggle } from '@/components/light-dark-toggle';
 
 export async function Header() {
   const user = await getCurrentUser();
-  console.log('USER FROM AUTH HEADER COMPONENT', user);
+  //console.log('USER FROM AUTH HEADER COMPONENT', user);
   return (
     <div className="bg-slate-200 dark:bg-slate-900">
       <div className="container mx-auto flex w-full py-4 justify-between">
