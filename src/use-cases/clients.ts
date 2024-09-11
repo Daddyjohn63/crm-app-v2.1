@@ -3,7 +3,7 @@
 //call create event
 //handle errors
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
-import { ClientId, NewClientInput, NewClient } from '@/db/schema';
+import { ClientId, NewClient } from '@/db/schema';
 import { UserSession } from './types';
 import {
   createClient,
@@ -27,9 +27,14 @@ export async function createClientUseCase(
 export async function editClientUseCase(
   authenticatedUser: UserSession,
   clientId: ClientId,
-  updatedClient: NewClient
+  updatedClient: Partial<Omit<NewClient, 'userId'>>
 ) {
+  const existingClient = await getClientById(authenticatedUser.id, clientId);
+  if (!existingClient) {
+    throw new NotFoundError('Client not found');
+  }
   await updateClient(authenticatedUser.id, clientId, updatedClient);
+  return existingClient;
 }
 
 export async function getClientsUseCase(authenticatedUser: UserSession) {

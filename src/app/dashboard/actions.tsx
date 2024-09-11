@@ -9,6 +9,7 @@ import { NewClient, NewClientInput } from '@/db/schema';
 import { schema } from './validation';
 import { z } from 'zod';
 
+//create client
 export const createClientAction = authenticatedAction
   .createServerAction()
   .input(schema)
@@ -42,36 +43,23 @@ export const createClientAction = authenticatedAction
     }
   );
 
+//edit client
 export const editClientAction = authenticatedAction
   .createServerAction()
   .input(schema.extend({ client_id: z.string() }))
-  .handler(
-    async ({
-      input: {
-        client_id,
-        business_name,
-        primary_address,
-        primary_email,
-        primary_phone,
-        business_description,
-        date_onboarded,
-        additional_info
-      },
-      ctx: { user }
-    }) => {
-      await rateLimitByKey({
-        key: `${user.id}-create-client`
-      });
+  .handler(async ({ input, ctx: { user } }) => {
+    await rateLimitByKey({
+      key: `${user.id}-edit-client`
+    });
 
-      await editClientUseCase(user, parseInt(client_id, 10), {
-        business_name,
-        primary_address,
-        primary_email,
-        primary_phone,
-        business_description,
-        date_onboarded,
-        additional_info
-      } as NewClientInput);
-      revalidatePath('/dashboard');
-    }
-  );
+    const { client_id, ...updatedFields } = input;
+
+    const existingClient = await editClientUseCase(
+      user,
+      parseInt(client_id, 10),
+      updatedFields as Partial<Omit<NewClient, 'userId'>>
+    );
+
+    revalidatePath('/dashboard');
+    return existingClient;
+  });

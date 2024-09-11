@@ -74,7 +74,7 @@ export async function updateClientField(
 export async function updateClient(
   userId: UserId,
   clientId: ClientId,
-  updatedClient: NewClient
+  updatedClient: Partial<Omit<NewClient, 'userId'>>
 ) {
   await database
     .update(clients)
