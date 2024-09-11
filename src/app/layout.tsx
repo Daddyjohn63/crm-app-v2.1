@@ -4,6 +4,7 @@ import './globals.css';
 import { appConfig } from '../app-config';
 import { Header } from './_header/header';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +23,10 @@ export default function RootLayout({
       <body className={cn(inter.className, 'dark')}>
         <div className="flex flex-col w-full">
           {appConfig.mode === 'live' && <Header />}
-          <div>{children}</div>
+          <div>
+            {children}
+            <Toaster />
+          </div>
         </div>
       </body>
     </html>

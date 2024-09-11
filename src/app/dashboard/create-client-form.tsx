@@ -58,9 +58,12 @@ const FormSchema = z.object({
   // additional_info: z.string().optional()
 });
 
-export function CreateClientForm() {
+export function CreateClientForm({ id }: { id: string }) {
+  console.log('ID FROM CREATE-CLIENT-FORM', id);
+  const isEditing = !!id;
   const { setIsOpen, preventCloseRef } = useContext(ToggleContext);
   const { toast } = useToast();
+
   const { execute, isPending } = useServerAction(createClientAction, {
     onStart() {
       preventCloseRef.current = true;
@@ -69,6 +72,7 @@ export function CreateClientForm() {
       preventCloseRef.current = false;
     },
     onError({ err }) {
+      console.log('Error occurred:', err);
       toast({
         title: 'Something went wrong',
         description: err.message,
@@ -76,9 +80,11 @@ export function CreateClientForm() {
       });
     },
     onSuccess() {
+      console.log('Success!');
       toast({
-        title: 'Group Created',
-        description: 'You can now start managing your events'
+        title: 'Client Created',
+        description: 'You can now start managing your client',
+        duration: 3000
       });
       setIsOpen(false);
     }

@@ -9,19 +9,27 @@ import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { CreateClientForm } from './create-client-form';
 //import { CreateClientForm } from './create-client-form';
 
-export function CreateClientButton() {
+export function CreateClientButton({
+  params
+}: {
+  params?: { clientId?: string };
+}) {
+  //console.log('PARAMS FROM CREATE-CLIENT-BUTTON', params);
   const [isOpen, setIsOpen] = useState(false);
+  const isEditing = params && params.clientId;
 
   return (
     <>
       <InteractiveOverlay
-        title={'Create a Client'}
+        title={isEditing ? 'Edit Client' : 'Create a Client'}
         description={
-          'Create a new client to start managing them. Do not worry, you can always change the details later'
+          isEditing
+            ? 'Edit the details of the client'
+            : 'Create a new client to start managing them. Do not worry, you can always change the details later'
         }
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        form={<CreateClientForm />}
+        form={<CreateClientForm id={params?.clientId ?? ''} />}
       />
 
       <Button
@@ -31,7 +39,7 @@ export function CreateClientButton() {
         className={btnStyles}
       >
         <PlusCircle className={btnIconStyles} />
-        Create Client
+        {isEditing ? 'Edit Client' : 'Create Client'}
       </Button>
     </>
   );

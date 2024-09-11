@@ -39,6 +39,7 @@ export default async function DashboardPage({
 
   const user = await assertAuthenticated(); //yes, user is authenticated
   const clients = await getClientsUseCase(user);
+  // const { clientId } = params;
 
   //console.log('DASHBOARD-USER-CHECK', user);
   //console.log('DASHBOARD-CLIENTS-CHECK', clients);
@@ -97,7 +98,7 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton />
+            <CreateClientButton params={{}} />
           </div>
         </div>
       </PageHeader>
@@ -157,7 +158,7 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton />
+            <CreateClientButton params={{}} />
           </div>
         </div>
       </PageHeader>

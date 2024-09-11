@@ -70,3 +70,14 @@ export async function updateClientField(
     .set({ [field]: newValue })
     .where(and(eq(clients.id, clientId), eq(clients.userId, userId)));
 }
+
+export async function updateClient(
+  userId: UserId,
+  clientId: ClientId,
+  updatedClient: NewClient
+) {
+  await database
+    .update(clients)
+    .set(updatedClient)
+    .where(and(eq(clients.id, clientId), eq(clients.userId, userId)));
+}

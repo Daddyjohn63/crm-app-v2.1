@@ -10,6 +10,7 @@ import {
   getClientById,
   getClientsByUser,
   searchClientsByName,
+  updateClient,
   updateClientField
 } from '@/data-access/clients';
 import { NotFoundError } from '@/app/util';
@@ -21,6 +22,14 @@ export async function createClientUseCase(
   newClient: NewClient
 ) {
   await createClient({ ...newClient, userId: authenticatedUser.id });
+}
+
+export async function editClientUseCase(
+  authenticatedUser: UserSession,
+  clientId: ClientId,
+  updatedClient: NewClient
+) {
+  await updateClient(authenticatedUser.id, clientId, updatedClient);
 }
 
 export async function getClientsUseCase(authenticatedUser: UserSession) {
