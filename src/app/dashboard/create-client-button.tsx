@@ -18,7 +18,7 @@ export function CreateClientButton({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isEditing = params && params.clientId;
-  console.log(isEditing);
+  //console.log('USER HASBAORD PAGE', user);
 
   return (
     <>

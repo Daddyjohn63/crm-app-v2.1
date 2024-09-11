@@ -41,7 +41,7 @@ export default async function DashboardPage({
   const clients = await getClientsUseCase(user);
   // const { clientId } = params;
 
-  //console.log('DASHBOARD-USER-CHECK', user);
+  console.log('DASHBOARD-USER-CHECK', user);
   //console.log('DASHBOARD-CLIENTS-CHECK', clients);
 
   const hasClients = clients.length > 0;
@@ -98,7 +98,10 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton params={{}} />
+            <CreateClientButton
+              params={{}}
+              user={{ id: user.id, email: null, emailVerified: null }}
+            />
           </div>
         </div>
       </PageHeader>
@@ -158,7 +161,10 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton params={{}} />
+            <CreateClientButton
+              params={{}}
+              user={{ id: user.id, email: null, emailVerified: null }}
+            />
           </div>
         </div>
       </PageHeader>

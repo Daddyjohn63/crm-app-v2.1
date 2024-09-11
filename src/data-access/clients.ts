@@ -23,7 +23,7 @@ export async function searchClientsByName(
   search: string,
   page: number
 ) {
-  const CLIENTS_PER_PAGE = 3;
+  const CLIENTS_PER_PAGE = 9;
 
   const condition = search
     ? and(
