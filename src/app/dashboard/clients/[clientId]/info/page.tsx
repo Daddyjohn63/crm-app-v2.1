@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
 import { CreateClientButton } from '@/app/dashboard/create-client-button';
 import { User } from '@/db/schema';
+import { DeleteClientButton } from '@/app/dashboard/delete-client-button';
 
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
 
@@ -55,6 +56,9 @@ export default async function ClientInfoPage({
           <CreateClientButton params={params} user={user as User} />
           <p>Client ID: {params.clientId}</p>
           <p>User: {user.id}</p>
+        </div>
+        <div className="container mx-auto p-4">
+          <DeleteClientButton />
         </div>
       </>
     );

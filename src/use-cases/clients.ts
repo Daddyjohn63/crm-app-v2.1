@@ -7,13 +7,14 @@ import { ClientId, NewClient } from '@/db/schema';
 import { UserSession } from './types';
 import {
   createClient,
+  deleteClient,
   getClientById,
   getClientsByUser,
   searchClientsByName,
   updateClient,
   updateClientField
 } from '@/data-access/clients';
-import { NotFoundError } from '@/app/util';
+import { AuthenticationError, NotFoundError } from '@/app/util';
 
 //authenticatedUser will be passed when we create the server action and zsa.
 
@@ -79,4 +80,23 @@ export async function updateClientFieldUseCase(
     field,
     newValue
   );
+}
+
+async function assertClientOwnership(user: UserSession, clientId: ClientId) {
+  const client = await getClientById(user.id, clientId);
+  if (!client) {
+    throw new NotFoundError('Client not found');
+  }
+  if (!user) {
+    throw new AuthenticationError();
+  }
+  return client;
+}
+
+export async function deleteClientUseCase(
+  user: UserSession,
+  { clientId }: { clientId: ClientId }
+) {
+  await assertClientOwnership(user, clientId);
+  await deleteClient(clientId);
 }

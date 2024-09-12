@@ -4,6 +4,7 @@ import { rateLimitByKey } from '@/lib/limiter';
 import { authenticatedAction } from '@/lib/safe-action';
 import {
   createClientUseCase,
+  deleteClientUseCase,
   editClientUseCase,
   getClientByIdUseCase
 } from '@/use-cases/clients';
@@ -12,6 +13,7 @@ import { revalidatePath } from 'next/cache';
 import { NewClient, NewClientInput } from '@/db/schema';
 import { schema } from './validation';
 import { z } from 'zod';
+import { redirect } from 'next/navigation';
 
 //create client
 export const createClientAction = authenticatedAction
@@ -81,4 +83,19 @@ export const getClientAction = authenticatedAction
       throw new Error('Client not found');
     }
     return client;
+  });
+
+export const deleteClientAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      clientId: z.number()
+    })
+  )
+  .handler(async ({ input, ctx }) => {
+    const clientId = input.clientId;
+    await deleteClientUseCase(ctx.user, {
+      clientId
+    });
+    redirect('/dashboard');
   });

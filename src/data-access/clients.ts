@@ -81,3 +81,7 @@ export async function updateClient(
     .set(updatedClient)
     .where(and(eq(clients.id, clientId), eq(clients.userId, userId)));
 }
+
+export async function deleteClient(clientId: ClientId) {
+  await database.delete(clients).where(eq(clients.id, clientId));
+}
