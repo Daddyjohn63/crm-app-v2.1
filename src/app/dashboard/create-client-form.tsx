@@ -1,5 +1,5 @@
 'use client';
-
+//this form is used to create a new client or edit an existing one
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useServerAction } from 'zsa-react';
 import { useForm } from 'react-hook-form';

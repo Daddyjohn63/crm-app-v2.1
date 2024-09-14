@@ -120,6 +120,23 @@ export const services = pgTable('services', {
   description: varchar('service_description', { length: 500 }).notNull()
 });
 
+export const contacts = pgTable('contacts', {
+  id: serial('id').primaryKey(),
+  clientId: serial('client_id')
+    .notNull()
+    .references(() => clients.id, { onDelete: 'cascade' }),
+  last_name: text('last_name').notNull(),
+  first_name: text('first_name').notNull(),
+  job_title: text('job_title').notNull(),
+  email: text('email').notNull(),
+  phone: text('phone').notNull(),
+  address: text('address').notNull(),
+  city: text('city').notNull(),
+  county: text('county').notNull(),
+  postcode: text('postcode').notNull(),
+  country: text('country').notNull()
+});
+
 export const notifications = pgTable('gf_notifications', {
   id: serial('id').primaryKey(),
   userId: serial('userId')
@@ -193,6 +210,14 @@ export const clientsRelations = relations(clients, ({ one, many }) => ({
   clientsToServices: many(clientsToServices)
 }));
 
+// Relationships for the contacts table
+export const contactsRelations = relations(contacts, ({ one }) => ({
+  client: one(clients, {
+    fields: [contacts.clientId],
+    references: [clients.id]
+  })
+}));
+
 // Relationships for the services table
 export const servicesRelations = relations(services, ({ one, many }) => ({
   user: one(users, {
@@ -237,3 +262,5 @@ export type Services = typeof services.$inferSelect;
 export type NewServices = typeof services.$inferInsert;
 export type ClientId = Client['id'];
 export type ServicesId = Services['id'];
+export type Contact = typeof contacts.$inferSelect;
+export type NewContact = typeof contacts.$inferInsert;
