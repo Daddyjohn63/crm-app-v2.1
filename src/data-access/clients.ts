@@ -59,6 +59,13 @@ export async function getClientById(userId: UserId, clientId: ClientId) {
   return client ?? null;
 }
 
+export async function getClientByClientId(clientId: ClientId) {
+  const client = await database.query.clients.findFirst({
+    where: eq(clients.id, clientId)
+  });
+  return client ?? null;
+}
+
 export async function updateClientField(
   userId: UserId,
   clientId: ClientId,

@@ -25,7 +25,7 @@ export default async function ClientInfoPage({
 
     return (
       <>
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6">
           <h1 className="text-2xl font-bold mb-4">Client Information</h1>
           <ul className="space-y-4">
             <li>

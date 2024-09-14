@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { appConfig } from '../app-config';
 import { Header } from './_header/header';
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, 'dark')}>
+        <NextTopLoader color="#dbb73f" />
         <div className="flex flex-col w-full">
           {appConfig.mode === 'live' && <Header />}
           <div>

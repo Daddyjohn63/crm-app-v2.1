@@ -8,6 +8,7 @@ import { UserSession } from './types';
 import {
   createClient,
   deleteClient,
+  getClientByClientId,
   getClientById,
   getClientsByUser,
   searchClientsByName,
@@ -15,7 +16,7 @@ import {
   updateClientField
 } from '@/data-access/clients';
 import { AuthenticationError, NotFoundError } from '@/app/util';
-
+import { omit } from 'lodash';
 //authenticatedUser will be passed when we create the server action and zsa.
 
 export async function createClientUseCase(
@@ -82,7 +83,11 @@ export async function updateClientFieldUseCase(
   );
 }
 
-async function assertClientOwnership(user: UserSession, clientId: ClientId) {
+//checks to ensure that the user is the owner of the client
+export async function assertClientOwnership(
+  user: UserSession,
+  clientId: ClientId
+) {
   const client = await getClientById(user.id, clientId);
   if (!client) {
     throw new NotFoundError('Client not found');
@@ -99,4 +104,12 @@ export async function deleteClientUseCase(
 ) {
   await assertClientOwnership(user, clientId);
   await deleteClient(clientId);
+}
+
+//does client exist
+export async function getClientInfoByIdUseCase(clientId: ClientId) {
+  const client = await getClientByClientId(clientId);
+  if (!client) return undefined;
+
+  return omit(client, 'userId');
 }

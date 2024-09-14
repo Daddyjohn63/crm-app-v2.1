@@ -40,6 +40,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "drizzle-zod": "^0.5.1",
+    "lodash": "^4.17.21",
     "lucia": "^3.2.0",
     "lucide-react": "^0.436.0",
     "next": "14.2.7",
@@ -64,6 +65,7 @@
     "zsa-react": "^0.2.2"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
