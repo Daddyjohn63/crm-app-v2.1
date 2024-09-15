@@ -262,5 +262,10 @@ export type Services = typeof services.$inferSelect;
 export type NewServices = typeof services.$inferInsert;
 export type ClientId = Client['id'];
 export type ServicesId = Services['id'];
+export type ContactId = Contact['id'];
 export type Contact = typeof contacts.$inferSelect;
 export type NewContact = typeof contacts.$inferInsert;
+export type NewContactInput = Omit<
+  NewContact,
+  'id' | 'createdAt' | 'updatedAt'
+>;

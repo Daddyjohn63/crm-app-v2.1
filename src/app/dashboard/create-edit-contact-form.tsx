@@ -19,6 +19,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ToggleContext } from '@/components/interactive-overlay';
+import { createContactAction } from './clients/[clientId]/contacts/actions';
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -50,7 +51,8 @@ const FormSchema = z.object({
   }),
   country: z.string().min(1, {
     message: 'You must enter a country.'
-  })
+  }),
+  clientId: z.number()
 });
 
 export default function CreateEditContactForm({
@@ -60,5 +62,27 @@ export default function CreateEditContactForm({
 }) {
   const { setIsOpen, preventCloseRef } = useContext(ToggleContext);
   const { toast } = useToast();
+
+  const { execute: executeAction, isPending } = useServerAction(
+    createContactAction,
+    {
+      onSuccess() {
+        toast({
+          title: 'Contact created',
+          description: 'The contact has been created successfully.'
+        });
+        setIsOpen(false);
+      },
+      onError({ err }) {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: 'Something went wrong creating the contact.'
+        });
+      }
+    }
+  );
+
+  //add server action and add form
   return <div>CreateEditContactForm</div>;
 }
