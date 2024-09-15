@@ -83,11 +83,12 @@ export function CreateClientForm({ id, user }: { id: string; user: User }) {
         toast({
           title: 'Something went wrong',
           description: err.message,
-          variant: 'destructive'
+          variant: 'destructive',
+          duration: 3000
         });
       },
       onSuccess() {
-        console.log('Success!');
+        //console.log('Success!');
         toast({
           title: 'Client Created',
           description: isEditing

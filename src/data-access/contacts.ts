@@ -15,9 +15,6 @@ import { NotFoundError } from '@/app/util';
 //createContact must save the contact information in the database and make a reference to the client in the contacts table
 
 export async function createContact(newContact: NewContact) {
-  const [contact] = await database
-    .insert(contacts)
-    .values(newContact)
-    .returning();
-  return contact;
+  //console.log('newContact', newContact);
+  return await database.insert(contacts).values(newContact);
 }

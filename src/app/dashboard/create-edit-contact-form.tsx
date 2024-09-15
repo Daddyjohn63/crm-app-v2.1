@@ -20,6 +20,8 @@ import { useServerAction } from 'zsa-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ToggleContext } from '@/components/interactive-overlay';
 import { createContactAction } from './clients/[clientId]/contacts/actions';
+import { PersonStanding, Terminal } from 'lucide-react';
+import { btnIconStyles } from '@/styles/icons';
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -60,29 +62,214 @@ export default function CreateEditContactForm({
 }: {
   clientId: ClientId;
 }) {
-  const { setIsOpen, preventCloseRef } = useContext(ToggleContext);
+  //console.log('clientId', clientId); we are getting the clientId from the client page
+  const { setIsOpen: setIsOverlayOpen, preventCloseRef } =
+    useContext(ToggleContext);
   const { toast } = useToast();
 
-  const { execute: executeAction, isPending } = useServerAction(
-    createContactAction,
-    {
-      onSuccess() {
-        toast({
-          title: 'Contact created',
-          description: 'The contact has been created successfully.'
-        });
-        setIsOpen(false);
-      },
-      onError({ err }) {
-        toast({
-          title: 'Something went wrong',
-          variant: 'destructive',
-          description: 'Something went wrong creating the contact.'
-        });
-      }
+  const { execute, error, isPending } = useServerAction(createContactAction, {
+    onSuccess() {
+      console.log('success');
+      toast({
+        title: 'Contact created',
+        description: 'The contact has been created successfully.',
+        duration: 3000
+      });
+      setIsOverlayOpen(false);
+    },
+    onError({ err }) {
+      toast({
+        title: 'Something went wrong',
+        variant: 'destructive',
+        description: 'Something went wrong creating the contact.',
+        duration: 3000
+      });
     }
-  );
+  });
+
+  //fetch contact here when we get round to editing.
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      clientId,
+      first_name: '',
+      last_name: '',
+      job_title: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      county: '',
+      postcode: '',
+      country: ''
+    }
+  });
 
   //add server action and add form
-  return <div>CreateEditContactForm</div>;
+  const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = values => {
+    execute({
+      clientId,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      job_title: values.job_title,
+      email: values.email,
+      phone: values.phone,
+      address: values.address,
+      city: values.city,
+      county: values.county,
+      postcode: values.postcode,
+      country: values.country
+    });
+  };
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 flex-1 px-2"
+      >
+        <FormField
+          control={form.control}
+          name="last_name"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Last Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="first_name"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>First Name</FormLabel>
+              <FormControl>
+                <Input placeholder="First Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="job_title"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Job Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Job Title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="Email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Phone</FormLabel>
+              <FormControl>
+                <Input placeholder="Phone" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Street name</FormLabel>
+              <FormControl>
+                <Input placeholder="Street name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>City</FormLabel>
+              <FormControl>
+                <Input placeholder="City" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="county"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>County</FormLabel>
+              <FormControl>
+                <Input placeholder="County" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="postcode"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Postcode</FormLabel>
+              <FormControl>
+                <Input placeholder="Postcode" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="country"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Country</FormLabel>
+              <FormControl>
+                <Input placeholder="Country" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {error && (
+          <Alert variant="destructive">
+            <Terminal className="h-4 w-4" />
+            <AlertTitle>Error creating contact</AlertTitle>
+            <AlertDescription>{error.message}</AlertDescription>
+          </Alert>
+        )}
+
+        <LoaderButton isLoading={isPending}>
+          <PersonStanding className={btnIconStyles} /> Create Contact
+        </LoaderButton>
+      </form>
+    </Form>
+  );
 }
