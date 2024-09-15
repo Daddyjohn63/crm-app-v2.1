@@ -25,10 +25,7 @@ export default async function ContactsPage({
       <>
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-6">
           <h1 className="text-2xl font-bold mb-4">Client Contacts</h1>
-          <CreateEditContactButton
-            clientId={client.id}
-            user={{ id: user.id }}
-          />
+          <CreateEditContactButton />
         </div>
       </>
     );

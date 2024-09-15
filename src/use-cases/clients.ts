@@ -74,13 +74,13 @@ export async function updateClientFieldUseCase(
   // This might involve calling a function from your data access layer
   // For example:
   await updateClientField(user.id, clientId, field, newValue);
-  console.log(
-    'FROM UPDATE CLIENT FIELD USE CASE',
-    user,
-    clientId,
-    field,
-    newValue
-  );
+  // console.log(
+  //   'FROM UPDATE CLIENT FIELD USE CASE',
+  //   user,
+  //   clientId,
+  //   field,
+  //   newValue
+  // );
 }
 
 //checks to ensure that the user is the owner of the client

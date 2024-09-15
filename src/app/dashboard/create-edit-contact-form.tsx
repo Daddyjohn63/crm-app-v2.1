@@ -69,7 +69,7 @@ export default function CreateEditContactForm({
 
   const { execute, error, isPending } = useServerAction(createContactAction, {
     onSuccess() {
-      console.log('success');
+      //  console.log('success');
       toast({
         title: 'Contact created',
         description: 'The contact has been created successfully.',
