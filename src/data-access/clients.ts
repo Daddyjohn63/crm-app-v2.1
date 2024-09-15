@@ -63,6 +63,7 @@ export async function getClientByClientId(clientId: ClientId) {
   const client = await database.query.clients.findFirst({
     where: eq(clients.id, clientId)
   });
+  // console.log('CLIENT', client);
   return client ?? null;
 }
 
