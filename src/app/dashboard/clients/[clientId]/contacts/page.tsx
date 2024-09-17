@@ -4,24 +4,39 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getCurrentUser } from '@/lib/session';
 import { getClientByIdUseCase } from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
-import { columns, Payment } from './columns';
+import { columns, Contacts } from './columns';
 import { DataTable } from '@/components/data-table';
+import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 
-const data: Payment[] = [
-  {
-    id: '728ed52f',
-    amount: 100,
-    status: 'pending',
-    email: 'm@example.com'
-  },
-  {
-    id: '828ed52f',
-    amount: 1000,
-    status: 'pending',
-    email: 'a@example.com'
-  }
-  // ...
-];
+// const data: Contacts[] = [
+//   {
+//     id: '728ed52f',
+//     last_name: 'Paul',
+//     first_name: 'John',
+//     job_title: 'Software Engineer',
+//     email: 'john.doe@example.com',
+//     phone: '1234567890',
+//     address: '123 Main St',
+//     city: 'London',
+//     county: 'Greater London',
+//     postcode: 'SW1A 1AA',
+//     country: 'United Kingdom'
+//   },
+//   {
+//     id: '828ed52f',
+//     last_name: 'Doe',
+//     first_name: 'John',
+//     job_title: 'Software Engineer',
+//     email: 'john.doe@example.com',
+//     phone: '1234567890',
+//     address: '123 Main St',
+//     city: 'London',
+//     county: 'Greater London',
+//     postcode: 'SW1A 1AA',
+//     country: 'United Kingdom'
+//   }
+//   // ...
+// ];
 
 export default async function ContactsPage({
   params
@@ -40,8 +55,29 @@ export default async function ContactsPage({
   }
 
   try {
-    const client = await getClientByIdUseCase(user, parseInt(clientId));
-    console.log('CLIENT FROM CONTACTS PAGE', client);
+    //get the contacts for a client id.
+    const contacts = await getContactsByClientIdUseCase(
+      user,
+      parseInt(clientId)
+    );
+    console.log('CONTACTS FROM CONTACTS PAGE', contacts);
+    const data = contacts.map(contact => ({
+      id: contact.id,
+      last_name: contact.last_name,
+      first_name: contact.first_name,
+      job_title: contact.job_title,
+      email: contact.email,
+      phone: contact.phone,
+      address: contact.address,
+      city: contact.city,
+      county: contact.county,
+      postcode: contact.postcode,
+      country: contact.country
+    }));
+
+    // const client = await getClientByIdUseCase(user, parseInt(clientId));
+    // console.log('CLIENT FROM CONTACTS PAGE', client);
+
     return (
       <div className="container  mx-auto px-4  md:px-2 py-6 w-full">
         <Card className="border-none drop-shadow-sm">
@@ -53,7 +89,7 @@ export default async function ContactsPage({
           </CardHeader>
           <CardContent>
             <DataTable
-              filterKey="email"
+              filterKey="last_name"
               columns={columns}
               data={data}
               disableDeleteButton={false}

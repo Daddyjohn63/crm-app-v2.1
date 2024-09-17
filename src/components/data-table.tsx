@@ -37,7 +37,7 @@ interface DataTableProps<TData, TValue> {
   user: UserSession;
 }
 interface DataWithId {
-  id: string; // or number, depending on your id type
+  id: number; // or number, depending on your id type
 }
 
 export function DataTable<TData extends DataWithId, TValue>({
@@ -107,7 +107,7 @@ export function DataTable<TData extends DataWithId, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder={`Filter ${filterKey}...`}
+          placeholder="Filter by Last Name..."
           value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
           onChange={event =>
             table.getColumn(filterKey)?.setFilterValue(event.target.value)

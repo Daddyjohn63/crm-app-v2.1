@@ -25,9 +25,9 @@ export async function createContactUseCase(
 }
 
 export async function getContactsByClientIdUseCase(
-  authenticatedUser: UserSession,
+  user: UserSession,
   clientId: ClientId
 ) {
-  const contacts = await getContactsByClientId(clientId);
+  const contacts = await getContactsByClientId(clientId, user);
   return contacts;
 }

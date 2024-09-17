@@ -63,7 +63,7 @@ export const createContactAction = authenticatedAction
 
 export const deleteContactRowAction = authenticatedAction
   .createServerAction()
-  .input(z.object({ rowId: z.string() }))
+  .input(z.object({ rowId: z.number() }))
   .handler(async ({ input, ctx }) => {
     // Placeholder action, does nothing
     console.log(`Received request to delete row(s) with ID: ${input.rowId}`);

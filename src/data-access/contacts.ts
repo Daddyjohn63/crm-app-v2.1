@@ -10,7 +10,7 @@ import {
   Contact
 } from '@/db/schema';
 import { asc, eq, ilike, sql, and } from 'drizzle-orm';
-import { UserId } from '@/use-cases/types';
+import { UserId, UserSession } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
 
 //createContact must save the contact information in the database and make a reference to the client in the contacts table
@@ -21,8 +21,18 @@ export async function createContact(newContact: NewContact) {
 }
 
 export async function getContactsByClientId(
-  clientId: ClientId
+  clientId: ClientId,
+  user: UserSession
 ): Promise<Contact[]> {
+  // Check if the user has access to the client
+  const client: Client | undefined = await database.query.clients.findFirst({
+    where: and(eq(clients.id, clientId), eq(clients.userId, user.id))
+  });
+
+  if (!client) {
+    throw new NotFoundError('Client not found or access denied');
+  }
+
   const clientContacts: Contact[] = await database.query.contacts.findMany({
     where: eq(contacts.clientId, clientId)
   });
