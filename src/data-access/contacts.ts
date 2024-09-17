@@ -37,5 +37,20 @@ export async function getContactsByClientId(
     where: eq(contacts.clientId, clientId)
   });
   console.log('clientContacts', clientContacts);
-  return clientContacts;
+  //return clientContacts;
+  const formattedContacts = clientContacts.map(contact => ({
+    id: contact.id,
+    last_name: contact.last_name,
+    first_name: contact.first_name,
+    job_title: contact.job_title,
+    email: contact.email,
+    phone: contact.phone,
+    address: `${contact.address}, ${contact.city},${contact.county}, ${contact.postcode}`,
+    city: contact.city,
+    county: contact.county,
+    postcode: contact.postcode,
+    country: contact.country,
+    clientId: contact.clientId
+  }));
+  return formattedContacts;
 }

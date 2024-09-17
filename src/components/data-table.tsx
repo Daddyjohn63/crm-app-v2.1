@@ -74,9 +74,9 @@ export function DataTable<TData extends DataWithId, TValue>({
       rowSelection
     },
     initialState: {
-      pagination: {
-        pageSize: 10
-      }
+      // pagination: {
+      //   pageSize: 10
+      // }
     }
   });
 
@@ -191,7 +191,12 @@ export function DataTable<TData extends DataWithId, TValue>({
         >
           Previous
         </Button>
-        <Button variant="outline" size="sm" onClick={() => table.nextPage()}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
           Next
         </Button>
       </div>

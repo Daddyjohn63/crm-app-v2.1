@@ -50,6 +50,7 @@ export const columns: ColumnDef<Contacts>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="px-0"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
@@ -77,20 +78,20 @@ export const columns: ColumnDef<Contacts>[] = [
   },
   {
     accessorKey: 'address',
-    header: 'Street'
+    header: 'Address'
   },
-  {
-    accessorKey: 'city',
-    header: 'City'
-  },
-  {
-    accessorKey: 'county',
-    header: 'County'
-  },
-  {
-    accessorKey: 'postcode',
-    header: 'Postcode'
-  },
+  // {
+  //   accessorKey: 'city',
+  //   header: 'City'
+  // },
+  // {
+  //   accessorKey: 'county',
+  //   header: 'County'
+  // },
+  // {
+  //   accessorKey: 'postcode',
+  //   header: 'Postcode'
+  // },
   {
     accessorKey: 'country',
     header: 'Country'
