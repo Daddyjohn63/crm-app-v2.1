@@ -4,7 +4,11 @@ import { UserSession } from './types';
 import { AuthenticationError, NotFoundError } from '@/app/util';
 import { getClientByClientId, getClientById } from '@/data-access/clients';
 import { PublicError } from './errors';
-import { createContact, getContactsByClientId } from '@/data-access/contacts';
+import {
+  createContact,
+  deleteContacts,
+  getContactsByClientId
+} from '@/data-access/contacts';
 
 export async function createContactUseCase(
   authenticatedUser: UserSession,
@@ -30,4 +34,24 @@ export async function getContactsByClientIdUseCase(
 ) {
   const contacts = await getContactsByClientId(clientId, user);
   return contacts;
+}
+
+export async function deleteContactsUseCase(
+  user: UserSession,
+  clientId: ClientId,
+  contactIds: ContactId[]
+) {
+  console.log('user-uc', user);
+  console.log('clientId-uc', clientId);
+  console.log('contactIds-uc', contactIds);
+  if (!user) {
+    throw new NotFoundError('User not authenticated');
+  }
+  if (!clientId) {
+    throw new PublicError('Client ID is required');
+  }
+  if (!contactIds) {
+    throw new PublicError('Contact IDs are required');
+  }
+  await deleteContacts(contactIds as number[], user as any, clientId as any);
 }

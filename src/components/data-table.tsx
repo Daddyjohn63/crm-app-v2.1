@@ -27,6 +27,7 @@ import { Trash } from 'lucide-react';
 import { useServerAction } from 'zsa-react';
 import { deleteContactRowAction } from '@/app/dashboard/clients/[clientId]/contacts/actions';
 import { UserSession } from '@/use-cases/types';
+import { toast } from './ui/use-toast';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,8 +49,8 @@ export function DataTable<TData extends DataWithId, TValue>({
   clientId,
   user
 }: DataTableProps<TData, TValue>) {
-  console.log('CLIENT ID FROM TABLE', clientId);
-  console.log('USER FROM TABLE', user);
+  // console.log('CLIENT ID FROM TABLE', clientId);
+  // console.log('USER FROM TABLE', user);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -74,33 +75,37 @@ export function DataTable<TData extends DataWithId, TValue>({
       rowSelection
     },
     initialState: {
-      // pagination: {
-      //   pageSize: 10
-      // }
+      pagination: {
+        pageSize: 10
+      }
     }
   });
 
-  const { execute: deleteRow, isPending } = useServerAction(
-    deleteContactRowAction,
-    {
-      onSuccess() {
-        setIsDeleteDisabled(false);
-        // Optionally refresh the table data here
-      },
-      onError() {
-        setIsDeleteDisabled(false);
-        // Handle error
-      }
+  const { execute, isPending } = useServerAction(deleteContactRowAction, {
+    onSuccess() {
+      setIsDeleteDisabled(false);
+      toast({
+        title: 'Contact deleted',
+        description: 'The contact has been deleted'
+      });
+
+      // Optionally refresh the table data here
+    },
+    onError() {
+      setIsDeleteDisabled(false);
+      toast({
+        title: 'Error',
+        description: 'An error occurred while deleting the contact'
+      });
     }
-  );
+  });
 
   const handleDelete = () => {
     setIsDeleteDisabled(true);
     const selectedRows = table.getFilteredSelectedRowModel().rows;
-    selectedRows.forEach(row => {
-      const rowId = row.original.id;
-      deleteRow({ rowId });
-    });
+    const selectedIds = selectedRows.map(row => row.original.id);
+
+    execute({ clientId: Number(clientId), rowIds: selectedIds });
   };
 
   return (

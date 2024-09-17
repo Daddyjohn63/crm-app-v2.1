@@ -8,44 +8,14 @@ import { columns, Contacts } from './columns';
 import { DataTable } from '@/components/data-table';
 import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 
-// const data: Contacts[] = [
-//   {
-//     id: '728ed52f',
-//     last_name: 'Paul',
-//     first_name: 'John',
-//     job_title: 'Software Engineer',
-//     email: 'john.doe@example.com',
-//     phone: '1234567890',
-//     address: '123 Main St',
-//     city: 'London',
-//     county: 'Greater London',
-//     postcode: 'SW1A 1AA',
-//     country: 'United Kingdom'
-//   },
-//   {
-//     id: '828ed52f',
-//     last_name: 'Doe',
-//     first_name: 'John',
-//     job_title: 'Software Engineer',
-//     email: 'john.doe@example.com',
-//     phone: '1234567890',
-//     address: '123 Main St',
-//     city: 'London',
-//     county: 'Greater London',
-//     postcode: 'SW1A 1AA',
-//     country: 'United Kingdom'
-//   }
-//   // ...
-// ];
-
 export default async function ContactsPage({
   params
 }: {
   params: { clientId: string };
 }) {
   const { clientId } = params;
-  console.log('CLIENT ID', clientId);
-  console.log('Type of CLIENT ID:', typeof clientId);
+  //console.log('CLIENT ID', clientId);
+  //console.log('Type of CLIENT ID:', typeof clientId);
   const user = await getCurrentUser();
   // console.log('USER FROM CONTACTS PAGE', user);
   //.log('TYPE OF USER', typeof user);
@@ -60,7 +30,7 @@ export default async function ContactsPage({
       user,
       parseInt(clientId)
     );
-    console.log('CONTACTS FROM CONTACTS PAGE', contacts);
+    //console.log('CONTACTS FROM CONTACTS PAGE', contacts);
     const data = contacts.map(contact => ({
       id: contact.id,
       last_name: contact.last_name,

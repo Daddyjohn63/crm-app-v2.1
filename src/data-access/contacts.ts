@@ -7,9 +7,10 @@ import {
   contacts,
   ContactId,
   NewContact,
-  Contact
+  Contact,
+  User
 } from '@/db/schema';
-import { asc, eq, ilike, sql, and } from 'drizzle-orm';
+import { asc, eq, ilike, sql, and, inArray } from 'drizzle-orm';
 import { UserId, UserSession } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
 
@@ -36,7 +37,7 @@ export async function getContactsByClientId(
   const clientContacts: Contact[] = await database.query.contacts.findMany({
     where: eq(contacts.clientId, clientId)
   });
-  console.log('clientContacts', clientContacts);
+  //console.log('clientContacts', clientContacts);
   //return clientContacts;
   const formattedContacts = clientContacts.map(contact => ({
     id: contact.id,
@@ -53,4 +54,25 @@ export async function getContactsByClientId(
     clientId: contact.clientId
   }));
   return formattedContacts;
+}
+
+export async function deleteContacts(
+  contactIds: ContactId[],
+  user: UserSession,
+  clientId: ClientId
+) {
+  // console.log('contactIds-db', contactIds);
+  // console.log('user-db', user);
+  // console.log('clientId-db', clientId);
+  // Check if the user has access to the client
+  const client: Client | undefined = await database.query.clients.findFirst({
+    where: and(eq(clients.id, clientId), eq(clients.userId, user.id))
+  });
+
+  if (!client) {
+    throw new NotFoundError('Client not found or access denied');
+  }
+  return await database
+    .delete(contacts)
+    .where(inArray(contacts.id, contactIds));
 }

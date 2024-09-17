@@ -14,7 +14,10 @@ import { NewClient, NewClientInput, NewContactInput } from '@/db/schema';
 //import { schema } from './validation';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
-import { createContactUseCase } from '@/use-cases/contacts';
+import {
+  createContactUseCase,
+  deleteContactsUseCase
+} from '@/use-cases/contacts';
 import { contactSchema } from '@/app/dashboard/validation';
 
 const extendedContactSchema = contactSchema.extend({
@@ -63,9 +66,11 @@ export const createContactAction = authenticatedAction
 
 export const deleteContactRowAction = authenticatedAction
   .createServerAction()
-  .input(z.object({ rowId: z.number() }))
-  .handler(async ({ input, ctx }) => {
-    // Placeholder action, does nothing
-    console.log(`Received request to delete row(s) with ID: ${input.rowId}`);
+  .input(z.object({ clientId: z.number(), rowIds: z.array(z.number()) }))
+  .handler(async ({ input: { clientId, rowIds }, ctx: { user } }) => {
+    // Delete multiple rows
+    console.log(`Deleting rows with IDs: ${rowIds.join(', ')}`);
+    await deleteContactsUseCase(user, clientId, rowIds);
+    revalidatePath(`/dashboard/clients/${clientId}/contacts`);
     return { success: true };
   });
