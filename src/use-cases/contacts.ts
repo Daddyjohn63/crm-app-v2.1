@@ -4,7 +4,7 @@ import { UserSession } from './types';
 import { AuthenticationError, NotFoundError } from '@/app/util';
 import { getClientByClientId, getClientById } from '@/data-access/clients';
 import { PublicError } from './errors';
-import { createContact } from '@/data-access/contacts';
+import { createContact, getContactsByClientId } from '@/data-access/contacts';
 
 export async function createContactUseCase(
   authenticatedUser: UserSession,
@@ -22,4 +22,12 @@ export async function createContactUseCase(
     clientId,
     ...rest
   });
+}
+
+export async function getContactsByClientIdUseCase(
+  authenticatedUser: UserSession,
+  clientId: ClientId
+) {
+  const contacts = await getContactsByClientId(clientId);
+  return contacts;
 }

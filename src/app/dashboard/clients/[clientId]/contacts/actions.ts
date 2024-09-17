@@ -60,3 +60,12 @@ export const createContactAction = authenticatedAction
       revalidatePath(`/dashboard/clients/${clientId}/contacts`);
     }
   );
+
+export const deleteContactRowAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ rowId: z.string() }))
+  .handler(async ({ input, ctx }) => {
+    // Placeholder action, does nothing
+    console.log(`Received request to delete row(s) with ID: ${input.rowId}`);
+    return { success: true };
+  });

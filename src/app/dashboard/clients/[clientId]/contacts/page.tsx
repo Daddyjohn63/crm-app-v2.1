@@ -15,7 +15,7 @@ const data: Payment[] = [
     email: 'm@example.com'
   },
   {
-    id: '728ed52f',
+    id: '828ed52f',
     amount: 1000,
     status: 'pending',
     email: 'a@example.com'
@@ -32,6 +32,8 @@ export default async function ContactsPage({
   console.log('CLIENT ID', clientId);
   console.log('Type of CLIENT ID:', typeof clientId);
   const user = await getCurrentUser();
+  // console.log('USER FROM CONTACTS PAGE', user);
+  //.log('TYPE OF USER', typeof user);
 
   if (!user) {
     return notFound();
@@ -39,6 +41,7 @@ export default async function ContactsPage({
 
   try {
     const client = await getClientByIdUseCase(user, parseInt(clientId));
+    console.log('CLIENT FROM CONTACTS PAGE', client);
     return (
       <div className="container  mx-auto px-4  md:px-2 py-6 w-full">
         <Card className="border-none drop-shadow-sm">
@@ -49,7 +52,14 @@ export default async function ContactsPage({
             <CreateEditContactButton />
           </CardHeader>
           <CardContent>
-            <DataTable filterKey="email" columns={columns} data={data} />
+            <DataTable
+              filterKey="email"
+              columns={columns}
+              data={data}
+              disableDeleteButton={false}
+              clientId={clientId}
+              user={user}
+            />
           </CardContent>
         </Card>
       </div>
