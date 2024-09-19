@@ -4,7 +4,6 @@ import { ClientId } from '@/db/schema';
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { useContext } from 'react';
 import { z } from 'zod';
 import {
   Form,
@@ -18,16 +17,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ToggleContext } from '@/components/interactive-overlay';
 import { createContactAction } from './actions';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
 import { useClientIdParam } from '@/util/safeparam';
-
-type CreateEditContactFormProps = {
-  clientId?: number;
-};
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -62,16 +56,11 @@ const FormSchema = z.object({
   }),
   clientId: z.number()
 });
-//TODO : WHY AM I PASSING IN CLIENTID AS A PROP? CREATECONTACTBUTTON IS PASSING THEM IN.BUT I CAN GET THEM FROM USECLIENTIDPARAM()
-export default function CreateEditContactForm() {
-  //get contactId from zustand store
 
+export default function CreateEditContactForm() {
   const { contactId } = useOverlayStore();
-  //console.log('contactId', contactId);
   const clientId = useClientIdParam();
-  //console.log('clientId', clientId);
-  const { setIsOpen: setIsOverlayOpen, preventCloseRef } =
-    useContext(ToggleContext);
+  const { setIsOpen } = useOverlayStore();
   const { toast } = useToast();
 
   const { execute, error, isPending } = useServerAction(createContactAction, {
@@ -81,7 +70,7 @@ export default function CreateEditContactForm() {
         description: 'The contact has been created successfully.',
         duration: 3000
       });
-      setIsOverlayOpen(false);
+      setIsOpen(false);
     },
     onError({ err }) {
       toast({

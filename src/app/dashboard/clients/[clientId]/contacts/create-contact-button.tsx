@@ -2,35 +2,28 @@
 
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import { InteractiveOverlay } from '@/components/interactive-overlay';
-import { useState } from 'react';
-
+import { ZustandInteractiveOverlay } from './zustand-interactive-overlay';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { User } from '@/db/schema';
 import CreateEditContactForm from './create-edit-contact-form';
-import { useParams } from 'next/navigation';
-//type SimplifiedUser = Pick<User, 'id'>;
-export default function CreateContactButton() {
-  // const { clientId } = useParams<{ clientId: string }>();
+import { useOverlayStore } from '@/store/overlayStore';
 
-  const [isOpen, setIsOpen] = useState(false);
+export default function CreateContactButton() {
+  const { setIsOpen, setContactId } = useOverlayStore();
+
+  const handleCreateContact = () => {
+    setContactId(null);
+    setIsOpen(true);
+  };
 
   return (
     <>
-      <InteractiveOverlay
+      <ZustandInteractiveOverlay
         title="Create a Contact"
         description="Create a new contact for the client"
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
         form={<CreateEditContactForm />}
       />
 
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        className={btnStyles}
-      >
+      <Button onClick={handleCreateContact} className={btnStyles}>
         <PlusCircle className={btnIconStyles} />
         Create Contact
       </Button>
