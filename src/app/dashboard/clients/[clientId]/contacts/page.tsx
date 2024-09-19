@@ -1,4 +1,3 @@
-import CreateEditContactButton from '@/app/dashboard/create-edit-contact-button';
 import { NotFoundError } from '@/app/util';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getCurrentUser } from '@/lib/session';
@@ -7,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { columns, Contacts } from './columns';
 import { DataTable } from '@/components/data-table';
 import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
-
+import CreateContactButton from './create-contact-button';
 export default async function ContactsPage({
   params
 }: {
@@ -55,7 +54,7 @@ export default async function ContactsPage({
             <CardTitle className="text-2xl font-bold mb-4 line-clamp-1">
               Client Contacts
             </CardTitle>
-            <CreateEditContactButton />
+            <CreateContactButton />
           </CardHeader>
           <CardContent>
             <DataTable

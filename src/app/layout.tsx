@@ -6,6 +6,7 @@ import { appConfig } from '../app-config';
 import { Header } from './_header/header';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
+import { getCurrentUser } from '@/lib/session';
 
 const inter = Inter({ subsets: ['latin'] });
 

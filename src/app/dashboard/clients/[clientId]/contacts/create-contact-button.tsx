@@ -6,12 +6,12 @@ import { InteractiveOverlay } from '@/components/interactive-overlay';
 import { useState } from 'react';
 
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { CreateClientForm } from './create-client-form';
+import { CreateClientForm } from '../../../create-client-form';
 import { User } from '@/db/schema';
 import CreateEditContactForm from './create-edit-contact-form';
 import { useParams } from 'next/navigation';
 //type SimplifiedUser = Pick<User, 'id'>;
-export default function CreateEditContactButton() {
+export default function CreateContactButton() {
   const { clientId } = useParams<{ clientId: string }>();
 
   const [isOpen, setIsOpen] = useState(false);

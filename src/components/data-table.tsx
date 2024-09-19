@@ -119,6 +119,7 @@ export function DataTable<TData extends DataWithId, TValue>({
           }
           className="max-w-sm"
         />
+        {/* TODO: add dialoge to confirm delete */}
         {table.getFilteredSelectedRowModel().rows.length > 0 && (
           <Button
             className="ml-auto"

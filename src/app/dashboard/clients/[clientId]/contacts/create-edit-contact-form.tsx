@@ -19,7 +19,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ToggleContext } from '@/components/interactive-overlay';
-import { createContactAction } from './clients/[clientId]/contacts/actions';
+import { createContactAction } from './actions';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 

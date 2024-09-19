@@ -19,18 +19,20 @@ import {
 // import useMediaQuery from '@/hooks/use-media-query';
 import useMediaQuery from '@/hooks/use-media-query';
 
+//define context type
 type ToggleContextType = {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   preventCloseRef: React.MutableRefObject<boolean>;
 };
-
+//create context
 export const ToggleContext = createContext<ToggleContextType>({
   isOpen: false,
   setIsOpen: () => {},
   preventCloseRef: { current: false }
 });
 
+//receive props from CreateClientButton.
 export function InteractiveOverlay({
   isOpen,
   setIsOpen,
@@ -47,6 +49,7 @@ export function InteractiveOverlay({
   const { isMobile } = useMediaQuery();
   const preventCloseRef = useRef(false);
 
+  //create context provider.
   return (
     <ToggleContext.Provider
       value={{

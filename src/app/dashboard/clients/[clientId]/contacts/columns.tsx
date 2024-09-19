@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import ColumnActions from './column-actions';
 // import { ContactWithStringId as Contact } from '@/db/schema';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -80,20 +81,12 @@ export const columns: ColumnDef<Contacts>[] = [
     accessorKey: 'address',
     header: 'Address'
   },
-  // {
-  //   accessorKey: 'city',
-  //   header: 'City'
-  // },
-  // {
-  //   accessorKey: 'county',
-  //   header: 'County'
-  // },
-  // {
-  //   accessorKey: 'postcode',
-  //   header: 'Postcode'
-  // },
   {
     accessorKey: 'country',
     header: 'Country'
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <ColumnActions id={row.original.id} />
   }
 ];
