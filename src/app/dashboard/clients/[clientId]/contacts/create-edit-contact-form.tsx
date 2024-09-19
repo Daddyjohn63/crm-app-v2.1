@@ -62,12 +62,16 @@ const FormSchema = z.object({
   }),
   clientId: z.number()
 });
-
+//TODO : WHY AM I PASSING IN CLIENTID AS A PROP? CREATECONTACTBUTTON IS PASSING THEM IN.BUT I CAN GET THEM FROM USECLIENTIDPARAM()
 export default function CreateEditContactForm({
   clientId: propClientId
 }: CreateEditContactFormProps) {
+  //get contactId from zustand store
+
   const { contactId } = useOverlayStore();
+  //console.log('contactId', contactId);
   const clientId = useClientIdParam();
+  //console.log('clientId', clientId);
   const { setIsOpen: setIsOverlayOpen, preventCloseRef } =
     useContext(ToggleContext);
   const { toast } = useToast();

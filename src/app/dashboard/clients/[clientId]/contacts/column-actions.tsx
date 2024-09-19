@@ -12,15 +12,15 @@ import { useOverlayStore } from '@/store/overlayStore';
 type Props = {
   id: number;
 };
-
+//receive the id from columns.tsx actions.
 export default function ColumnActions({ id }: Props) {
   const { setIsOpen, setContactId } = useOverlayStore();
 
   const handleEdit = () => {
-    console.log('Edit button clicked for id:', id);
+    // console.log('Edit button clicked for id:', id);
     setContactId(id);
     setIsOpen(true);
-    console.log('Zustand store updated:', useOverlayStore.getState());
+    // console.log('Zustand store updated:', useOverlayStore.getState());
   };
 
   return (

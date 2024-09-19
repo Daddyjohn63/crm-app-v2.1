@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/lib/session';
 import { getClientByIdUseCase } from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
-import { CreateClientButton } from '@/app/dashboard/create-client-button';
+import { CreateEditClientButton } from '@/app/dashboard/create-client-button';
 import { User } from '@/db/schema';
 import { DeleteClientButton } from '@/app/dashboard/delete-client-button';
 
@@ -53,7 +53,7 @@ export default async function ClientInfoPage({
           </ul>
         </div>
         <div className="container mx-auto p-4">
-          <CreateClientButton params={params} user={user as User} />
+          <CreateEditClientButton params={params} user={user as User} />
           <p>Client ID: {params.clientId}</p>
           <p>User: {user.id}</p>
         </div>

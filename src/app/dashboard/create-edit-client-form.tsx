@@ -63,7 +63,7 @@ const FormSchema = z.object({
   // additional_info: z.string().optional()
 });
 
-export function CreateClientForm({ id, user }: { id: string; user: User }) {
+export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
   const isEditing = !!id;
 
   const { setIsOpen, preventCloseRef } = useContext(ToggleContext);

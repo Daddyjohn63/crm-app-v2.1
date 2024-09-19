@@ -86,6 +86,7 @@ export const columns: ColumnDef<Contacts>[] = [
     header: 'Country'
   },
   {
+    //id is passed down to ColumnActions
     id: 'actions',
     cell: ({ row }) => <ColumnActions id={row.original.id} />
   }

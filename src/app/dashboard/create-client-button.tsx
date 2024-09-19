@@ -6,10 +6,10 @@ import { InteractiveOverlay } from '@/components/interactive-overlay';
 import { useState } from 'react';
 
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { CreateClientForm } from './create-client-form';
+import { CreateEditClientForm } from './create-edit-client-form';
 import { User } from '@/db/schema';
 
-export function CreateClientButton({
+export function CreateEditClientButton({
   params,
   user
 }: {
@@ -31,7 +31,7 @@ export function CreateClientButton({
         }
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        form={<CreateClientForm id={params?.clientId ?? ''} user={user} />}
+        form={<CreateEditClientForm id={params?.clientId ?? ''} user={user} />}
       />
 
       <Button

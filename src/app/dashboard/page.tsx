@@ -6,7 +6,7 @@
 //if we have clients, render clientCard component.pass in props client count, client, client.id and some button text 'view client.
 
 import { assertAuthenticated } from '@/lib/session';
-import { CreateClientButton } from './create-client-button';
+import { CreateEditClientButton } from './create-client-button';
 import { getClientsUseCase, searchClientsUseCase } from '@/use-cases/clients';
 import {
   cardStyles,
@@ -98,7 +98,7 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton
+            <CreateEditClientButton
               params={{}}
               user={{ id: user.id, email: null, emailVerified: null }}
             />
@@ -161,7 +161,7 @@ export default async function DashboardPage({
                 </div>
               </div>
             </form>
-            <CreateClientButton
+            <CreateEditClientButton
               params={{}}
               user={{ id: user.id, email: null, emailVerified: null }}
             />
