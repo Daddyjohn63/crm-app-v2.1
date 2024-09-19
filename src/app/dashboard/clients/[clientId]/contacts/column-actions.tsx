@@ -17,8 +17,10 @@ export default function ColumnActions({ id }: Props) {
   const { setIsOpen, setContactId } = useOverlayStore();
 
   const handleEdit = () => {
-    setIsOpen(true);
+    console.log('Edit button clicked for id:', id);
     setContactId(id);
+    setIsOpen(true);
+    console.log('Zustand store updated:', useOverlayStore.getState());
   };
 
   return (
@@ -31,7 +33,7 @@ export default function ColumnActions({ id }: Props) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
-            disabled={false}
+            // disabled={false}
             // onClick={() => console.log('edit button ', id)}
             onClick={handleEdit}
           >

@@ -7,6 +7,9 @@ import { columns, Contacts } from './columns';
 import { DataTable } from '@/components/data-table';
 import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 import CreateContactButton from './create-contact-button';
+import { ZustandInteractiveOverlay } from './zustand-interactive-overlay';
+import CreateEditContactForm from './create-edit-contact-form';
+
 export default async function ContactsPage({
   params
 }: {
@@ -48,30 +51,43 @@ export default async function ContactsPage({
     // console.log('CLIENT FROM CONTACTS PAGE', client);
 
     return (
-      <div className="container  mx-auto px-4  md:px-2 py-6 w-full">
-        <Card className="border-none drop-shadow-sm">
-          <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
-            <CardTitle className="text-2xl font-bold mb-4 line-clamp-1">
-              Client Contacts
-            </CardTitle>
-            <CreateContactButton />
-          </CardHeader>
-          <CardContent>
-            <DataTable
-              filterKey="last_name"
-              columns={columns}
-              data={data}
-              disableDeleteButton={false}
-              clientId={clientId}
-              user={user}
-            />
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <div className="container  mx-auto px-4  md:px-2 py-6 w-full">
+          <Card className="border-none drop-shadow-sm">
+            <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
+              <CardTitle className="text-2xl font-bold mb-4 line-clamp-1">
+                Client Contacts
+              </CardTitle>
+              <CreateContactButton />
+            </CardHeader>
+            <CardContent>
+              <DataTable
+                filterKey="last_name"
+                columns={columns}
+                data={data}
+                disableDeleteButton={false}
+                clientId={clientId}
+                user={user}
+              />
+            </CardContent>
+          </Card>
+        </div>
+        <ContactsOverlay />
+      </>
     );
   } catch (error) {
     if (error instanceof NotFoundError) {
       return notFound();
     }
   }
+}
+
+export function ContactsOverlay() {
+  return (
+    <ZustandInteractiveOverlay
+      title="Edit Contact"
+      description="Edit the details of the contact"
+      form={<CreateEditContactForm />}
+    />
+  );
 }

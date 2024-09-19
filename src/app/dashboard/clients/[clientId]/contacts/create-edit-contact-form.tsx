@@ -22,6 +22,12 @@ import { ToggleContext } from '@/components/interactive-overlay';
 import { createContactAction } from './actions';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
+import { useOverlayStore } from '@/store/overlayStore';
+import { useClientIdParam } from '@/util/safeparam';
+
+type CreateEditContactFormProps = {
+  clientId?: number;
+};
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -58,18 +64,16 @@ const FormSchema = z.object({
 });
 
 export default function CreateEditContactForm({
-  clientId
-}: {
-  clientId: ClientId;
-}) {
-  //console.log('clientId', clientId); we are getting the clientId from the client page
+  clientId: propClientId
+}: CreateEditContactFormProps) {
+  const { contactId } = useOverlayStore();
+  const clientId = useClientIdParam();
   const { setIsOpen: setIsOverlayOpen, preventCloseRef } =
     useContext(ToggleContext);
   const { toast } = useToast();
 
   const { execute, error, isPending } = useServerAction(createContactAction, {
     onSuccess() {
-      //  console.log('success');
       toast({
         title: 'Contact created',
         description: 'The contact has been created successfully.',
@@ -87,7 +91,7 @@ export default function CreateEditContactForm({
     }
   });
 
-  //fetch contact here when we get round to editing.
+  // TODO: Implement fetching contact data for editing when contactId is present
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -106,7 +110,6 @@ export default function CreateEditContactForm({
     }
   });
 
-  //add server action and add form
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = values => {
     execute({
       clientId,
@@ -122,6 +125,7 @@ export default function CreateEditContactForm({
       country: values.country
     });
   };
+
   return (
     <Form {...form}>
       <form
@@ -267,7 +271,8 @@ export default function CreateEditContactForm({
         )}
 
         <LoaderButton isLoading={isPending}>
-          <PersonStanding className={btnIconStyles} /> Create Contact
+          <PersonStanding className={btnIconStyles} />{' '}
+          {contactId ? 'Update Contact' : 'Create Contact'}
         </LoaderButton>
       </form>
     </Form>

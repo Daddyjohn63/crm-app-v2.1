@@ -30,6 +30,8 @@ export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const preventCloseRef = useRef(false);
   const { isOpen, setIsOpen } = useOverlayStore();
 
+  console.log('ZustandInteractiveOverlay rendered, isOpen:', isOpen);
+
   const Content = isMobile ? Drawer : Sheet;
   const ContentInner = isMobile ? DrawerContent : SheetContent;
   const Header = isMobile ? DrawerHeader : SheetHeader;
