@@ -7,6 +7,8 @@ import { PublicError } from './errors';
 import {
   createContact,
   deleteContacts,
+  editContact,
+  getContactById,
   getContactsByClientId
 } from '@/data-access/contacts';
 
@@ -54,4 +56,23 @@ export async function deleteContactsUseCase(
     throw new PublicError('Contact IDs are required');
   }
   await deleteContacts(contactIds as number[], user as any, clientId as any);
+}
+
+export async function editContactUseCase(
+  user: UserSession,
+  contactId: ContactId,
+  { clientId, ...rest }: NewContact
+) {
+  await editContact(contactId, {
+    clientId,
+    ...rest
+  });
+}
+
+export async function getContactByIdUseCase(
+  user: UserSession,
+  contactId: ContactId
+) {
+  const contact = await getContactById(contactId);
+  return contact;
 }

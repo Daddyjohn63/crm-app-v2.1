@@ -1,6 +1,6 @@
 import { NotFoundError } from '@/app/util';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getCurrentUser } from '@/lib/session';
+import { assertAuthenticated, getCurrentUser } from '@/lib/session';
 import { getClientByIdUseCase } from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
 import { columns, Contacts } from './columns';
@@ -9,6 +9,7 @@ import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 import CreateContactButton from './create-contact-button';
 import { ZustandInteractiveOverlay } from './zustand-interactive-overlay';
 import CreateEditContactForm from './create-edit-contact-form';
+// import { User } from '@/db/schema';
 
 export default async function ContactsPage({
   params
@@ -18,7 +19,8 @@ export default async function ContactsPage({
   const { clientId } = params;
   //console.log('CLIENT ID', clientId);
   //console.log('Type of CLIENT ID:', typeof clientId);
-  const user = await getCurrentUser();
+  const user = await assertAuthenticated();
+  //const user = await getCurrentUser();
   // console.log('USER FROM CONTACTS PAGE', user);
   //.log('TYPE OF USER', typeof user);
 

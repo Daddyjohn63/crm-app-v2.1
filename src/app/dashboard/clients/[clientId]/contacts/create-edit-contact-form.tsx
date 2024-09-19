@@ -17,11 +17,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { createContactAction } from './actions';
+import {
+  createContactAction,
+  editContactAction,
+  getContactAction
+} from './actions';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
 import { useClientIdParam } from '@/util/safeparam';
+import { User } from '@/db/schema';
+import { assertAuthenticated } from '@/lib/session';
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -59,28 +65,34 @@ const FormSchema = z.object({
 
 export default function CreateEditContactForm() {
   const { contactId } = useOverlayStore();
+  const isEditing = !!contactId;
   const clientId = useClientIdParam();
   const { setIsOpen } = useOverlayStore();
   const { toast } = useToast();
 
-  const { execute, error, isPending } = useServerAction(createContactAction, {
-    onSuccess() {
-      toast({
-        title: 'Contact created',
-        description: 'The contact has been created successfully.',
-        duration: 3000
-      });
-      setIsOpen(false);
-    },
-    onError({ err }) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong creating the contact.',
-        duration: 3000
-      });
+  const { execute, error, isPending } = useServerAction(
+    isEditing ? editContactAction : createContactAction,
+    {
+      onSuccess() {
+        toast({
+          title: 'Contact created',
+          description: 'The contact has been created successfully.',
+          duration: 3000
+        });
+        setIsOpen(false);
+      },
+      onError({ err }) {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: 'Something went wrong creating the contact.',
+          duration: 3000
+        });
+      }
     }
-  });
+  );
+
+  const { execute: fetchContact } = useServerAction(getContactAction);
 
   // TODO: Implement fetching contact data for editing when contactId is present
 
@@ -103,6 +115,7 @@ export default function CreateEditContactForm() {
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = values => {
     execute({
+      contactId: contactId ?? 0,
       clientId,
       first_name: values.first_name,
       last_name: values.last_name,

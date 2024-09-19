@@ -76,3 +76,19 @@ export async function deleteContacts(
     .delete(contacts)
     .where(inArray(contacts.id, contactIds));
 }
+
+export async function editContact(
+  contactId: ContactId,
+  updatedContact: NewContact
+) {
+  return await database
+    .update(contacts)
+    .set(updatedContact)
+    .where(eq(contacts.id, contactId));
+}
+
+export async function getContactById(contactId: ContactId) {
+  return await database.query.contacts.findFirst({
+    where: eq(contacts.id, contactId)
+  });
+}
