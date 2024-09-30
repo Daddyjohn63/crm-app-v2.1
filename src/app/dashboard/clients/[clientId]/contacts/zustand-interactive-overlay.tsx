@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -30,7 +30,9 @@ export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const preventCloseRef = useRef(false);
   const { isOpen, setIsOpen } = useOverlayStore();
 
-  console.log('ZustandInteractiveOverlay rendered, isOpen:', isOpen);
+  useEffect(() => {
+    console.log('ZustandInteractiveOverlay isOpen changed:', isOpen);
+  }, [isOpen]);
 
   const Content = isMobile ? Drawer : Sheet;
   const ContentInner = isMobile ? DrawerContent : SheetContent;

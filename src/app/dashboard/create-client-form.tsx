@@ -66,10 +66,6 @@ const FormSchema = z.object({
 export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
   const isEditing = !!id;
 
-  // useEffect(() => {
-  //   console.log('EDIT CLIENT ID', id);
-  // }, [id]);
-
   const { setIsOpen, preventCloseRef } = useContext(ToggleContext);
   const { toast } = useToast();
 

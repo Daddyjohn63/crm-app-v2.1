@@ -14,6 +14,7 @@ type Props = {
 };
 //receive the id from columns.tsx actions.
 export default function ColumnActions({ id }: Props) {
+  //started using Zustand here.
   const { setIsOpen, setContactId } = useOverlayStore();
 
   const handleEdit = () => {
@@ -38,7 +39,7 @@ export default function ColumnActions({ id }: Props) {
             onClick={handleEdit}
           >
             <Edit className="size-4 mr-2" />
-            Edit
+            Edit Contact
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

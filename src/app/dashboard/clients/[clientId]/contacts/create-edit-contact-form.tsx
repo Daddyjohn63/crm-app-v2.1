@@ -28,6 +28,7 @@ import { useOverlayStore } from '@/store/overlayStore';
 import { useClientIdParam } from '@/util/safeparam';
 import { User } from '@/db/schema';
 import { assertAuthenticated } from '@/lib/session';
+import { useEffect } from 'react';
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -65,8 +66,11 @@ const FormSchema = z.object({
 
 export default function CreateEditContactForm() {
   const { contactId } = useOverlayStore();
+  //console.log(contactId); WE HAVE THE ID!!!
+
   const isEditing = !!contactId;
   const clientId = useClientIdParam();
+
   const { setIsOpen } = useOverlayStore();
   const { toast } = useToast();
 
@@ -75,8 +79,10 @@ export default function CreateEditContactForm() {
     {
       onSuccess() {
         toast({
-          title: 'Contact created',
-          description: 'The contact has been created successfully.',
+          title: isEditing ? 'Contact Updated' : 'Contact created',
+          description: isEditing
+            ? 'The contact has been updated successfully'
+            : 'The contact has been created successfully.',
           duration: 3000
         });
         setIsOpen(false);
@@ -85,7 +91,9 @@ export default function CreateEditContactForm() {
         toast({
           title: 'Something went wrong',
           variant: 'destructive',
-          description: 'Something went wrong creating the contact.',
+          description: isEditing
+            ? 'Something went wrong updating the contact'
+            : 'Something went wrong creating the contact.',
           duration: 3000
         });
       }
@@ -98,18 +106,47 @@ export default function CreateEditContactForm() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      clientId,
-      first_name: '',
-      last_name: '',
-      job_title: '',
-      email: '',
-      phone: '',
-      address: '',
-      city: '',
-      county: '',
-      postcode: '',
-      country: ''
+    defaultValues: async () => {
+      if (isEditing && contactId) {
+        try {
+          const [contact] = await fetchContact({ contactId });
+          if (contact) {
+            return {
+              clientId,
+              first_name: contact.first_name,
+              last_name: contact.last_name,
+              job_title: contact.job_title,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              city: contact.city,
+              county: contact.county,
+              postcode: contact.postcode,
+              country: contact.country
+            };
+          }
+        } catch (error) {
+          console.error('Error fetching contact:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to fetch contact details',
+            variant: 'destructive'
+          });
+        }
+      }
+      return {
+        clientId,
+        first_name: '',
+        last_name: '',
+        job_title: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        county: '',
+        postcode: '',
+        country: ''
+      };
     }
   });
 
