@@ -22,10 +22,10 @@ import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 type Props = {
   title: string;
   description: string;
-  // form: ReactNode;
+  form: ReactNode;
 };
 
-export function ZustandInteractiveOverlay({ title, description }: Props) {
+export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const { isMobile } = useMediaQuery();
   const preventCloseRef = useRef(false);
   const { isOpen, setIsOpen } = useServiceOverlayStore();
@@ -53,7 +53,7 @@ export function ZustandInteractiveOverlay({ title, description }: Props) {
           <Title>{title}</Title>
           <Description>{description}</Description>
         </Header>
-        <ScrollArea className="h-[95%] pr-8 pt-4 pb-8">{}</ScrollArea>
+        <ScrollArea className="h-[95%] pr-8 pt-4 pb-8">{form}</ScrollArea>
       </ContentInner>
     </Content>
   );

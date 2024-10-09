@@ -6,6 +6,7 @@ import { ZustandInteractiveOverlay } from './zustand-interactive-overlay';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
 //import CreateEditContactForm from './create-edit-contact-form';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
+import CreateEditServiceForm from './create-edit-service-form';
 //import CreateEditContactForm from '../clients/[clientId]/contacts/create-edit-contact-form';
 
 export default function CreateServiceButton() {
@@ -20,7 +21,7 @@ export default function CreateServiceButton() {
       <ZustandInteractiveOverlay
         title="Create a Service"
         description="Create a new Services"
-        // form={<CreateEditContactForm />}
+        form={<CreateEditServiceForm />}
       />
 
       <Button onClick={handleCreateContact} className={btnStyles}>
