@@ -1,6 +1,6 @@
 'use client';
 
-import { ClientId } from '@/db/schema';
+// import { ClientId } from '@/db/schema';
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,9 +26,9 @@ import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
 import { useClientIdParam } from '@/util/safeparam';
-import { User } from '@/db/schema';
-import { assertAuthenticated } from '@/lib/session';
-import { useEffect } from 'react';
+// import { User } from '@/db/schema';
+// import { assertAuthenticated } from '@/lib/session';
+// import { useEffect } from 'react';
 
 const FormSchema = z.object({
   first_name: z.string().min(1, {
@@ -101,8 +101,6 @@ export default function CreateEditContactForm() {
   );
 
   const { execute: fetchContact } = useServerAction(getContactAction);
-
-  // TODO: Implement fetching contact data for editing when contactId is present
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

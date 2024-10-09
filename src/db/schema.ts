@@ -117,7 +117,10 @@ export const services = pgTable('services', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   name: text('service_name').notNull(),
-  description: varchar('service_description', { length: 500 }).notNull()
+  description: varchar('service_description', { length: 500 }).notNull(),
+  included_services: varchar('included_services', { length: 500 }),
+  delivery_process: varchar('deleivery_process', { length: 500 }),
+  pricing: varchar('pricing', { length: 500 })
 });
 
 export const contacts = pgTable('contacts', {

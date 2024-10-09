@@ -44,7 +44,7 @@ export function DeleteClientButton() {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button variant={'destructive'} className={cn(btnStyles, 'w-fit')}>
-          <DoorOpen className={btnIconStyles} /> Delete Group
+          <DoorOpen className={btnIconStyles} /> Delete Client
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
