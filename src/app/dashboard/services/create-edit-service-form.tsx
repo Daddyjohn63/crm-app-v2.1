@@ -24,6 +24,7 @@ import { useOverlayStore } from '@/store/overlayStore';
 import { NewServices } from '@/db/schema';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 import { Textarea } from '@/components/ui/textarea';
+import { createServiceAction } from './actions';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -38,9 +39,36 @@ const formSchema = z.object({
 });
 
 export default function CreateEditServiceForm() {
+  //const isPending = false;
+  const isEditing = false; //add this fully when we have the edit functionality
   //TODO: CAPTURE SERVICE ID FROM OVERLAY STORE OR PARAMS??
   const { setIsOpen } = useServiceOverlayStore();
   const { toast } = useToast();
+
+  //useServerAction via zsa to handle the form submission.
+
+  const { execute, error, isPending } = useServerAction(createServiceAction, {
+    onSuccess() {
+      toast({
+        title: isEditing ? 'Service Updated' : 'Service created',
+        description: isEditing
+          ? 'The service has been updated successfully'
+          : 'The service has been created successfully.',
+        duration: 3000
+      });
+      setIsOpen(false);
+    },
+    onError({ err }) {
+      toast({
+        title: 'Something went wrong',
+        variant: 'destructive',
+        description: isEditing
+          ? 'Something went wrong updating the service'
+          : 'Something went wrong creating the service.',
+        duration: 3000
+      });
+    }
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,14 +81,16 @@ export default function CreateEditServiceForm() {
     }
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = values => {
-    console.log(values);
-  };
-
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(values => {
+          const serviceData = {
+            serviceId: 0, // Default value for new service
+            ...values
+          };
+          execute(serviceData).then(() => {});
+        })}
         className="flex flex-col gap-4 flex-1 px-2"
       >
         <FormField
@@ -144,6 +174,7 @@ export default function CreateEditServiceForm() {
             </FormItem>
           )}
         />
+        <LoaderButton isLoading={isPending}>Create Service</LoaderButton>
       </form>
     </Form>
   );

@@ -22,3 +22,11 @@ export const contactSchema = z.object({
   postcode: z.string().optional(),
   country: z.string().optional()
 });
+
+export const serviceSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  included_services: z.string().optional(),
+  delivery_process: z.string().optional(),
+  pricing: z.string().optional()
+});

@@ -272,4 +272,8 @@ export type NewContactInput = Omit<
   NewContact,
   'id' | 'createdAt' | 'updatedAt'
 >;
+export type NewServiceInput = Omit<
+  NewServices,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 export type ContactWithStringId = Omit<Contact, 'id'> & { id: string };

@@ -150,13 +150,16 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
     }
   };
 
-  const onSubmit = form.handleSubmit(async data => {
-    if (isEditing) {
-      await executeAction({ ...data, client_id: id });
-    } else {
-      await executeAction(data);
+  const onSubmit = form.handleSubmit(
+    async (data: z.infer<typeof FormSchema>) => {
+      //new type check added
+      if (isEditing) {
+        await executeAction({ ...data, client_id: id });
+      } else {
+        await executeAction(data);
+      }
     }
-  });
+  );
 
   return (
     <Form {...form}>

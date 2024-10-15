@@ -30,6 +30,7 @@ import { useClientIdParam } from '@/util/safeparam';
 // import { assertAuthenticated } from '@/lib/session';
 // import { useEffect } from 'react';
 
+//form schema
 const FormSchema = z.object({
   first_name: z.string().min(1, {
     message: 'You must enter a first name.'
@@ -68,12 +69,15 @@ export default function CreateEditContactForm() {
   const { contactId } = useOverlayStore();
   //console.log(contactId); WE HAVE THE ID!!!
 
+  //get variables we will need
   const isEditing = !!contactId;
   const clientId = useClientIdParam();
 
+  //ref to zustand state initialise toast.
   const { setIsOpen } = useOverlayStore();
   const { toast } = useToast();
 
+  //useServerAction via zsa to handle the form submission
   const { execute, error, isPending } = useServerAction(
     isEditing ? editContactAction : createContactAction,
     {
@@ -100,8 +104,10 @@ export default function CreateEditContactForm() {
     }
   );
 
+  //rename execute to fetchContact so as to distinguish between getting contact details and creating/editing a contact.
   const { execute: fetchContact } = useServerAction(getContactAction);
 
+  //useForm to handle the form state and validation
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: async () => {
@@ -148,8 +154,11 @@ export default function CreateEditContactForm() {
     }
   });
 
+  //onSubmit function to handle the form submission.
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = values => {
+    //execute the useServerAction
     execute({
+      //if we are editing, we need to pass the contactId, otherwise it will be 0
       contactId: contactId ?? 0,
       clientId,
       first_name: values.first_name,
