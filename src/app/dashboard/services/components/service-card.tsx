@@ -20,11 +20,11 @@ export function ServiceCard({ service }: { service: Services }) {
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <p className="truncate flex items-center">
-            <span className="font-semibold mr-1">Description:</span>
+          <p className="truncate flex  flex-col">
+            <span className="font-semibold mr-1 mb-2">Description:</span>
             {service.description}
           </p>
-          <p className="truncate flex items-center">
+          {/* <p className="truncate flex items-center">
             <span className="font-semibold mr-1">Included Services:</span>
             {service.included_services}
           </p>
@@ -35,7 +35,7 @@ export function ServiceCard({ service }: { service: Services }) {
           <p className="truncate">
             <span className="font-semibold mr-1">Pricing:</span>
             {service.pricing}
-          </p>
+          </p> */}
         </div>
       </CardContent>
     </Card>

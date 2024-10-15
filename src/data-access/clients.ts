@@ -1,6 +1,6 @@
 import { database } from '@/db/drizzle';
 import { Client, ClientId, NewClient, clients } from '@/db/schema';
-import { asc, eq, ilike, sql, and } from 'drizzle-orm';
+import { asc, eq, ilike, sql, and, desc } from 'drizzle-orm';
 import { UserId } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
 
@@ -12,9 +12,10 @@ export async function createClient(newClient: NewClient) {
 export async function getClientsByUser(userId: UserId) {
   // console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
   const userClients = await database.query.clients.findMany({
-    where: eq(clients.userId, userId)
+    where: eq(clients.userId, userId),
+    orderBy: [desc(clients.id)]
   });
-  //console.log('FOUND CLIENTS:', userClients.length);
+  //  console.log('FOUND CLIENTS:', userClients);
   return userClients;
 }
 
@@ -35,7 +36,8 @@ export async function searchClientsByName(
   const userClients = await database.query.clients.findMany({
     where: condition,
     limit: CLIENTS_PER_PAGE,
-    offset: (page - 1) * CLIENTS_PER_PAGE
+    offset: (page - 1) * CLIENTS_PER_PAGE,
+    orderBy: [desc(clients.id)]
   });
 
   const [countResult] = await database
