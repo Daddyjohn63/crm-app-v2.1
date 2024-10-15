@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { serviceSchema } from '@/app/dashboard/validation';
 import { rateLimitByKey } from '@/lib/limiter';
 import { revalidatePath } from 'next/cache';
-import { NewServiceInput } from '@/db/schema';
 import { createServiceUseCase } from '@/use-cases/services';
 
 const extendedServiceSchema = serviceSchema.extend({
