@@ -15,6 +15,8 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import ClientToServiceButton from '../../components/add-client-service-button';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -87,7 +89,13 @@ export default async function ClientInfoPage({
             {/* column 2 */}
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
-                <CardTitle>Service List Here</CardTitle>
+                <CardTitle>
+                  {/* <Button>Choose which services this client uses</Button> */}
+                  {/* <AddServiceClientButt clientId={clientId} /> */}
+                  <ClientToServiceButton clientId={parseInt(clientId)} />
+                </CardTitle>
+
+                <CardContent>{/* add service tags here. */}</CardContent>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4">

@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import DeleteServiceButton from '../components/delete-service-button';
 import { NotFoundError } from '@/app/util';
 import CreateEditServiceButton from '../create-edit-service-button';
+import { Button } from '@/components/ui/button';
 
 export default async function ServicePage({
   params
@@ -73,15 +74,7 @@ export default async function ServicePage({
                   </div>
                 </div>
 
-                <div className="flex justify-between">
-                  {/* <div className="pt-4  ">
-                  <CreateEditClientButton params={params} user={user as User} />
-             
-                </div> */}
-                  {/* <div className="  pt-4">
-                  <DeleteClientButton />
-                </div> */}
-                </div>
+                <div className="flex justify-between"></div>
               </CardContent>
             </div>
             {/* column 2 */}
