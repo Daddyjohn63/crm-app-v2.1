@@ -1,5 +1,10 @@
 import { database } from '@/db/drizzle';
-import { NewServices, services, ServicesId } from '@/db/schema';
+import {
+  NewServiceInput,
+  NewServices,
+  services,
+  ServicesId
+} from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 import { and, eq } from 'drizzle-orm';
 
@@ -36,4 +41,15 @@ export async function deleteService(userId: UserId, serviceId: ServicesId) {
   await database
     .delete(services)
     .where(and(eq(services.userId, userId), eq(services.id, serviceId)));
+}
+
+// Add this function to your existing file
+export async function updateService(
+  serviceId: number,
+  updatedService: Partial<Omit<NewServiceInput, 'userId'>>
+) {
+  return await database
+    .update(services)
+    .set(updatedService)
+    .where(eq(services.id, serviceId));
 }

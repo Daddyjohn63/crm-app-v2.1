@@ -17,6 +17,8 @@ interface CreateEditServiceButtonProps {
 export default function CreateEditServiceButton({
   serviceId
 }: CreateEditServiceButtonProps) {
+  console.log('SERVICE ID FROM BUTTON', serviceId);
+  console.log(typeof serviceId);
   const { setIsOpen, setServiceId } = useServiceOverlayStore();
 
   const handleCreateOrEditService = () => {

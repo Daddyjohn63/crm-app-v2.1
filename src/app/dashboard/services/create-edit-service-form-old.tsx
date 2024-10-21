@@ -1,5 +1,6 @@
 'use client';
 
+// import { ClientId } from '@/db/schema';
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,15 +14,17 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+import { PersonStanding, Terminal } from 'lucide-react';
+import { btnIconStyles } from '@/styles/icons';
+import { useOverlayStore } from '@/store/overlayStore';
+import { NewServices } from '@/db/schema';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  createServiceAction,
-  editServiceAction,
-  getServiceAction
-} from './actions';
+import { createServiceAction, editServiceAction } from './actions';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -36,9 +39,13 @@ const formSchema = z.object({
 });
 
 export default function CreateEditServiceForm() {
-  const { serviceId, setIsOpen } = useServiceOverlayStore();
+  const { serviceId } = useServiceOverlayStore();
+  // console.log('SERVICE ID FROM ZUSTAND', serviceId);
   const isEditing = !!serviceId;
+  const { setIsOpen } = useServiceOverlayStore();
   const { toast } = useToast();
+
+  //useServerAction via zsa to handle the form submission.
 
   const { execute, error, isPending } = useServerAction(
     isEditing ? editServiceAction : createServiceAction,
@@ -66,52 +73,29 @@ export default function CreateEditServiceForm() {
     }
   );
 
-  const { execute: fetchService } = useServerAction(getServiceAction);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: async () => {
-      if (isEditing && serviceId) {
-        try {
-          const [service] = await fetchService({ serviceId });
-          if (service) {
-            return {
-              name: service.name,
-              description: service.description,
-              included_services: service.included_services || '',
-              delivery_process: service.delivery_process || '',
-              pricing: service.pricing || ''
-            };
-          }
-        } catch (error) {
-          console.error('Error fetching service:', error);
-          toast({
-            title: 'Error',
-            description: 'Failed to fetch service details',
-            variant: 'destructive'
-          });
-        }
-      }
-      return {
-        name: '',
-        description: '',
-        included_services: '',
-        delivery_process: '',
-        pricing: ''
-      };
+    defaultValues: {
+      name: '',
+      description: '',
+      included_services: '',
+      delivery_process: '',
+      pricing: ''
     }
-  });
-
-  const onSubmit = form.handleSubmit(async values => {
-    await execute({
-      serviceId: serviceId || 0,
-      ...values
-    });
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4 flex-1 px-2">
+      <form
+        onSubmit={form.handleSubmit(values => {
+          const serviceData = {
+            serviceId: 0, // Default value for new service
+            ...values
+          };
+          execute(serviceData).then(() => {});
+        })}
+        className="flex flex-col gap-4 flex-1 px-2"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -193,9 +177,7 @@ export default function CreateEditServiceForm() {
             </FormItem>
           )}
         />
-        <LoaderButton isLoading={isPending}>
-          {isEditing ? 'Update Service' : 'Create Service'}
-        </LoaderButton>
+        <LoaderButton isLoading={isPending}>Create Service</LoaderButton>
       </form>
     </Form>
   );

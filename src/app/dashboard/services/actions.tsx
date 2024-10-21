@@ -6,13 +6,26 @@ import { rateLimitByKey } from '@/lib/limiter';
 import { revalidatePath } from 'next/cache';
 import {
   createServiceUseCase,
-  deleteServiceUseCase
+  deleteServiceUseCase,
+  editServiceUseCase,
+  getServiceByIdUseCase
 } from '@/use-cases/services';
 import { redirect } from 'next/navigation';
 
 const extendedServiceSchema = serviceSchema.extend({
   serviceId: z.number() //this is optional as we are creating a new service
 });
+
+// export const getServiceAction = authenticatedAction
+//   .createServerAction()
+//   .input(z.object({ serviceId: z.number() }))
+//   .handler(async ({ input: { serviceId }, ctx: { user } }) => {
+//     const service = await getServiceByIdUseCase(serviceId);
+//     if (!service) {
+//       throw new Error('Service not found');
+//     }
+//     return service;
+//   });
 
 export const deleteServiceAction = authenticatedAction
   .createServerAction()
@@ -53,3 +66,30 @@ export const createServiceAction = authenticatedAction
       revalidatePath(`/dashboard/services`);
     }
   );
+
+export const getServiceAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ serviceId: z.number() }))
+  .handler(async ({ input: { serviceId }, ctx: { user } }) => {
+    const service = await getServiceByIdUseCase(serviceId);
+    if (!service) {
+      throw new Error('Service not found');
+    }
+    return service;
+  });
+
+// ... existing code ...
+
+export const editServiceAction = authenticatedAction
+  .createServerAction()
+  .input(serviceSchema.extend({ serviceId: z.number() }))
+  .handler(async ({ input, ctx: { user } }) => {
+    await rateLimitByKey({
+      key: `${user.id}-edit-service`
+    });
+    const { serviceId, ...serviceData } = input;
+    await editServiceUseCase(user, serviceId, serviceData);
+    revalidatePath('/dashboard/services');
+  });
+
+// ... existing code ...

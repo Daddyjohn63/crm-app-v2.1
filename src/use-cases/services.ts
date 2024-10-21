@@ -4,9 +4,10 @@ import {
   createService,
   deleteService,
   getServiceById,
-  getServicesByUser
+  getServicesByUser,
+  updateService
 } from '@/data-access/services';
-import { NotFoundError } from '@/app/util';
+import { AuthenticationError, NotFoundError } from '@/app/util';
 
 export async function createServiceUseCase(
   authenticatedUser: UserSession,
@@ -21,6 +22,20 @@ export async function createServiceUseCase(
 export async function getServicesUseCase(authenticatedUser: UserSession) {
   const services = await getServicesByUser(authenticatedUser.id);
   return services;
+}
+
+export async function deleteServiceUseCase(
+  authenticatedUser: UserSession,
+  serviceId: number
+) {
+  const existingService = await getServiceById(serviceId);
+  if (!existingService) {
+    throw new NotFoundError('Service not found');
+  }
+  if (existingService.userId !== authenticatedUser.id) {
+    throw new NotFoundError('You are not authorized to delete this service');
+  }
+  await deleteService(authenticatedUser.id, serviceId);
 }
 
 //get a service by id
@@ -47,9 +62,18 @@ export async function getServiceByIdUseCase(serviceId: number) {
   return service;
 }
 
-export async function deleteServiceUseCase(
+export async function editServiceUseCase(
   authenticatedUser: UserSession,
-  serviceId: number
+  serviceId: number,
+  updatedService: Partial<Omit<NewServiceInput, 'userId'>>
 ) {
-  await deleteService(authenticatedUser.id, serviceId);
+  const existingService = await getServiceById(serviceId);
+  if (!existingService) {
+    throw new NotFoundError('Service not found');
+  }
+  if (existingService.userId !== authenticatedUser.id) {
+    throw new NotFoundError('You are not authorized to edit this service');
+  }
+  await updateService(serviceId, updatedService);
+  return existingService;
 }
