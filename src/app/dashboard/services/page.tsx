@@ -1,12 +1,15 @@
 import { PageHeader } from '@/components/page-header';
 import { pageTitleStyles, pageWrapperStyles } from '@/styles/common';
-import CreateServiceButton from './create-service-button';
+import CreateEditServiceButton from './create-edit-service-button';
 import { assertAuthenticated } from '@/lib/session';
 import { getServicesUseCase } from '@/use-cases/services';
 import { Services } from '@/db/schema';
 import Link from 'next/link';
 import { ServiceCard } from './components/service-card';
 
+interface CreateEditServiceButtonProps {
+  serviceId: string | null | undefined;
+}
 export default async function () {
   const user = await assertAuthenticated();
   //console.log(' SERVICE-USER', user);
@@ -28,7 +31,7 @@ export default async function () {
             </h1>
           </div>
           <div>
-            <CreateServiceButton />
+            <CreateEditServiceButton serviceId={null} />
           </div>
         </div>
       </PageHeader>

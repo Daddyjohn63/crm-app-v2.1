@@ -13,6 +13,7 @@ import { getServiceByIdUseCase } from '@/use-cases/services';
 import { cn } from '@/lib/utils';
 import DeleteServiceButton from '../components/delete-service-button';
 import { NotFoundError } from '@/app/util';
+import CreateEditServiceButton from '../create-edit-service-button';
 
 export default async function ServicePage({
   params
@@ -40,7 +41,7 @@ export default async function ServicePage({
             {/* column 1 */}
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
-                <CardTitle>Client Information</CardTitle>
+                <CardTitle>Service Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4">
@@ -65,7 +66,7 @@ export default async function ServicePage({
 
                 <div className="flex justify-between">
                   <div className="pt-4  ">
-                    {/* <CreateEditClientButton params={params} user={user as User} /> */}
+                    <CreateEditServiceButton serviceId={serviceId} />
                   </div>
                   <div className="  pt-4">
                     <DeleteServiceButton />

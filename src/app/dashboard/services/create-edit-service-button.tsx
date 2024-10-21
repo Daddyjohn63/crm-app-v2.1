@@ -7,26 +7,40 @@ import { btnIconStyles, btnStyles } from '@/styles/icons';
 //import CreateEditContactForm from './create-edit-contact-form';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 import CreateEditServiceForm from './create-edit-service-form';
+import { useServiceIdParam } from '@/util/safeparam';
 //import CreateEditContactForm from '../clients/[clientId]/contacts/create-edit-contact-form';
 
-export default function CreateServiceButton() {
+interface CreateEditServiceButtonProps {
+  serviceId: string | null | undefined;
+}
+
+export default function CreateEditServiceButton({
+  serviceId
+}: CreateEditServiceButtonProps) {
   const { setIsOpen, setServiceId } = useServiceOverlayStore();
 
-  const handleCreateContact = () => {
+  const handleCreateOrEditService = () => {
+    if (serviceId) {
+      setServiceId(parseInt(serviceId));
+    } else {
+      setServiceId(null);
+    }
     setIsOpen(true);
   };
 
   return (
     <>
       <ZustandInteractiveOverlay
-        title="Create a Service"
-        description="Create a new Services"
+        title={serviceId ? 'Edit Service' : 'Create a Service'}
+        description={
+          serviceId ? 'Edit an existing Service' : 'Create a new Service'
+        }
         form={<CreateEditServiceForm />}
       />
 
-      <Button onClick={handleCreateContact} className={btnStyles}>
+      <Button onClick={handleCreateOrEditService} className={btnStyles}>
         <PlusCircle className={btnIconStyles} />
-        Create Service
+        {serviceId ? 'Edit Service' : 'Create Service'}
       </Button>
     </>
   );
