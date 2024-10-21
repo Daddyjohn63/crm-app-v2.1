@@ -2,6 +2,7 @@ import { NewServiceInput } from '@/db/schema';
 import { UserSession } from './types';
 import {
   createService,
+  deleteService,
   getServiceById,
   getServicesByUser
 } from '@/data-access/services';
@@ -23,15 +24,32 @@ export async function getServicesUseCase(authenticatedUser: UserSession) {
 }
 
 //get a service by id
-export async function getServiceByIdUseCase(
-  authenticatedUser: UserSession,
-  serviceId: number
-) {
-  const service = await getServiceById(authenticatedUser.id, serviceId);
+// export async function getServiceByIdUseCase(
+//   authenticatedUser: UserSession,
+//   serviceId: number
+// ) {
+//   const service = await getServiceById(authenticatedUser.id, serviceId);
+
+//   if (!service) {
+//     throw new NotFoundError('Service not found!');
+//   }
+
+//   return service;
+// }
+
+export async function getServiceByIdUseCase(serviceId: number) {
+  const service = await getServiceById(serviceId);
 
   if (!service) {
-    throw new NotFoundError('Service not found!');
+    throw new NotFoundError('Service not found!!');
   }
 
   return service;
+}
+
+export async function deleteServiceUseCase(
+  authenticatedUser: UserSession,
+  serviceId: number
+) {
+  await deleteService(authenticatedUser.id, serviceId);
 }

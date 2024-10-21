@@ -8,7 +8,8 @@ import {
 import { NotFoundError } from '@/app/util';
 import { notFound, redirect } from 'next/navigation';
 import { getServiceByIdUseCase } from '@/use-cases/services';
-import { ServiceHeader } from './service-header';
+import { ServiceHeader } from '../components/service-header';
+import { toast } from '@/components/ui/use-toast';
 
 export default async function ServiceLayout({
   children,
@@ -25,21 +26,23 @@ export default async function ServiceLayout({
   }
 
   //have we got a client with this id?
-  const service = await getServiceByIdUseCase(user, parseInt(params.serviceId));
+  const service = await getServiceByIdUseCase(parseInt(params.serviceId));
   //console.log('client', client);
 
   if (!service) {
-    throw new NotFoundError('Service not found');
+    // Service not found, redirect to the services list
+    redirect('/dashboard/services');
   }
 
-  //does the user have access to this client?
-  // const isClientOwner = user
-  //   ? await assertClientOwnership(user, client.id)
-  //   : false;
-  // if (!isClientOwner) {
-  //   //redirect to sign in
-  //   redirect('/sign-in');
-  // }
+  const isServiceOwner = user.id === service.userId;
+
+  if (!isServiceOwner) {
+    toast({
+      variant: 'destructive',
+      description: 'You are not the owner of this service'
+    });
+    redirect('/sign-in');
+  }
 
   return (
     <div>

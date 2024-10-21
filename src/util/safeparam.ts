@@ -7,3 +7,10 @@ export function useClientIdParam() {
   );
   return clientId;
 }
+
+export function useServiceIdParam() {
+  const { serviceId } = useSafeParams(
+    z.object({ serviceId: z.string().pipe(z.coerce.number()) })
+  );
+  return serviceId;
+}
