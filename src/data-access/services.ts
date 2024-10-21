@@ -1,7 +1,7 @@
 import { database } from '@/db/drizzle';
-import { NewServices, services } from '@/db/schema';
+import { NewServices, services, ServicesId } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 export async function createService(newService: NewServices) {
   const [service] = await database
@@ -16,4 +16,11 @@ export async function getServicesByUser(userId: UserId) {
     where: eq(services.userId, userId)
   });
   return userServices;
+}
+
+export async function getServiceById(userId: UserId, serviceId: ServicesId) {
+  const service = await database.query.services.findFirst({
+    where: and(eq(services.userId, userId), eq(services.id, serviceId))
+  });
+  return service;
 }

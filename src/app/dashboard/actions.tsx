@@ -14,6 +14,7 @@ import { NewClient, NewClientInput } from '@/db/schema';
 import { schema } from './validation';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
+import { PublicError } from '@/use-cases/errors';
 
 //create client
 export const createClientAction = authenticatedAction
@@ -80,7 +81,7 @@ export const getClientAction = authenticatedAction
       parseInt(input.client_id, 10)
     );
     if (!client) {
-      throw new Error('Client not found');
+      throw new PublicError('Client not found!');
     }
     return client;
   });

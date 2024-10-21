@@ -23,8 +23,7 @@ export default async function ClientLayout({
   //console.log('client', client);
 
   if (!client) {
-    // throw new NotFoundError('Client not found');
-    return <div>Client not found</div>;
+    throw new NotFoundError('Client not found');
   }
 
   //does the user have access to this client?

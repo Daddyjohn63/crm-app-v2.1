@@ -58,7 +58,7 @@ export async function getClientByIdUseCase(
   const client = await getClientById(user.id, clientId);
 
   if (!client) {
-    throw new NotFoundError('Client not found');
+    throw new NotFoundError('Client not found!');
   }
 
   return client;
@@ -90,7 +90,7 @@ export async function assertClientOwnership(
 ) {
   const client = await getClientById(user.id, clientId);
   if (!client) {
-    throw new NotFoundError('Client not found');
+    throw new NotFoundError('Client not found!');
   }
   if (!user) {
     throw new AuthenticationError();
