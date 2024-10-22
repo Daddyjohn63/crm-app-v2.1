@@ -20,18 +20,37 @@ import { useServerAction } from 'zsa-react';
 import { useClientServiceOverlayStore } from '@/store/clientServiceOverlayStore';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { getServiceIdsByClientId } from '@/data-access/clients';
+import { getServiceIdsByClientIdAction } from '../../actions';
+import { useEffect } from 'react';
 
 const FormSchema = z.object({
-  marketing_emails: z.boolean().default(false).optional(),
-  security_emails: z.boolean()
+  name: z.string()
 });
 
 export function AddServiceToClientForm() {
   const { toast } = useToast();
+  const { clientId, setIsOpen } = useClientServiceOverlayStore();
+  //console.log('ASCF', clientId);
+
+  const { execute: fetchServiceIdsByClientId } = useServerAction(
+    getServiceIdsByClientIdAction,
+    {
+      onSuccess(data) {
+        console.log('ASCF', data);
+      }
+    }
+  );
+  if (clientId) {
+    useEffect(() => {
+      fetchServiceIdsByClientId({ clientId });
+    }, [clientId]);
+  }
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      security_emails: true
+      name: ''
     }
   });
 
@@ -54,7 +73,7 @@ export function AddServiceToClientForm() {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="marketing_emails"
+              name="name"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
@@ -74,7 +93,7 @@ export function AddServiceToClientForm() {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="security_emails"
               render={({ field }) => (
@@ -95,7 +114,7 @@ export function AddServiceToClientForm() {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
         </div>
         <Button type="submit">Submit</Button>

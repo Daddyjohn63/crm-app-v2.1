@@ -15,6 +15,7 @@ import { schema } from './validation';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
 import { PublicError } from '@/use-cases/errors';
+import { getServiceIdsByClientId } from '@/data-access/clients';
 
 //create client
 export const createClientAction = authenticatedAction
@@ -99,4 +100,13 @@ export const deleteClientAction = authenticatedAction
       clientId
     });
     redirect('/dashboard');
+  });
+
+//get services for a client
+
+export const getServiceIdsByClientIdAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ clientId: z.number() }))
+  .handler(async ({ input }) => {
+    return await getServiceIdsByClientId(input.clientId);
   });

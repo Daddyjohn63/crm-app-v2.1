@@ -1,8 +1,9 @@
 import { database } from '@/db/drizzle';
 import { Client, ClientId, NewClient, clients } from '@/db/schema';
-import { asc, eq, ilike, sql, and, desc } from 'drizzle-orm';
+import { asc, eq, ilike, sql, and, desc, inArray } from 'drizzle-orm';
 import { UserId } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
+import { clientsToServices } from '@/db/schema';
 
 export async function createClient(newClient: NewClient) {
   const [client] = await database.insert(clients).values(newClient).returning();
@@ -94,4 +95,17 @@ export async function updateClient(
 
 export async function deleteClient(clientId: ClientId) {
   await database.delete(clients).where(eq(clients.id, clientId));
+}
+
+//get services for a client
+
+export async function getServiceIdsByClientId(
+  clientId: number
+): Promise<number[]> {
+  const result = await database
+    .select({ serviceId: clientsToServices.serviceId })
+    .from(clientsToServices)
+    .where(eq(clientsToServices.clientId, clientId));
+
+  return result.map(row => row.serviceId);
 }

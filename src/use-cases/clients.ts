@@ -113,3 +113,9 @@ export async function getClientInfoByIdUseCase(clientId: ClientId) {
 
   return omit(client, 'userId');
 }
+
+//which services does a client use?
+export async function getClientServicesUseCase(clientId: ClientId) {
+  // const client = await getClientById(clientId);
+  // return client?.services;
+}
