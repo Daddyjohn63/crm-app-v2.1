@@ -13,7 +13,8 @@ import {
   getClientsByUser,
   searchClientsByName,
   updateClient,
-  updateClientField
+  updateClientField,
+  updateClientServices
 } from '@/data-access/clients';
 import { AuthenticationError, NotFoundError } from '@/app/util';
 import { omit } from 'lodash';
@@ -118,4 +119,23 @@ export async function getClientInfoByIdUseCase(clientId: ClientId) {
 export async function getClientServicesUseCase(clientId: ClientId) {
   // const client = await getClientById(clientId);
   // return client?.services;
+}
+
+// export async function updateClientServicesUseCase(
+//   user: UserSession,
+//   { clientId, serviceIds }: { clientId: ClientId; serviceIds: number[] }
+// ) {
+//   await updateClientServices(user.id, clientId, serviceIds);
+// }
+
+export async function updateClientServicesUseCase(
+  authenticatedUser: UserSession,
+  { clientId, serviceIds }: { clientId: number; serviceIds: number[] }
+) {
+  const existingClient = await getClientById(authenticatedUser.id, clientId);
+  if (!existingClient) {
+    throw new NotFoundError('Client not found');
+  }
+
+  await updateClientServices(authenticatedUser.id, clientId, serviceIds);
 }

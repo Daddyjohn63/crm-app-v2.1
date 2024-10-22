@@ -6,7 +6,8 @@ import {
   createClientUseCase,
   deleteClientUseCase,
   editClientUseCase,
-  getClientByIdUseCase
+  getClientByIdUseCase,
+  updateClientServicesUseCase
 } from '@/use-cases/clients';
 import { revalidatePath } from 'next/cache';
 
@@ -109,4 +110,32 @@ export const getServiceIdsByClientIdAction = authenticatedAction
   .input(z.object({ clientId: z.number() }))
   .handler(async ({ input }) => {
     return await getServiceIdsByClientId(input.clientId);
+  });
+
+export const updateClientServicesAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      clientId: z.number(),
+      serviceIds: z.array(z.number())
+    })
+  )
+  .handler(async ({ input, ctx: { user } }) => {
+    await rateLimitByKey({
+      key: `${user.id}-update-client-services`
+    });
+
+    const { clientId, serviceIds } = input;
+
+    try {
+      await updateClientServicesUseCase(user, {
+        clientId,
+        serviceIds
+      });
+
+      revalidatePath(`/dashboard/clients/${clientId}/info`);
+    } catch (error) {
+      console.error('Error updating client services:', error);
+      throw new Error('Failed to update client services');
+    }
   });

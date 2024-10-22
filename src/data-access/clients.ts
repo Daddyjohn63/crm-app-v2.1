@@ -109,3 +109,19 @@ export async function getServiceIdsByClientId(
 
   return result.map(row => row.serviceId);
 }
+
+export async function updateClientServices(
+  userId: UserId,
+  clientId: ClientId,
+  serviceIds: number[]
+) {
+  await database
+    .delete(clientsToServices)
+    .where(eq(clientsToServices.clientId, clientId));
+
+  if (serviceIds.length > 0) {
+    await database
+      .insert(clientsToServices)
+      .values(serviceIds.map(serviceId => ({ clientId, serviceId })));
+  }
+}

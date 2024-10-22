@@ -1,8 +1,6 @@
 'use client';
 
-//import { ClientId } from '@/db/schema';
 import { LoaderButton } from '@/components/loader-button';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { z } from 'zod';
 import {
@@ -15,15 +13,16 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { useClientServiceOverlayStore } from '@/store/clientServiceOverlayStore';
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { getServiceIdsByClientId } from '@/data-access/clients';
-import { getServiceIdsByClientIdAction } from '../../actions';
 import { getServicesAction } from '../../services/actions';
 import { useEffect } from 'react';
+import {
+  getServiceIdsByClientIdAction,
+  updateClientServicesAction
+} from '../../actions';
 
 const FormSchema = z.object({
   services: z.record(z.string(), z.boolean()).default({})
@@ -33,20 +32,31 @@ export function AddServiceToClientForm() {
   const { toast } = useToast();
   const { clientId, setIsOpen } = useClientServiceOverlayStore();
 
-  const { execute: fetchServices, data: services } = useServerAction(
-    getServicesAction,
+  const { execute: fetchServices, data: services } =
+    useServerAction(getServicesAction);
+  const { execute: fetchClientServices, data: clientServices } =
+    useServerAction(getServiceIdsByClientIdAction);
+  const { execute: updateClientServices, isPending } = useServerAction(
+    updateClientServicesAction,
     {
-      onSuccess(data) {
-        console.log('Fetched services:', data);
+      onSuccess() {
+        toast({
+          title: 'Services updated',
+          description: 'The client services have been updated successfully.',
+          duration: 3000
+        });
+        setIsOpen(false);
+      },
+      onError() {
+        toast({
+          title: 'Error',
+          description: 'Failed to update client services',
+          variant: 'destructive',
+          duration: 3000
+        });
       }
     }
   );
-
-  useEffect(() => {
-    if (clientId) {
-      fetchServices();
-    }
-  }, [clientId, fetchServices]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -56,24 +66,38 @@ export function AddServiceToClientForm() {
   });
 
   useEffect(() => {
-    if (services) {
+    if (clientId) {
+      fetchServices();
+      fetchClientServices({ clientId });
+    }
+  }, [clientId, fetchServices, fetchClientServices]);
+
+  useEffect(() => {
+    if (services && clientServices) {
       const defaultServices = services.reduce((acc, service) => {
-        acc[service.id.toString()] = false;
+        acc[service.id.toString()] = clientServices.includes(service.id);
         return acc;
       }, {} as Record<string, boolean>);
       form.reset({ services: defaultServices });
     }
-  }, [services, form]);
+  }, [services, clientServices, form]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      )
-    });
+    const selectedServiceIds = Object.entries(data.services)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([serviceId]) => parseInt(serviceId, 10));
+
+    if (clientId !== null) {
+      updateClientServices({ clientId, serviceIds: selectedServiceIds });
+    } else {
+      // Handle the case where clientId is null, e.g., show an error message
+      toast({
+        title: 'Error',
+        description: 'Client ID is missing speak to your admin',
+        variant: 'destructive',
+        duration: 3000
+      });
+    }
   }
 
   return (
@@ -108,7 +132,9 @@ export function AddServiceToClientForm() {
               ))}
           </div>
         </div>
-        <Button type="submit">Submit</Button>
+        <LoaderButton type="submit" isLoading={isPending}>
+          Update Services
+        </LoaderButton>
       </form>
     </Form>
   );
