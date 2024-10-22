@@ -22,10 +22,11 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { getServiceIdsByClientId } from '@/data-access/clients';
 import { getServiceIdsByClientIdAction } from '../../actions';
+import { getServicesAction } from '../../services/actions';
 import { useEffect } from 'react';
 
 const FormSchema = z.object({
-  name: z.string()
+  service_1: z.boolean().default(false).optional()
 });
 
 export function AddServiceToClientForm() {
@@ -50,7 +51,7 @@ export function AddServiceToClientForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: ''
+      service_1: false
     }
   });
 
@@ -73,16 +74,12 @@ export function AddServiceToClientForm() {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="service_1"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Marketing emails
-                    </FormLabel>
-                    <FormDescription>
-                      Receive emails about new products, features, and more.
-                    </FormDescription>
+                    <FormLabel className="text-base">Service 1</FormLabel>
+                    <FormDescription></FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -93,28 +90,6 @@ export function AddServiceToClientForm() {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="security_emails"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Security emails</FormLabel>
-                    <FormDescription>
-                      Receive emails about your account security.
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled
-                      aria-readonly
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
           </div>
         </div>
         <Button type="submit">Submit</Button>

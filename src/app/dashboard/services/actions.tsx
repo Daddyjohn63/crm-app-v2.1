@@ -8,7 +8,8 @@ import {
   createServiceUseCase,
   deleteServiceUseCase,
   editServiceUseCase,
-  getServiceByIdUseCase
+  getServiceByIdUseCase,
+  getServicesUseCase
 } from '@/use-cases/services';
 import { redirect } from 'next/navigation';
 
@@ -93,3 +94,11 @@ export const editServiceAction = authenticatedAction
   });
 
 // ... existing code ...
+//a function that gets all services, and returns an array of service ids and the service name.do the db use case and data access in this file. I will move them to their own files later.
+
+export const getServicesAction = authenticatedAction
+  .createServerAction()
+  .handler(async ({ ctx: { user } }) => {
+    const services = await getServicesUseCase(user);
+    return services;
+  });
