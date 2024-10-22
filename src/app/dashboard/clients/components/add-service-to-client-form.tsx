@@ -26,34 +26,44 @@ import { getServicesAction } from '../../services/actions';
 import { useEffect } from 'react';
 
 const FormSchema = z.object({
-  service_1: z.boolean().default(false).optional()
+  services: z.record(z.string(), z.boolean()).default({})
 });
 
 export function AddServiceToClientForm() {
   const { toast } = useToast();
   const { clientId, setIsOpen } = useClientServiceOverlayStore();
-  //console.log('ASCF', clientId);
 
-  const { execute: fetchServiceIdsByClientId } = useServerAction(
-    getServiceIdsByClientIdAction,
+  const { execute: fetchServices, data: services } = useServerAction(
+    getServicesAction,
     {
       onSuccess(data) {
-        console.log('ASCF', data);
+        console.log('Fetched services:', data);
       }
     }
   );
-  if (clientId) {
-    useEffect(() => {
-      fetchServiceIdsByClientId({ clientId });
-    }, [clientId]);
-  }
+
+  useEffect(() => {
+    if (clientId) {
+      fetchServices();
+    }
+  }, [clientId, fetchServices]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      service_1: false
+      services: {}
     }
   });
+
+  useEffect(() => {
+    if (services) {
+      const defaultServices = services.reduce((acc, service) => {
+        acc[service.id.toString()] = false;
+        return acc;
+      }, {} as Record<string, boolean>);
+      form.reset({ services: defaultServices });
+    }
+  }, [services, form]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -70,26 +80,32 @@ export function AddServiceToClientForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div>
-          <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
+          <h3 className="mb-4 text-lg font-medium">Services</h3>
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="service_1"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Service 1</FormLabel>
-                    <FormDescription></FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            {services &&
+              services.map(service => (
+                <FormField
+                  key={service.id}
+                  control={form.control}
+                  name={`services.${service.id}`}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">
+                          {service.name}
+                        </FormLabel>
+                        <FormDescription></FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              ))}
           </div>
         </div>
         <Button type="submit">Submit</Button>
