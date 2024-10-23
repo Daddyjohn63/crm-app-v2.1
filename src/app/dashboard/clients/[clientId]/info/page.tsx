@@ -84,8 +84,6 @@ export default async function ClientInfoPage({
                       params={params}
                       user={user as User}
                     />
-                    {/* <p>Client ID: {params.clientId}</p>
-          <p>User: {user.id}</p> */}
                   </div>
                   <div className="  pt-4">
                     <DeleteClientButton />
@@ -97,20 +95,16 @@ export default async function ClientInfoPage({
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
                 <CardTitle>
-                  {/* <Button>Choose which services this client uses</Button> */}
-                  {/* <AddServiceClientButt clientId={clientId} /> */}
                   <ClientToServiceButton clientId={parseInt(clientId)} />
                 </CardTitle>
-
-                <CardContent>{/* add service tags here. */}</CardContent>
               </CardHeader>
               {/* service list here */}
               <CardContent>
                 {clientServices.length > 0 ? (
-                  <ul className="space-y-4">
+                  <ul className=" flex flex-wrap gap-2">
                     {clientServices.map(service => (
                       <li key={service.id}>
-                        <Badge>{service.name}</Badge>
+                        <Badge className="bg-yellow-400">{service.name}</Badge>
                       </li>
                     ))}
                   </ul>
