@@ -1,5 +1,11 @@
 'use client';
-
+//summary: this form allows the user to add or remove services from a client.
+//the form is a switch that is either true or false.
+//How the data is fetched and updated is below:
+//1. fetch all services for the user and return an array of service ids and the service properties.
+//2. fetch all services currently assigned to the client and return an array of service ids.
+//3. set the default values for the form based on the services and the client services.
+//4. update the client services.
 import { LoaderButton } from '@/components/loader-button';
 import { useToast } from '@/components/ui/use-toast';
 import { z } from 'zod';
@@ -24,6 +30,7 @@ import {
   updateClientServicesAction
 } from '../../actions';
 
+//form schema for the services, will be either true or false.
 const FormSchema = z.object({
   services: z.record(z.string(), z.boolean()).default({})
 });
@@ -31,11 +38,13 @@ const FormSchema = z.object({
 export function AddServiceToClientForm() {
   const { toast } = useToast();
   const { clientId, setIsOpen } = useClientServiceOverlayStore();
-
+  //get all services for the user and return an array of service ids and the service properties.
   const { execute: fetchServices, data: services } =
     useServerAction(getServicesAction);
+  //get all services currently assigned to the client and return an array of service ids.
   const { execute: fetchClientServices, data: clientServices } =
     useServerAction(getServiceIdsByClientIdAction);
+  //update the client services
   const { execute: updateClientServices, isPending } = useServerAction(
     updateClientServicesAction,
     {
@@ -65,6 +74,8 @@ export function AddServiceToClientForm() {
     }
   });
 
+  //fetch the all services for this user and the ids of the services currently
+  // assigned to the client when the client id changes.
   useEffect(() => {
     if (clientId) {
       fetchServices();
@@ -72,12 +83,14 @@ export function AddServiceToClientForm() {
     }
   }, [clientId, fetchServices, fetchClientServices]);
 
+  //set the default values for the form based on the services and the client services.
   useEffect(() => {
     if (services && clientServices) {
       const defaultServices = services.reduce((acc, service) => {
         acc[service.id.toString()] = clientServices.includes(service.id);
         return acc;
       }, {} as Record<string, boolean>);
+      //set the default values for the form.A service will be either true or false.
       form.reset({ services: defaultServices });
     }
   }, [services, clientServices, form]);

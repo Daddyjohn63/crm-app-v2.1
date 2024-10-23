@@ -1,5 +1,8 @@
 import { getCurrentUser } from '@/lib/session';
-import { getClientByIdUseCase } from '@/use-cases/clients';
+import {
+  getClientByIdUseCase,
+  getServicesByClientIdUseCase
+} from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
 import { CreateEditClientButton } from '@/app/dashboard/create-client-button';
@@ -17,6 +20,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import ClientToServiceButton from '../../components/add-client-service-button';
+import { Badge } from '@/components/ui/badge';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -35,6 +39,9 @@ export default async function ClientInfoPage({
 
   try {
     const client = await getClientByIdUseCase(user, parseInt(clientId));
+    const clientServices = await getServicesByClientIdUseCase(
+      parseInt(clientId)
+    );
 
     return (
       <>
@@ -97,18 +104,19 @@ export default async function ClientInfoPage({
 
                 <CardContent>{/* add service tags here. */}</CardContent>
               </CardHeader>
+              {/* service list here */}
               <CardContent>
-                <ul className="space-y-4">
-                  <li>
-                    <strong>Service 1:</strong> Description of Service 1
-                  </li>
-                  <li>
-                    <strong>Service 2:</strong> Description of Service 2
-                  </li>
-                  <li>
-                    <strong>Service 3:</strong> Description of Service 3
-                  </li>
-                </ul>
+                {clientServices.length > 0 ? (
+                  <ul className="space-y-4">
+                    {clientServices.map(service => (
+                      <li key={service.id}>
+                        <Badge>{service.name}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No services assigned to this client.</p>
+                )}
               </CardContent>
               <Separator />
               <CardHeader>

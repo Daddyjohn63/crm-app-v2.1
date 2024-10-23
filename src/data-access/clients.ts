@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import { Client, ClientId, NewClient, clients } from '@/db/schema';
+import { Client, ClientId, NewClient, clients, services } from '@/db/schema';
 import { asc, eq, ilike, sql, and, desc, inArray } from 'drizzle-orm';
 import { UserId } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
@@ -97,7 +97,7 @@ export async function deleteClient(clientId: ClientId) {
   await database.delete(clients).where(eq(clients.id, clientId));
 }
 
-//get services for a client
+//get services for a client and return a row of service ids.
 
 export async function getServiceIdsByClientId(
   clientId: number
@@ -124,4 +124,17 @@ export async function updateClientServices(
       .insert(clientsToServices)
       .values(serviceIds.map(serviceId => ({ clientId, serviceId })));
   }
+}
+
+export async function getServicesByClientId(clientId: number) {
+  const result = await database
+    .select({
+      id: services.id,
+      name: services.name
+    })
+    .from(clientsToServices)
+    .innerJoin(services, eq(clientsToServices.serviceId, services.id))
+    .where(eq(clientsToServices.clientId, clientId));
+
+  return result;
 }

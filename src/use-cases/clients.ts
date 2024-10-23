@@ -11,6 +11,8 @@ import {
   getClientByClientId,
   getClientById,
   getClientsByUser,
+  getServiceIdsByClientId,
+  getServicesByClientId,
   searchClientsByName,
   updateClient,
   updateClientField,
@@ -115,19 +117,6 @@ export async function getClientInfoByIdUseCase(clientId: ClientId) {
   return omit(client, 'userId');
 }
 
-//which services does a client use?
-export async function getClientServicesUseCase(clientId: ClientId) {
-  // const client = await getClientById(clientId);
-  // return client?.services;
-}
-
-// export async function updateClientServicesUseCase(
-//   user: UserSession,
-//   { clientId, serviceIds }: { clientId: ClientId; serviceIds: number[] }
-// ) {
-//   await updateClientServices(user.id, clientId, serviceIds);
-// }
-
 export async function updateClientServicesUseCase(
   authenticatedUser: UserSession,
   { clientId, serviceIds }: { clientId: number; serviceIds: number[] }
@@ -138,4 +127,9 @@ export async function updateClientServicesUseCase(
   }
 
   await updateClientServices(authenticatedUser.id, clientId, serviceIds);
+}
+
+export async function getServicesByClientIdUseCase(clientId: ClientId) {
+  const clientServices = await getServicesByClientId(clientId);
+  return clientServices;
 }
