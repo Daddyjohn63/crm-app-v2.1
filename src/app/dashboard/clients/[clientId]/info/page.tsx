@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import ClientToServiceButton from '../../components/add-client-service-button';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -104,7 +105,11 @@ export default async function ClientInfoPage({
                   <ul className=" flex flex-wrap gap-2">
                     {clientServices.map(service => (
                       <li key={service.id}>
-                        <Badge className="bg-yellow-400">{service.name}</Badge>
+                        <Link href={`/dashboard/services/${service.id}`}>
+                          <Badge className="bg-yellow-400">
+                            {service.name}
+                          </Badge>
+                        </Link>
                       </li>
                     ))}
                   </ul>

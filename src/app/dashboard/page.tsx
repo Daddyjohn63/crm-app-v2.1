@@ -103,6 +103,7 @@ export default async function DashboardPage({
               user={{ id: user.id, email: null, emailVerified: null }}
             />
           </div>
+          {!hasClients && <div>No clients found</div>}
         </div>
       </PageHeader>
     );
@@ -222,7 +223,7 @@ async function ClientList({
           className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64"
         />
         <h2 className="text-xl sm:text-2xl text-center">
-          No groups matching your search
+          No clients matching your search
         </h2>
       </div>
     );
@@ -247,29 +248,29 @@ async function ClientList({
 }
 
 //call function in clients business use case.
-//   if (!hasClients) {
-//     return (
-//       <div className="space-y-8 container mx-auto py-24 min-h-screen max-w-2xl flex flex-col items-center">
-//         <div className="flex justify-between items-center">
-//           <h1 className={pageTitleStyles}>Your Clients</h1>
-//         </div>
-//         <div
-//           className={cn(
-//             cardStyles,
-//             'flex flex-col items-center gap-6 p-12 w-full'
-//           )}
-//         >
-//           <h2>Uh-oh, you don't have any clients</h2>
+// if (!hasClients) {
+//   return (
+//     <div className="space-y-8 container mx-auto py-24 min-h-screen max-w-2xl flex flex-col items-center">
+//       <div className="flex justify-between items-center">
+//         <h1 className={pageTitleStyles}>Your Clients</h1>
+//       </div>
+//       <div
+//         className={cn(
+//           cardStyles,
+//           'flex flex-col items-center gap-6 p-12 w-full'
+//         )}
+//       >
+//         <h2>Uh-oh, you don't have any clients</h2>
 
-//           <div className="flex gap-4">
-//             {/* create a group button */}
-//             <CreateClientButton />
+//         <div className="flex gap-4">
+//           {/* create a group button */}
+//           <CreateClientButton />
 
-//           </div>
 //         </div>
 //       </div>
-//     );
-//   }
+//     </div>
+//   );
+// }
 
 //   return (
 //     <>

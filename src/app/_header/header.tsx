@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Settings2Icon } from 'lucide-react';
+import { Settings2Icon, UsersIcon } from 'lucide-react';
 import { HeaderActionsFallback } from '@/app/_header/header-actions-fallback';
 import { applicationName } from '@/app-config';
 import { SignOutItem } from '@/app/_header/sign-out-item';
@@ -79,7 +79,15 @@ async function HeaderActions() {
             <DropdownMenuContent className="space-y-2">
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/settings"
+                  href="/dashboard"
+                  className="flex gap-2 items-center cursor-pointer"
+                >
+                  <UsersIcon className="w-4 h-4" /> Your Clients
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/dashboard/settings/profile"
                   className="flex gap-2 items-center cursor-pointer"
                 >
                   <Settings2Icon className="w-4 h-4" /> Settings
@@ -107,10 +115,12 @@ async function HeaderActions() {
 
 async function ProfileAvatar({ userId }: { userId: number }) {
   const profile = await getUserProfileUseCase(userId);
-
+  // console.log('Profile data:', profile);
+  // console.log('Image URL:', profile.image);
+  //TODO add avatars
   return (
     <Avatar>
-      <AvatarImage src={''} />
+      <AvatarImage src={profile.image ?? ''} />
       <AvatarFallback>
         {profile.displayName?.substring(0, 2).toUpperCase() ?? 'AA'}
       </AvatarFallback>

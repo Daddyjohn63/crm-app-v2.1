@@ -1,17 +1,17 @@
-import { cookies } from "next/headers";
-import { OAuth2RequestError } from "arctic";
-import { googleAuth } from "@/auth";
-import { createGoogleUserUseCase } from "@/use-cases/users";
-import { getAccountByGoogleIdUseCase } from "@/use-cases/accounts";
-import { setSession } from "@/lib/session";
-import { afterLoginUrl } from "@/app-config";
+import { cookies } from 'next/headers';
+import { OAuth2RequestError } from 'arctic';
+import { googleAuth } from '@/auth';
+import { createGoogleUserUseCase } from '@/use-cases/users';
+import { getAccountByGoogleIdUseCase } from '@/use-cases/accounts';
+import { setSession } from '@/lib/session';
+import { afterLoginUrl } from '@/app-config';
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const state = url.searchParams.get("state");
-  const storedState = cookies().get("google_oauth_state")?.value ?? null;
-  const codeVerifier = cookies().get("google_code_verifier")?.value ?? null;
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+  const storedState = cookies().get('google_oauth_state')?.value ?? null;
+  const codeVerifier = cookies().get('google_code_verifier')?.value ?? null;
 
   if (
     !code ||
@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<Response> {
     !codeVerifier
   ) {
     return new Response(null, {
-      status: 400,
+      status: 400
     });
   }
 
@@ -31,14 +31,22 @@ export async function GET(request: Request): Promise<Response> {
       codeVerifier
     );
     const response = await fetch(
-      "https://openidconnect.googleapis.com/v1/userinfo",
+      'https://openidconnect.googleapis.com/v1/userinfo',
       {
         headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
-        },
+          Authorization: `Bearer ${tokens.accessToken}`
+        }
       }
     );
     const googleUser: GoogleUser = await response.json();
+
+    //TODO: avatar is not being saved or displayed.
+    // console.log('GOOGLE USER DATA:', {
+    //   sub: googleUser.sub,
+    //   name: googleUser.name,
+    //   picture: googleUser.picture,
+    //   email: googleUser.email
+    // });
 
     const existingAccount = await getAccountByGoogleIdUseCase(googleUser.sub);
 
@@ -47,8 +55,8 @@ export async function GET(request: Request): Promise<Response> {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: afterLoginUrl,
-        },
+          Location: afterLoginUrl
+        }
       });
     }
 
@@ -57,19 +65,19 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: afterLoginUrl,
-      },
+        Location: afterLoginUrl
+      }
     });
   } catch (e) {
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
       return new Response(null, {
-        status: 400,
+        status: 400
       });
     }
     return new Response(null, {
-      status: 500,
+      status: 500
     });
   }
 }

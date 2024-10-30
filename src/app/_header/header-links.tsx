@@ -49,7 +49,19 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
         </div>
       )}
 
-      {(isLandingPage || !isAuthenticated) && (
+      {isLandingPage && !isAuthenticated && (
+        <div className="hidden md:flex gap-4">
+          <Button variant={'link'} asChild>
+            <Link href="/#features">Features</Link>
+          </Button>
+
+          <Button variant={'link'} asChild>
+            <Link href="/#pricing">Pricing</Link>
+          </Button>
+        </div>
+      )}
+
+      {(isLandingPage || isAuthenticated) && (
         <div className="hidden md:flex gap-4">
           <Button variant={'link'} asChild>
             <Link href="/#features">Features</Link>
@@ -60,7 +72,7 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
           </Button>
 
           <Button variant={'link'} asChild>
-            <Link href={'/browse'}>Browse Groups</Link>
+            <Link href={'/dashboard'}>Browse Clients</Link>
           </Button>
         </div>
       )}

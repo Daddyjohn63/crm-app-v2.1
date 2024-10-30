@@ -34,6 +34,11 @@ export default function TabsSection({ clientId }: { clientId: string }) {
                 Reminders
               </Link>
             </TabsTrigger>
+            <TabsTrigger asChild value="documents">
+              <Link href={`/dashboard/clients/${clientId}/documents`}>
+                Documents
+              </Link>
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
