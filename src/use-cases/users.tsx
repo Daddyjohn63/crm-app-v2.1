@@ -53,6 +53,7 @@ import {
 import { createTransaction } from '@/data-access/utils';
 import { LoginError, PublicError } from './errors';
 import { deleteSessionForUser } from '@/data-access/sessions';
+import { getFileUrl, uploadFileToBucket } from '@/lib/files';
 
 export async function deleteUserUseCase(
   authenticatedUser: UserSession,
@@ -120,22 +121,22 @@ export function getProfileImageKey(userId: UserId, imageId: string) {
   return `users/${userId}/images/${imageId}`;
 }
 
-// export async function updateProfileImageUseCase(file: File, userId: UserId) {
-//   if (!file.type.startsWith('image/')) {
-//     throw new PublicError('File should be an image.');
-//   }
+export async function updateProfileImageUseCase(file: File, userId: UserId) {
+  if (!file.type.startsWith('image/')) {
+    throw new PublicError('File should be an image.');
+  }
 
-//   if (file.size > MAX_UPLOAD_IMAGE_SIZE) {
-//     throw new PublicError(
-//       `File size should be less than ${MAX_UPLOAD_IMAGE_SIZE_IN_MB}MB.`
-//     );
-//   }
+  if (file.size > MAX_UPLOAD_IMAGE_SIZE) {
+    throw new PublicError(
+      `File size should be less than ${MAX_UPLOAD_IMAGE_SIZE_IN_MB}MB.`
+    );
+  }
 
-//   const imageId = createUUID();
+  const imageId = createUUID();
 
-//   await uploadFileToBucket(file, getProfileImageKey(userId, imageId));
-//   await updateProfile(userId, { imageId });
-// }
+  await uploadFileToBucket(file, getProfileImageKey(userId, imageId));
+  await updateProfile(userId, { imageId });
+}
 
 export function getProfileImageUrl(userId: UserId, imageId: string) {
   return `${env.HOST_NAME}/api/users/${userId}/images/${imageId ?? 'default'}`;
@@ -145,19 +146,19 @@ export function getDefaultImage(userId: UserId) {
   return `${env.HOST_NAME}/api/users/${userId}/images/default`;
 }
 
-// export async function getProfileImageUrlUseCase({
-//   userId,
-//   imageId
-// }: {
-//   userId: UserId;
-//   imageId: string;
-// }) {
-//   const url = await getFileUrl({
-//     key: getProfileImageKey(userId, imageId)
-//   });
+export async function getProfileImageUrlUseCase({
+  userId,
+  imageId
+}: {
+  userId: UserId;
+  imageId: string;
+}) {
+  const url = await getFileUrl({
+    key: getProfileImageKey(userId, imageId)
+  });
 
-//   return url;
-// }
+  return url;
+}
 
 export async function updateProfileBioUseCase(userId: UserId, bio: string) {
   await updateProfile(userId, { bio });

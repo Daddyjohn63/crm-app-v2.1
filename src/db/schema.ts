@@ -69,8 +69,8 @@ export const profiles = pgTable('gf_profile', {
     .references(() => users.id, { onDelete: 'cascade' })
     .unique(),
   displayName: text('displayName'),
-  imageId: text('imageId'),
-  image: text('image'),
+  imageId: text('imageId'), //if they upload their own avatar image to R2
+  image: text('image'), //if they sign in with Google or Github.
   bio: text('bio').notNull().default('')
 });
 
