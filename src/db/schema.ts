@@ -74,6 +74,21 @@ export const profiles = pgTable('gf_profile', {
   bio: text('bio').notNull().default('')
 });
 
+export const documents = pgTable('gf_documents', {
+  id: serial('id').primaryKey(),
+  clientId: serial('clientId')
+    .notNull()
+    .references(() => clients.id, { onDelete: 'cascade' }),
+  userId: serial('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  description: text('description'),
+  fileId: text('fileId').notNull(),
+  createdAt: timestamp('createdAt').defaultNow(),
+  updatedAt: timestamp('updatedAt').defaultNow()
+});
+
 export const sessions = pgTable('gf_session', {
   id: text('id').primaryKey(),
   userId: serial('userId')
@@ -198,6 +213,15 @@ export const clientsToServices = pgTable(
   })
 );
 
+//relationships for the documents table
+export const documentsRelations = relations(documents, ({ one }) => ({
+  user: one(users, { fields: [documents.userId], references: [users.id] }),
+  client: one(clients, {
+    fields: [documents.clientId],
+    references: [clients.id]
+  })
+}));
+
 // Relationships for the users table
 export const usersRelations = relations(users, ({ many }) => ({
   clients: many(clients),
@@ -277,3 +301,6 @@ export type NewServiceInput = Omit<
   'id' | 'createdAt' | 'updatedAt'
 >;
 export type ContactWithStringId = Omit<Contact, 'id'> & { id: string };
+
+export type Document = typeof documents.$inferSelect;
+export type NewDocument = typeof documents.$inferInsert;

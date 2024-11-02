@@ -18,6 +18,7 @@ import { SignOutItem } from '@/app/_header/sign-out-item';
 import { MenuButton } from './menu-button';
 import { getUserProfileUseCase } from '@/use-cases/users';
 import { LightDarkToggle } from '@/components/light-dark-toggle';
+import { getProfileImageFullUrl } from '../dashboard/settings/profile/components/profile-image';
 
 export async function Header() {
   const user = await getCurrentUser();
@@ -49,6 +50,18 @@ export async function Header() {
         </div>
       </div>
     </div>
+  );
+}
+
+async function ProfileAvatar({ userId }: { userId: number }) {
+  const profile = await getUserProfileUseCase(userId);
+  return (
+    <Avatar>
+      <AvatarImage src={getProfileImageFullUrl(profile)} />
+      <AvatarFallback>
+        {profile.displayName?.substring(0, 2).toUpperCase() ?? 'AA'}
+      </AvatarFallback>
+    </Avatar>
   );
 }
 
@@ -110,20 +123,5 @@ async function HeaderActions() {
         </>
       )}
     </>
-  );
-}
-
-async function ProfileAvatar({ userId }: { userId: number }) {
-  const profile = await getUserProfileUseCase(userId);
-  // console.log('Profile data:', profile);
-  // console.log('Image URL:', profile.image);
-  //TODO add avatars
-  return (
-    <Avatar>
-      <AvatarImage src={profile.image ?? ''} />
-      <AvatarFallback>
-        {profile.displayName?.substring(0, 2).toUpperCase() ?? 'AA'}
-      </AvatarFallback>
-    </Avatar>
   );
 }

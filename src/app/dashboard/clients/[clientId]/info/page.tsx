@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import ClientToServiceButton from '../../components/add-client-service-button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -50,6 +52,7 @@ export default async function ClientInfoPage({
           {/* div grid with two columns 50 50 responsive */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* column 1 */}
+
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
                 <CardTitle>Client Information</CardTitle>
@@ -92,7 +95,9 @@ export default async function ClientInfoPage({
                 </div>
               </CardContent>
             </div>
+
             {/* column 2 */}
+
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
                 <CardTitle>
