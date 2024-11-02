@@ -1,15 +1,22 @@
-import { ConfigurationPanel } from '@/components/configuration-panel';
-import { Skeleton } from '@/components/ui/skeleton';
+//import { ProfileImage } from '@/app/dashboard/settings/profile/profile-image';
+//import { ProfileName } from '@/app/dashboard/settings/profile/profile-name';
+//import { EditBioForm } from './edit-bio-form';
 import { assertAuthenticated } from '@/lib/session';
 import { Suspense, cache } from 'react';
+import { getUserProfileUseCase } from '@/use-cases/users';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ConfigurationPanel } from '@/components/configuration-panel';
+import { ProfileImage } from './components/profile-image';
+
+export const getUserProfileLoader = cache(getUserProfileUseCase);
 
 export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        {/* <ProfileImage /> */}
+        <ProfileImage />
         {/* <ProfileName /> */}
-        <div>Profile Image</div>
+
         <div>Profile Name</div>
       </div>
 

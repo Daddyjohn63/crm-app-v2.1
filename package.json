@@ -41,6 +41,7 @@
     "@tanstack/react-table": "^8.20.5",
     "@types/nprogress": "^0.2.3",
     "@types/pg": "^8.11.8",
+    "@types/sanitize-html": "^2.13.0",
     "arctic": "^1.9.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
