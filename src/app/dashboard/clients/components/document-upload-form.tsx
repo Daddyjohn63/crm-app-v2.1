@@ -18,8 +18,12 @@ import { useToast } from '@/components/ui/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 
 import { MAX_UPLOAD_DOCUMENT_SIZE_IN_MB } from '@/app-config';
+import { useServerAction } from 'zsa-react';
+import { uploadDocumentAction } from '../[clientId]/documents/actions';
+import { useClientIdParam } from '@/util/safeparam';
+import { useDocumentDialogStore } from '@/store/documentDialogStore';
 
-const maxFileSizeInBytes = MAX_UPLOAD_DOCUMENT_SIZE_IN_MB;
+const maxFileSizeInBytes = MAX_UPLOAD_DOCUMENT_SIZE_IN_MB * 1024 * 1024;
 
 //zod schema
 const uploadDocumentSchema = z.object({
@@ -31,7 +35,8 @@ const uploadDocumentSchema = z.object({
 });
 
 export default function DocumentUploadForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { setIsOpen } = useDocumentDialogStore();
+  const clientId = useClientIdParam();
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -43,16 +48,37 @@ export default function DocumentUploadForm() {
     }
   });
 
+  const { execute: uploadDocument, isPending } = useServerAction(
+    uploadDocumentAction,
+    {
+      onError: ({ err }) => {
+        toast({
+          title: 'Error',
+          description: err.message || 'Failed to upload document.',
+          variant: 'destructive'
+        });
+      },
+      onSuccess: () => {
+        toast({
+          title: 'Success',
+          description: 'Document uploaded successfully.'
+        });
+        formRef.current?.reset();
+        setIsOpen(false);
+      }
+    }
+  );
+
   //on submit
   const onSubmit: SubmitHandler<
     z.infer<typeof uploadDocumentSchema>
-  > = async values => {
-    setIsLoading(true);
-    try {
-      console.log(values);
-    } finally {
-      setIsLoading(false);
-    }
+  > = values => {
+    const formData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description || '');
+    formData.append('file', values.file);
+    formData.append('clientId', clientId.toString());
+    uploadDocument({ fileWrapper: formData });
   };
 
   return (
@@ -117,7 +143,7 @@ export default function DocumentUploadForm() {
           )}
         />
 
-        <LoaderButton type="submit" isLoading={isLoading}>
+        <LoaderButton type="submit" isLoading={isPending}>
           Upload Document
         </LoaderButton>
       </form>

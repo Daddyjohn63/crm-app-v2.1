@@ -1,17 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@/components/ui/dialog';
-import { PlusCircle } from 'lucide-react';
-import { btnIconStyles, btnStyles } from '@/styles/icons';
-//import DocumentUploadForm from '../../../components/document-upload-form';
+
 import { useDocumentDialogStore } from '@/store/documentDialogStore';
 import DocumentUploadForm from './document-upload-form';
 

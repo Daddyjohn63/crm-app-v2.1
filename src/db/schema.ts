@@ -84,7 +84,7 @@ export const documents = pgTable('gf_documents', {
     .references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   description: text('description'),
-  fileId: text('fileId').notNull(),
+  documentId: text('documentId').notNull(),
   createdAt: timestamp('createdAt').defaultNow(),
   updatedAt: timestamp('updatedAt').defaultNow()
 });
