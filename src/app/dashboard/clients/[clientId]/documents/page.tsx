@@ -28,8 +28,8 @@ export default async function DocumentsPage({
 
   return (
     <div className="container mx-auto px-4 sm:px-6 md:px-8 py-9">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Documents</h1>
+      <div className="flex  items-center mb-6">
+        <h1 className="text-2xl font-bold mr-5">Documents</h1>
         <UploadDocumentButton />
       </div>
 
@@ -61,7 +61,7 @@ export default async function DocumentsPage({
                       {doc.name}
                     </a>
                     <p className="text-sm text-gray-500">{doc.description}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 mt-2">
                       {doc.createdAt
                         ? new Date(doc.createdAt).toLocaleDateString()
                         : 'Date not available'}
