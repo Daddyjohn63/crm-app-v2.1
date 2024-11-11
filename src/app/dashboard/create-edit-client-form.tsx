@@ -180,7 +180,7 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
             <FormItem>
               <FormLabel>Business address</FormLabel>
               <FormControl>
-                <Textarea rows={6} {...field} placeholder="Business address" />
+                <Textarea rows={4} {...field} placeholder="Business address" />
               </FormControl>
               <FormMessage />
             </FormItem>

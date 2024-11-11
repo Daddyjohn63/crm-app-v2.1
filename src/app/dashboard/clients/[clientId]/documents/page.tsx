@@ -49,26 +49,30 @@ export default async function DocumentsPage({
                 key={doc.documentId}
                 className="flex items-center justify-between p-4 border rounded-lg"
               >
-                <div className="flex items-center gap-3">
-                  <FileIcon className="h-8 w-8 text-blue-500" />
-                  <div>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex-shrink-0">
+                    <FileIcon className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div className="min-w-0">
                     <a
                       href={doc.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium hover:underline"
+                      className="font-medium hover:underline block truncate"
                     >
                       {doc.name}
                     </a>
-                    <p className="text-sm text-gray-500">{doc.description}</p>
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-sm text-gray-500 truncate">
+                      {doc.description}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
                       {doc.createdAt
                         ? new Date(doc.createdAt).toLocaleDateString()
                         : 'Date not available'}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ml-4 flex-shrink-0">
                   <DeleteDocumentButton
                     clientId={clientId}
                     documentId={doc.documentId}
