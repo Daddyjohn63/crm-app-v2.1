@@ -42,7 +42,6 @@ import {
   SalesStageFilter,
   UserSession
 } from '@/use-cases/types';
-import { SearchFilterForm } from './clients/components/search-filter-form';
 
 export default async function DashboardPage({
   searchParams
@@ -136,11 +135,88 @@ export default async function DashboardPage({
             Browse Clients
           </h1>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <SearchFilterForm
-              initialSearch={search}
-              initialStage={stage}
-              formStyles={formClientStyles}
-            />
+            <form
+              key={search}
+              action={async (formData: FormData) => {
+                'use server';
+                const searchString = formData.get('search') as string;
+                const stageValue = formData.get('stage') as string;
+                const params = new URLSearchParams();
+                if (searchString) params.set('search', searchString);
+                // if (stageValue) params.set('stage', stageValue); //is this necessary?
+                if (
+                  stageValue &&
+                  stageValue !== SALES_STAGE_FILTER_OPTIONS.ALL
+                ) {
+                  params.set('stage', stageValue);
+                }
+                redirect(
+                  params.toString()
+                    ? `/dashboard?${params.toString()}`
+                    : '/dashboard'
+                );
+              }}
+              className="flex-grow sm:flex-grow-0 sm:w-1/2 max-w-md"
+            >
+              <div className={formClientStyles}>
+                <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                  <Select
+                    defaultValue={stage ?? SALES_STAGE_FILTER_OPTIONS.ALL}
+                    name="stage"
+                  >
+                    <SelectTrigger className="w-full min-w-[250px]">
+                      <SelectValue placeholder="Select stage">
+                        {(stage ?? SALES_STAGE_FILTER_OPTIONS.ALL).replace(
+                          /_/g,
+                          ' '
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(SALES_STAGE_FILTER_OPTIONS).map(
+                        stageOption => (
+                          <SelectItem
+                            key={stageOption}
+                            value={stageOption}
+                            className="capitalize"
+                          >
+                            {stageOption.replace(/_/g, ' ')}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <div className="flex relative w-full">
+                    <Input
+                      defaultValue={search}
+                      placeholder="enter all or part of the clients name"
+                      name="search"
+                      id="group"
+                      className="w-full min-w-[300px]"
+                    />
+                    {search && (
+                      <Button
+                        size="icon"
+                        variant="link"
+                        className="absolute right-1"
+                        asChild
+                      >
+                        <Link
+                          href={
+                            stage ? `/dashboard?stage=${stage}` : '/dashboard'
+                          }
+                        >
+                          <XIcon />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                  <SubmitButton className="w-full sm:w-auto">
+                    Search
+                  </SubmitButton>
+                </div>
+              </div>
+            </form>
             <CreateEditClientButton
               params={{}}
               user={{ id: user.id, email: null, emailVerified: null }}

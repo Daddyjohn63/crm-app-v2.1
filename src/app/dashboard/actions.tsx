@@ -17,6 +17,7 @@ import { z } from 'zod';
 import { redirect } from 'next/navigation';
 import { PublicError } from '@/use-cases/errors';
 import { getServiceIdsByClientId } from '@/data-access/clients';
+import { SALES_STAGE_FILTER_OPTIONS } from '@/use-cases/types';
 
 //create client
 export const createClientAction = authenticatedAction
@@ -139,3 +140,19 @@ export const updateClientServicesAction = authenticatedAction
       throw new Error('Failed to update client services');
     }
   });
+
+//handle search
+export async function handleSearch(formData: FormData) {
+  const searchString = formData.get('search') as string;
+  const stageValue = formData.get('stage') as string;
+  const params = new URLSearchParams();
+
+  if (searchString) params.set('search', searchString);
+  if (stageValue && stageValue !== SALES_STAGE_FILTER_OPTIONS.ALL) {
+    params.set('stage', stageValue);
+  }
+
+  redirect(
+    params.toString() ? `/dashboard?${params.toString()}` : '/dashboard'
+  );
+}
