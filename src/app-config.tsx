@@ -6,7 +6,7 @@ export const appConfig: {
 
 export const protectedRoutes = ['/purchases', '/dashboard'];
 export const applicationName = 'CRM Buddy';
-export const companyName = 'CRM, LLC';
+export const companyName = 'CRM, LTD';
 
 export const MAX_UPLOAD_IMAGE_SIZE_IN_MB = 5;
 export const MAX_UPLOAD_IMAGE_SIZE = 1024 * 1024 * MAX_UPLOAD_IMAGE_SIZE_IN_MB;

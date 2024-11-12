@@ -7,13 +7,16 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination';
+import { SalesStageFilter } from '@/use-cases/types';
 
 export function ClientPagination({
   page,
+  stage,
   totalPages,
   search
 }: {
   page: number;
+  stage: SalesStageFilter;
   totalPages: number;
   search: string;
 }) {
@@ -24,7 +27,9 @@ export function ClientPagination({
           <>
             <PaginationItem>
               <PaginationPrevious
-                href={`/dashboard?page=${page - 1}&search=${search}`}
+                href={`/dashboard?page=${
+                  page - 1
+                }&stage=${stage}&search=${search}`}
               />
             </PaginationItem>
 
@@ -37,7 +42,9 @@ export function ClientPagination({
             <PaginationItem>
               <PaginationLink
                 isActive={false}
-                href={`/dashboard?page=${page - 1}&search=${search}`}
+                href={`/dashboard?page=${
+                  page - 1
+                }&stage=${stage}&search=${search}`}
               >
                 {page - 1}
               </PaginationLink>
@@ -55,7 +62,9 @@ export function ClientPagination({
           <>
             <PaginationItem>
               <PaginationLink
-                href={`/dashboard?page=${page + 1}&search=${search}`}
+                href={`/dashboard?page=${
+                  page + 1
+                }&stage=${stage}&search=${search}`}
               >
                 {page + 1}
               </PaginationLink>
@@ -69,7 +78,9 @@ export function ClientPagination({
 
             <PaginationItem>
               <PaginationNext
-                href={`/dashboard?page=${page + 1}&search=${search}`}
+                href={`/dashboard?page=${
+                  page + 1
+                }&stage=${stage}&search=${search}`}
               />
             </PaginationItem>
           </>

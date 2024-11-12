@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +18,6 @@ import {
   SalesStageFilter
 } from '@/use-cases/types';
 import { handleSearch } from '../../actions';
-//import { handleSearch } from '../actions';
 
 export function SearchFilterForm({
   initialSearch,
@@ -35,8 +34,23 @@ export function SearchFilterForm({
   const [searchValue, setSearchValue] = useState(initialSearch ?? '');
   const router = useRouter();
 
+  useEffect(() => {
+    setSelectedStage(initialStage ?? SALES_STAGE_FILTER_OPTIONS.ALL);
+  }, [initialStage]);
+
   const handleStageChange = (value: string) => {
     setSelectedStage(value as SalesStageFilter);
+  };
+
+  const handleClearSearch = () => {
+    setSearchValue('');
+    const params = new URLSearchParams();
+    if (selectedStage !== SALES_STAGE_FILTER_OPTIONS.ALL) {
+      params.set('stage', selectedStage);
+    }
+    router.push(
+      params.toString() ? `/dashboard?${params.toString()}` : '/dashboard'
+    );
   };
 
   return (
@@ -53,7 +67,11 @@ export function SearchFilterForm({
             name="stage"
           >
             <SelectTrigger className="w-full min-w-[250px]">
-              <SelectValue>{selectedStage.replace(/_/g, ' ')}</SelectValue>
+              <SelectValue>
+                <span className="capitalize">
+                  {selectedStage.replace(/_/g, ' ')}
+                </span>
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {Object.values(SALES_STAGE_FILTER_OPTIONS).map(stageOption => (
@@ -83,18 +101,7 @@ export function SearchFilterForm({
                 size="icon"
                 variant="link"
                 className="absolute right-1"
-                onClick={() => {
-                  setSearchValue('');
-                  const params = new URLSearchParams();
-                  if (selectedStage !== SALES_STAGE_FILTER_OPTIONS.ALL) {
-                    params.set('stage', selectedStage);
-                  }
-                  router.push(
-                    params.toString()
-                      ? `/dashboard?${params.toString()}`
-                      : '/dashboard'
-                  );
-                }}
+                onClick={handleClearSearch}
               >
                 <XIcon />
               </Button>

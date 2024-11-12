@@ -50,7 +50,11 @@ export default async function DashboardPage({
   searchParams: { search?: string; stage?: string; page?: string };
 }) {
   const search = searchParams.search;
-  const stage = searchParams.stage as SalesStageFilter | undefined;
+  const stage = Object.values(SALES_STAGE_FILTER_OPTIONS).includes(
+    searchParams.stage as SalesStageFilter
+  )
+    ? (searchParams.stage as SalesStageFilter)
+    : undefined;
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
   const user = await assertAuthenticated(); //yes, user is authenticated
@@ -221,11 +225,12 @@ async function ClientList({
         ))}
       </div>
 
-      {/* <ClientPagination
+      <ClientPagination
         search={search ?? ''}
+        stage={stage ?? SALES_STAGE_FILTER_OPTIONS.ALL}
         page={page}
         totalPages={Math.ceil(total / perPage)}
-      /> */}
+      />
     </>
   );
 }
