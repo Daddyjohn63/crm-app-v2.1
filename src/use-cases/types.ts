@@ -30,8 +30,15 @@ export const SALES_STAGES = {
   CLOSED_LOST: 'closed_lost'
 } as const;
 
+export const SALES_STAGE_FILTER_OPTIONS = {
+  ALL: 'all_stages',
+  ...SALES_STAGES
+} as const;
+
 // Type for the values
 export type SalesStage = (typeof SALES_STAGES)[keyof typeof SALES_STAGES];
+export type SalesStageFilter =
+  (typeof SALES_STAGE_FILTER_OPTIONS)[keyof typeof SALES_STAGE_FILTER_OPTIONS];
 
 // export type ClientInfo = {
 //   clientId: number;

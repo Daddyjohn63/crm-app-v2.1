@@ -1,7 +1,12 @@
 import { database } from '@/db/drizzle';
 import { Client, ClientId, NewClient, clients, services } from '@/db/schema';
 import { asc, eq, ilike, sql, and, desc, inArray } from 'drizzle-orm';
-import { UserId } from '@/use-cases/types';
+import {
+  SALES_STAGE_FILTER_OPTIONS,
+  SalesStage,
+  SalesStageFilter,
+  UserId
+} from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
 import { clientsToServices } from '@/db/schema';
 
@@ -20,19 +25,25 @@ export async function getClientsByUser(userId: UserId) {
   return userClients;
 }
 
-export async function searchClientsByName(
+export async function searchClients(
   userId: UserId,
   search: string,
-  page: number
+  page: number,
+  stage?: SalesStageFilter
 ) {
   const CLIENTS_PER_PAGE = 9;
 
-  const condition = search
-    ? and(
-        eq(clients.userId, userId),
-        ilike(clients.business_name, `%${search}%`)
-      )
-    : eq(clients.userId, userId);
+  let conditions = [eq(clients.userId, userId)];
+
+  if (search) {
+    conditions.push(ilike(clients.business_name, `%${search}%`));
+  }
+
+  if (stage && stage !== SALES_STAGE_FILTER_OPTIONS.ALL) {
+    conditions.push(eq(clients.sales_stage, stage as SalesStage));
+  }
+
+  const condition = and(...conditions);
 
   const userClients = await database.query.clients.findMany({
     where: condition,
@@ -54,6 +65,42 @@ export async function searchClientsByName(
     total: countResult.count
   };
 }
+//old function
+// export async function searchClientsByName(
+//   userId: UserId,
+//   search: string,
+//   page: number,
+//   stage?: SalesStageFilter
+// ) {
+//   const CLIENTS_PER_PAGE = 9;
+
+//   const condition = search
+//     ? and(
+//         eq(clients.userId, userId),
+//         ilike(clients.business_name, `%${search}%`)
+//       )
+//     : eq(clients.userId, userId);
+
+//   const userClients = await database.query.clients.findMany({
+//     where: condition,
+//     limit: CLIENTS_PER_PAGE,
+//     offset: (page - 1) * CLIENTS_PER_PAGE,
+//     orderBy: [desc(clients.id)]
+//   });
+
+//   const [countResult] = await database
+//     .select({
+//       count: sql`count(*)`.mapWith(Number).as('count')
+//     })
+//     .from(clients)
+//     .where(condition);
+
+//   return {
+//     data: userClients,
+//     perPage: CLIENTS_PER_PAGE,
+//     total: countResult.count
+//   };
+// }
 //get the client information for a single client
 export async function getClientById(userId: UserId, clientId: ClientId) {
   const client = await database.query.clients.findFirst({

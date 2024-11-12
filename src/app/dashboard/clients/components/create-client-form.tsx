@@ -17,21 +17,12 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { ToggleContext } from '@/components/interactive-overlay';
 import {
   createClientAction,
   editClientAction,
   getClientAction
-} from './actions';
+} from '../../actions';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Popover,
@@ -45,8 +36,8 @@ import { CalendarIcon, CheckIcon, X } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { LoaderButton } from '@/components/loader-button';
 import { btnIconStyles } from '@/styles/icons';
-import { salesStageEnum, User } from '@/db/schema';
-import { SALES_STAGES, SalesStage } from '@/use-cases/types';
+import { User } from '@/db/schema';
+
 const FormSchema = z.object({
   business_name: z.string().min(1, {
     message: 'Business name must be at least 6 characters.'
@@ -63,25 +54,13 @@ const FormSchema = z.object({
   business_description: z.string().min(1, {
     message: 'You must enter a business description.'
   }),
-  sales_stage: z.enum([
-    'lead',
-    'prospect',
-    'qualified_opportunity',
-    'proposal',
-    'negotiation',
-    'closed_won',
-    'closed_lost'
-  ]),
   date_onboarded: z.date({
     message: 'You must enter a date'
   }),
-  // additional_info: z.string().min(1, {
-  //   message: 'You must enter some additional information.'
-  // }),
-  // additional_info: z.string().min(1, {
-  //   message: 'You must enter some additional information.'
-  // })
-  additional_info: z.string().optional()
+  additional_info: z.string().min(1, {
+    message: 'You must enter some additional information.'
+  })
+  // additional_info: z.string().optional()
 });
 
 export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
@@ -142,7 +121,6 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
             primary_email: existingClient.primary_email ?? '',
             primary_phone: existingClient.primary_phone ?? '',
             business_description: existingClient.business_description ?? '',
-            sales_stage: existingClient.sales_stage ?? 'lead',
             date_onboarded: existingClient.date_onboarded
               ? new Date(existingClient.date_onboarded)
               : new Date(),
@@ -168,16 +146,13 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
     }
   };
 
-  const onSubmit = form.handleSubmit(
-    async (data: z.infer<typeof FormSchema>) => {
-      //new type check added
-      if (isEditing) {
-        await executeAction({ ...data, client_id: id });
-      } else {
-        await executeAction(data);
-      }
+  const onSubmit = form.handleSubmit(async data => {
+    if (isEditing) {
+      await executeAction({ ...data, client_id: id });
+    } else {
+      await executeAction(data);
     }
-  );
+  });
 
   return (
     <Form {...form}>
@@ -202,7 +177,7 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
             <FormItem>
               <FormLabel>Business address</FormLabel>
               <FormControl>
-                <Textarea rows={3} {...field} placeholder="Business address" />
+                <Textarea rows={6} {...field} placeholder="Business address" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -251,62 +226,6 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
             </FormItem>
           )}
         />
-        <FormField
-          name="sales_stage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sales stage</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a sales stage" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="w-full">
-                  <SelectGroup>
-                    <SelectLabel></SelectLabel>
-                    {Object.values(SALES_STAGES).map(stage => (
-                      <SelectItem
-                        key={stage}
-                        value={stage}
-                        className="capitalize"
-                      >
-                        {stage.replace(/_/g, ' ')}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Select the current stage in the sales pipeline
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* <FormField
-          name="sales_stage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sales stage</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a sales stage" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[...Object.values(salesStageEnum)].map(stage => (
-                    <SelectItem key={stage} value={stage}>
-                      {stage}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        /> */}
-
         <FormField
           control={form.control}
           name="date_onboarded"

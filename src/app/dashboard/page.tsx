@@ -6,7 +6,7 @@
 //if we have clients, render clientCard component.pass in props client count, client, client.id and some button text 'view client.
 
 import { assertAuthenticated } from '@/lib/session';
-import { CreateEditClientButton } from './create-client-button';
+import { CreateEditClientButton } from './clients/components/create-client-button';
 import { getClientsUseCase, searchClientsUseCase } from '@/use-cases/clients';
 import {
   cardStyles,
@@ -17,24 +17,39 @@ import {
 import { cn } from '@/lib/utils';
 import { Search, XIcon } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
-import { ClientCard } from './client-card';
+import { ClientCard } from './clients/components/client-card';
 import { redirect } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+
 import Link from 'next/link';
 import { SubmitButton } from '@/components/submit-button';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import { ClientPagination } from './pagination';
-import { UserSession } from '@/use-cases/types';
+import {
+  SALES_STAGE_FILTER_OPTIONS,
+  SALES_STAGES,
+  SalesStage,
+  SalesStageFilter,
+  UserSession
+} from '@/use-cases/types';
 
 export default async function DashboardPage({
   searchParams
 }: {
-  searchParams: { search?: string; page?: string };
+  searchParams: { search?: string; stage?: string; page?: string };
 }) {
   const search = searchParams.search;
+  const stage = searchParams.stage as SalesStageFilter | undefined;
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
   const user = await assertAuthenticated(); //yes, user is authenticated
@@ -125,9 +140,19 @@ export default async function DashboardPage({
               action={async (formData: FormData) => {
                 'use server';
                 const searchString = formData.get('search') as string;
+                const stageValue = formData.get('stage') as string;
+                const params = new URLSearchParams();
+                if (searchString) params.set('search', searchString);
+                // if (stageValue) params.set('stage', stageValue); //is this necessary?
+                if (
+                  stageValue &&
+                  stageValue !== SALES_STAGE_FILTER_OPTIONS.ALL
+                ) {
+                  params.set('stage', stageValue);
+                }
                 redirect(
-                  searchString
-                    ? `/dashboard?search=${searchString}`
+                  params.toString()
+                    ? `/dashboard?${params.toString()}`
                     : '/dashboard'
                 );
               }}
@@ -135,13 +160,39 @@ export default async function DashboardPage({
             >
               <div className={formClientStyles}>
                 <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                  <Select
+                    defaultValue={stage ?? SALES_STAGE_FILTER_OPTIONS.ALL}
+                    name="stage"
+                  >
+                    <SelectTrigger className="w-full min-w-[250px]">
+                      <SelectValue placeholder="Select stage">
+                        {(stage ?? SALES_STAGE_FILTER_OPTIONS.ALL).replace(
+                          /_/g,
+                          ' '
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(SALES_STAGE_FILTER_OPTIONS).map(
+                        stageOption => (
+                          <SelectItem
+                            key={stageOption}
+                            value={stageOption}
+                            className="capitalize"
+                          >
+                            {stageOption.replace(/_/g, ' ')}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
                   <div className="flex relative w-full">
                     <Input
                       defaultValue={search}
                       placeholder="enter all or part of the clients name"
                       name="search"
                       id="group"
-                      className="w-full"
+                      className="w-full min-w-[300px]"
                     />
                     {search && (
                       <Button
@@ -150,7 +201,11 @@ export default async function DashboardPage({
                         className="absolute right-1"
                         asChild
                       >
-                        <Link href={`/dashboard`}>
+                        <Link
+                          href={
+                            stage ? `/dashboard?stage=${stage}` : '/dashboard'
+                          }
+                        >
                           <XIcon />
                         </Link>
                       </Button>
@@ -173,7 +228,7 @@ export default async function DashboardPage({
         className={`${pageWrapperStyles} px-4 sm:px-6 transition-opacity duration-300`}
       >
         {/* <Suspense fallback={<ClientsListSkeleton />}> */}
-        <ClientList page={page} search={search} user={user} />
+        <ClientList page={page} search={search} user={user} stage={stage} />
         {/* </Suspense> */}
       </div>
     </>
@@ -200,17 +255,21 @@ function ClientsListSkeleton() {
 async function ClientList({
   search,
   page,
-  user
+  user,
+  stage
 }: {
   search?: string;
   page: number;
   user: UserSession;
+  stage?: SalesStageFilter;
 }) {
   const { data, perPage, total } = await searchClientsUseCase(
     user,
     search ?? '',
-    page
+    page,
+    stage && stage !== SALES_STAGE_FILTER_OPTIONS.ALL ? stage : undefined
   );
+  console.log('CLIENTS-LIST-DATA', data);
 
   if (data.length === 0) {
     return (
@@ -238,11 +297,11 @@ async function ClientList({
         ))}
       </div>
 
-      <ClientPagination
+      {/* <ClientPagination
         search={search ?? ''}
         page={page}
         totalPages={Math.ceil(total / perPage)}
-      />
+      /> */}
     </>
   );
 }

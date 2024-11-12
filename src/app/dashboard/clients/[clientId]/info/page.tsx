@@ -5,9 +5,8 @@ import {
 } from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
-import { CreateEditClientButton } from '@/app/dashboard/create-client-button';
 import { User } from '@/db/schema';
-import { DeleteClientButton } from '@/app/dashboard/delete-client-button';
+import { DeleteClientButton } from '@/app/dashboard/clients/components/delete-client-button';
 import { cn } from '@/lib/utils';
 import { cardStyles } from '@/styles/common';
 import {
@@ -24,6 +23,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { CreateEditClientButton } from '../../components/create-client-button';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date

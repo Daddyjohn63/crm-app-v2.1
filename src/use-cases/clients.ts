@@ -4,7 +4,7 @@
 //handle errors
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
 import { ClientId, NewClient } from '@/db/schema';
-import { UserSession } from './types';
+import { SalesStage, SalesStageFilter, UserSession } from './types';
 import {
   createClient,
   deleteClient,
@@ -13,7 +13,7 @@ import {
   getClientsByUser,
   getServiceIdsByClientId,
   getServicesByClientId,
-  searchClientsByName,
+  searchClients,
   updateClient,
   updateClientField,
   updateClientServices
@@ -49,9 +49,10 @@ export async function getClientsUseCase(authenticatedUser: UserSession) {
 export async function searchClientsUseCase(
   user: UserSession,
   search: string,
-  page: number
+  page: number,
+  stage?: SalesStageFilter
 ) {
-  return await searchClientsByName(user.id, search, page);
+  return await searchClients(user.id, search, page, stage as SalesStage);
 }
 
 export async function getClientByIdUseCase(

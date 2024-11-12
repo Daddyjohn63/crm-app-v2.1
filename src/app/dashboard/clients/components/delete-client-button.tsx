@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { useServerAction } from 'zsa-react';
 import { cn } from '@/lib/utils';
 import { useClientIdParam } from '@/util/safeparam';
-import { deleteClientAction } from './actions';
+import { deleteClientAction } from '../../actions';
 
 export function DeleteClientButton() {
   const clientId = useClientIdParam();
