@@ -6,7 +6,19 @@ export const schema = z.object({
   primary_email: z.string().email().min(1),
   primary_phone: z.string().optional(),
   business_description: z.string().optional(),
+  sales_stage: z
+    .enum([
+      'lead',
+      'prospect',
+      'qualified_opportunity',
+      'proposal',
+      'negotiation',
+      'closed_won',
+      'closed_lost'
+    ])
+    .default('lead'),
   date_onboarded: z.date().optional(),
+  annual_revenue_expected: z.string().optional(),
   additional_info: z.string().optional()
 });
 

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileIcon } from 'lucide-react';
+import { Download, FileIcon } from 'lucide-react';
 
 import { UploadDocumentButton } from '../../components/upload-document-button';
 import { UploadDocumentModal } from '../../components/upload-document-modal';
@@ -60,7 +60,10 @@ export default async function DocumentsPage({
                       rel="noopener noreferrer"
                       className="font-medium hover:underline block truncate"
                     >
-                      {doc.name}
+                      <div className="flex items-center gap-2">
+                        {doc.name}
+                        <Download className="h-4 w-4" />
+                      </div>
                     </a>
                     <p className="text-sm text-gray-500 truncate">
                       {doc.description}

@@ -16,6 +16,16 @@ import { sql } from 'drizzle-orm';
 export const roleEnum = pgEnum('role', ['member', 'admin']);
 export const accountTypeEnum = pgEnum('type', ['email', 'google', 'github']);
 
+export const salesStageEnum = pgEnum('sales_stage', [
+  'lead',
+  'prospect',
+  'qualified_opportunity',
+  'proposal',
+  'negotiation',
+  'closed_won',
+  'closed_lost'
+]);
+
 //users table
 export const users = pgTable('crm_user', {
   id: serial('id').primaryKey(),
@@ -122,8 +132,10 @@ export const clients = pgTable('clients', {
   primary_email: text('primary_email').notNull(),
   primary_phone: text('primary_phone').notNull(),
   business_description: text('business_description').notNull(),
+  sales_stage: salesStageEnum('sales_stage').notNull().default('lead'),
   date_onboarded: timestamp('date', { mode: 'date' }).notNull(),
-  additional_info: text('additional_info').notNull()
+  annual_revenue_expected: text('annual_revenue_expected').default(''),
+  additional_info: text('additional_info').default('')
 });
 
 export const services = pgTable('services', {

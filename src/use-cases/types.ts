@@ -20,6 +20,19 @@ export type MemberInfo = {
   role: Role;
 };
 
+export const SALES_STAGES = {
+  LEAD: 'lead',
+  PROSPECT: 'prospect',
+  QUALIFIED_OPPORTUNITY: 'qualified_opportunity',
+  PROPOSAL: 'proposal',
+  NEGOTIATION: 'negotiation',
+  CLOSED_WON: 'closed_won',
+  CLOSED_LOST: 'closed_lost'
+} as const;
+
+// Type for the values
+export type SalesStage = (typeof SALES_STAGES)[keyof typeof SALES_STAGES];
+
 // export type ClientInfo = {
 //   clientId: number;
 //   business_name: string;
