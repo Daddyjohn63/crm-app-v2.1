@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+
   experimental: {
     serverComponentsExternalPackages: ['@aws-sdk/s3-request-presigner']
   },

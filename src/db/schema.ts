@@ -316,3 +316,4 @@ export type ContactWithStringId = Omit<Contact, 'id'> & { id: string };
 
 export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
+export type Session = typeof sessions.$inferSelect;

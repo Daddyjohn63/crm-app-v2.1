@@ -31,8 +31,8 @@ export function ClientCard({
         <CardTitle className="truncate text-yellow-400">
           {client.business_name}
         </CardTitle>
-        <CardDescription className="line-clamp-2 h-10">
-          <p className="text-sm">{client.business_description}</p>
+        <CardDescription className="line-clamp-2 h-10 text-sm">
+          {client.business_description}
         </CardDescription>
       </CardHeader>
       <CardContent>

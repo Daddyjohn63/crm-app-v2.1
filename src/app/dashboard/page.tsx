@@ -21,13 +21,6 @@ import { ClientCard } from './clients/components/client-card';
 import { redirect } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 
 import Link from 'next/link';
 import { SubmitButton } from '@/components/submit-button';
@@ -37,8 +30,6 @@ import Image from 'next/image';
 import { ClientPagination } from './pagination';
 import {
   SALES_STAGE_FILTER_OPTIONS,
-  SALES_STAGES,
-  SalesStage,
   SalesStageFilter,
   UserSession
 } from '@/use-cases/types';

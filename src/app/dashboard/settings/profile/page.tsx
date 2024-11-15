@@ -10,7 +10,9 @@ import { ProfileImage } from './components/profile-image';
 
 export const getUserProfileLoader = cache(getUserProfileUseCase);
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const user = await assertAuthenticated();
+  //const profile = await getUserProfileUseCase(user.id);
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">

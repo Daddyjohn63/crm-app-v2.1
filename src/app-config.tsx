@@ -4,7 +4,7 @@ export const appConfig: {
   mode: 'live'
 };
 
-export const protectedRoutes = ['/purchases', '/dashboard'];
+export const protectedRoutes = ['/purchases', '/dashboard/'];
 export const applicationName = 'CRM Buddy';
 export const companyName = 'CRM, LTD';
 
