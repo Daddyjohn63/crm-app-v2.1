@@ -40,14 +40,6 @@ export async function GET(request: Request): Promise<Response> {
     );
     const googleUser: GoogleUser = await response.json();
 
-    //TODO: avatar is not being saved or displayed.
-    // console.log('GOOGLE USER DATA:', {
-    //   sub: googleUser.sub,
-    //   name: googleUser.name,
-    //   picture: googleUser.picture,
-    //   email: googleUser.email
-    // });
-
     const existingAccount = await getAccountByGoogleIdUseCase(googleUser.sub);
 
     if (existingAccount) {
