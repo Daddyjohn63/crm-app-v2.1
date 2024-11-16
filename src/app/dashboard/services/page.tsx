@@ -10,7 +10,7 @@ import { ServiceCard } from './components/service-card';
 interface CreateEditServiceButtonProps {
   serviceId: string | null | undefined;
 }
-export default async function () {
+export default async function ServicesPage() {
   const user = await assertAuthenticated();
   //console.log(' SERVICE-USER', user);
   const services = await getServicesUseCase(user);

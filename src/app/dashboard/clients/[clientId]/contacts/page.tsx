@@ -1,15 +1,12 @@
 import { NotFoundError } from '@/app/util';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { assertAuthenticated, getCurrentUser } from '@/lib/session';
-import { getClientByIdUseCase } from '@/use-cases/clients';
+import { assertAuthenticated } from '@/lib/session';
 import { notFound } from 'next/navigation';
-import { columns, Contacts } from './columns';
+import { columns } from './columns';
 import { DataTable } from '@/components/data-table';
 import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 import CreateContactButton from './create-contact-button';
-import { ZustandInteractiveOverlay } from './zustand-interactive-overlay';
-import CreateEditContactForm from './create-edit-contact-form';
-// import { User } from '@/db/schema';
+import { ContactsOverlay } from './contacts-overlay';
 
 export default async function ContactsPage({
   params
@@ -17,24 +14,17 @@ export default async function ContactsPage({
   params: { clientId: string };
 }) {
   const { clientId } = params;
-  //console.log('CLIENT ID', clientId);
-  //console.log('Type of CLIENT ID:', typeof clientId);
   const user = await assertAuthenticated();
-  //const user = await getCurrentUser();
-  // console.log('USER FROM CONTACTS PAGE', user);
-  //.log('TYPE OF USER', typeof user);
 
   if (!user) {
     return notFound();
   }
 
   try {
-    //get the contacts for a client id.
     const contacts = await getContactsByClientIdUseCase(
       user,
       parseInt(clientId)
     );
-    //console.log('CONTACTS FROM CONTACTS PAGE', contacts);
     const data = contacts.map(contact => ({
       id: contact.id,
       last_name: contact.last_name,
@@ -48,9 +38,6 @@ export default async function ContactsPage({
       postcode: contact.postcode,
       country: contact.country
     }));
-
-    // const client = await getClientByIdUseCase(user, parseInt(clientId));
-    // console.log('CLIENT FROM CONTACTS PAGE', client);
 
     return (
       <>
@@ -82,14 +69,4 @@ export default async function ContactsPage({
       return notFound();
     }
   }
-}
-
-export function ContactsOverlay() {
-  return (
-    <ZustandInteractiveOverlay
-      title="Edit Contact"
-      description="Edit the details of the contact"
-      form={<CreateEditContactForm />}
-    />
-  );
 }

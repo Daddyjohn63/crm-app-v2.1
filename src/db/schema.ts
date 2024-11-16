@@ -8,7 +8,8 @@ import {
   pgTable,
   integer,
   varchar,
-  primaryKey
+  primaryKey,
+  index
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
@@ -33,44 +34,72 @@ export const users = pgTable('crm_user', {
   emailVerified: timestamp('emailVerified', { mode: 'date' })
 });
 //how the user has chosen to sign in. It references the users table. The relationship is on the userId column.It is a one to one relationship.
-export const accounts = pgTable('gf_accounts', {
-  id: serial('id').primaryKey(),
-  userId: serial('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  accountType: accountTypeEnum('accountType').notNull(),
-  githubId: text('githubId').unique(),
-  googleId: text('googleId').unique(),
-  password: text('password'),
-  salt: text('salt')
-});
+export const accounts = pgTable(
+  'gf_accounts',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    accountType: accountTypeEnum('accountType').notNull(),
+    githubId: text('githubId').unique(),
+    googleId: text('googleId').unique(),
+    password: text('password'),
+    salt: text('salt')
+  },
+  table => ({
+    userIdAccountTypeIdx: index('user_id_account_type_idx').on(
+      table.userId,
+      table.accountType
+    )
+  })
+);
+
 //does not have any explicit defined relationships.But it does have an implicit relationship through email field.
-export const magicLinks = pgTable('gf_magic_links', {
-  id: serial('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  token: text('token'),
-  tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
-});
+export const magicLinks = pgTable(
+  'gf_magic_links',
+  {
+    id: serial('id').primaryKey(),
+    email: text('email').notNull().unique(),
+    token: text('token'),
+    tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
+  },
+  table => ({
+    tokenIdx: index('magic_links_token_idx').on(table.token)
+  })
+);
 
-export const resetTokens = pgTable('gf_reset_tokens', {
-  id: serial('id').primaryKey(),
-  userId: serial('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' })
-    .unique(),
-  token: text('token'),
-  tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
-});
+export const resetTokens = pgTable(
+  'gf_reset_tokens',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' })
+      .unique(),
+    token: text('token'),
+    tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
+  },
+  table => ({
+    tokenIdx: index('reset_tokens_token_idx').on(table.token)
+  })
+);
 
-export const verifyEmailTokens = pgTable('gf_verify_email_tokens', {
-  id: serial('id').primaryKey(),
-  userId: serial('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' })
-    .unique(),
-  token: text('token'),
-  tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
-});
+export const verifyEmailTokens = pgTable(
+  'gf_verify_email_tokens',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' })
+      .unique(),
+    token: text('token'),
+    tokenExpiresAt: timestamp('tokenExpiresAt', { mode: 'date' })
+  },
+  table => ({
+    tokenIdx: index('verify_email_tokens_token_idx').on(table.token)
+  })
+);
 
 export const profiles = pgTable('gf_profile', {
   id: serial('id').primaryKey(),
@@ -99,56 +128,82 @@ export const documents = pgTable('gf_documents', {
   updatedAt: timestamp('updatedAt').defaultNow()
 });
 
-export const sessions = pgTable('gf_session', {
-  id: text('id').primaryKey(),
-  userId: serial('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: timestamp('expires_at', {
-    withTimezone: true,
-    mode: 'date'
-  }).notNull()
-});
+export const sessions = pgTable(
+  'gf_session',
+  {
+    id: text('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    expiresAt: timestamp('expires_at', {
+      withTimezone: true,
+      mode: 'date'
+    }).notNull()
+  },
+  table => ({
+    userIdIdx: index('sessions_user_id_idx').on(table.userId)
+  })
+);
 
-export const subscriptions = pgTable('gf_subscriptions', {
-  id: serial('id').primaryKey(),
-  userId: serial('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' })
-    .unique(),
-  stripeSubscriptionId: text('stripeSubscriptionId').notNull(),
-  stripeCustomerId: text('stripeCustomerId').notNull(),
-  stripePriceId: text('stripePriceId').notNull(),
-  stripeCurrentPeriodEnd: timestamp('expires', { mode: 'date' }).notNull()
-});
+export const subscriptions = pgTable(
+  'gf_subscriptions',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' })
+      .unique(),
+    stripeSubscriptionId: text('stripeSubscriptionId').notNull(),
+    stripeCustomerId: text('stripeCustomerId').notNull(),
+    stripePriceId: text('stripePriceId').notNull(),
+    stripeCurrentPeriodEnd: timestamp('expires', { mode: 'date' }).notNull()
+  },
+  table => ({
+    stripeSubscriptionIdIdx: index(
+      'subscriptions_stripe_subscription_id_idx'
+    ).on(table.stripeSubscriptionId)
+  })
+);
 
-export const clients = pgTable('clients', {
-  id: serial('id').primaryKey(),
-  userId: serial('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  business_name: text('business_name').notNull(),
-  primary_address: varchar('primary_address', { length: 250 }).notNull(),
-  primary_email: text('primary_email').notNull(),
-  primary_phone: text('primary_phone').notNull(),
-  business_description: text('business_description').notNull(),
-  sales_stage: salesStageEnum('sales_stage').notNull().default('lead'),
-  date_onboarded: timestamp('date', { mode: 'date' }).notNull(),
-  annual_revenue_expected: text('annual_revenue_expected').default(''),
-  additional_info: text('additional_info').default('')
-});
+export const clients = pgTable(
+  'clients',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    business_name: text('business_name').notNull(),
+    primary_address: varchar('primary_address', { length: 250 }).notNull(),
+    primary_email: text('primary_email').notNull(),
+    primary_phone: text('primary_phone').notNull(),
+    business_description: text('business_description').notNull(),
+    sales_stage: salesStageEnum('sales_stage').notNull().default('lead'),
+    date_onboarded: timestamp('date', { mode: 'date' }).notNull(),
+    annual_revenue_expected: text('annual_revenue_expected').default(''),
+    additional_info: text('additional_info').default('')
+  },
+  table => ({
+    userIdIdx: index('clients_user_id_idx').on(table.userId)
+  })
+);
 
-export const services = pgTable('services', {
-  id: serial('id').primaryKey(),
-  userId: serial('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  name: text('service_name').notNull(),
-  description: varchar('service_description', { length: 500 }).notNull(),
-  included_services: varchar('included_services', { length: 500 }),
-  delivery_process: varchar('deleivery_process', { length: 500 }),
-  pricing: varchar('pricing', { length: 500 })
-});
+export const services = pgTable(
+  'services',
+  {
+    id: serial('id').primaryKey(),
+    userId: serial('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: text('service_name').notNull(),
+    description: varchar('service_description', { length: 500 }).notNull(),
+    included_services: varchar('included_services', { length: 500 }),
+    delivery_process: varchar('deleivery_process', { length: 500 }),
+    pricing: varchar('pricing', { length: 500 })
+  },
+  table => ({
+    userIdIdx: index('services_user_id_idx').on(table.userId)
+  })
+);
 
 export const contacts = pgTable('contacts', {
   id: serial('id').primaryKey(),

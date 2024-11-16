@@ -5,6 +5,10 @@ export const appConfig: {
 };
 
 export const protectedRoutes = ['/purchases', '/dashboard/'];
+export const allowedUsers = [
+  'john@webandprosper.co.uk',
+  'johnspaul63@gmail.com'
+];
 export const applicationName = 'CRM Buddy';
 export const companyName = 'CRM, LTD';
 
