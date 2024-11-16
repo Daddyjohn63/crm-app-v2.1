@@ -30,9 +30,9 @@ export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const preventCloseRef = useRef(false);
   const { isOpen, setIsOpen } = useOverlayStore();
 
-  useEffect(() => {
-    console.log('ZustandInteractiveOverlay isOpen changed:', isOpen);
-  }, [isOpen]);
+  // useEffect(() => {
+  //   console.log('ZustandInteractiveOverlay isOpen changed:', isOpen);
+  // }, [isOpen]);
 
   const Content = isMobile ? Drawer : Sheet;
   const ContentInner = isMobile ? DrawerContent : SheetContent;

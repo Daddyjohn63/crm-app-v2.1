@@ -43,9 +43,9 @@ export async function deleteContactsUseCase(
   clientId: ClientId,
   contactIds: ContactId[]
 ) {
-  console.log('user-uc', user);
-  console.log('clientId-uc', clientId);
-  console.log('contactIds-uc', contactIds);
+  //console.log('user-uc', user);
+  // console.log('clientId-uc', clientId);
+  // console.log('contactIds-uc', contactIds);
   if (!user) {
     throw new NotFoundError('User not authenticated');
   }

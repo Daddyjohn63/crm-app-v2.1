@@ -54,6 +54,7 @@ import { createTransaction } from '@/data-access/utils';
 import { LoginError, PublicError } from './errors';
 import { deleteSessionForUser } from '@/data-access/sessions';
 import { getFileUrl, uploadFileToBucket } from '@/lib/files';
+import { assertUserAllowed } from '@/util/auth-users-allowed';
 
 export async function deleteUserUseCase(
   authenticatedUser: UserSession,
@@ -77,6 +78,7 @@ export async function getUserProfileUseCase(userId: UserId) {
 }
 
 export async function registerUserUseCase(email: string, password: string) {
+  assertUserAllowed(email);
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     throw new PublicError('An user with that email already exists.');
@@ -102,6 +104,7 @@ export async function registerUserUseCase(email: string, password: string) {
 }
 
 export async function signInUseCase(email: string, password: string) {
+  assertUserAllowed(email);
   const user = await getUserByEmail(email);
 
   if (!user) {
@@ -187,6 +190,7 @@ export async function createGithubUserUseCase(githubUser: GitHubUser) {
 
 export async function createGoogleUserUseCase(googleUser: GoogleUser) {
   let existingUser = await getUserByEmail(googleUser.email);
+  //console.log('existingUser', existingUser);
 
   if (!existingUser) {
     existingUser = await createUser(googleUser.email);
@@ -200,6 +204,7 @@ export async function createGoogleUserUseCase(googleUser: GoogleUser) {
 }
 
 export async function resetPasswordUseCase(email: string) {
+  assertUserAllowed(email);
   const user = await getUserByEmail(email);
 
   if (!user) {

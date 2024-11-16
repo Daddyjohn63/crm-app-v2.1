@@ -1,10 +1,11 @@
-import { cookies } from "next/headers";
-import { OAuth2RequestError } from "arctic";
-import { github } from "@/auth";
-import { createGithubUserUseCase } from "@/use-cases/users";
-import { getAccountByGithubIdUseCase } from "@/use-cases/accounts";
-import { afterLoginUrl } from "@/app-config";
-import { setSession } from "@/lib/session";
+import { cookies } from 'next/headers';
+import { OAuth2RequestError } from 'arctic';
+import { github } from '@/auth';
+import { createGithubUserUseCase } from '@/use-cases/users';
+import { getAccountByGithubIdUseCase } from '@/use-cases/accounts';
+import { afterLoginUrl } from '@/app-config';
+import { setSession } from '@/lib/session';
+import { assertUserAllowed } from '@/util/auth-users-allowed';
 
 export interface GitHubUser {
   id: string;
@@ -22,23 +23,35 @@ interface Email {
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const state = url.searchParams.get("state");
-  const storedState = cookies().get("github_oauth_state")?.value ?? null;
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+  const storedState = cookies().get('github_oauth_state')?.value ?? null;
   if (!code || !state || !storedState || state !== storedState) {
     return new Response(null, {
-      status: 400,
+      status: 400
     });
   }
 
   try {
     const tokens = await github.validateAuthorizationCode(code);
-    const githubUserResponse = await fetch("https://api.github.com/user", {
+    const githubUserResponse = await fetch('https://api.github.com/user', {
       headers: {
-        Authorization: `Bearer ${tokens.accessToken}`,
-      },
+        Authorization: `Bearer ${tokens.accessToken}`
+      }
     });
     const githubUser: GitHubUser = await githubUserResponse.json();
+
+    // Check if user is allowed
+    try {
+      assertUserAllowed(githubUser.email);
+    } catch (e) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: '/sign-in?error=' + encodeURIComponent((e as Error).message)
+        }
+      });
+    }
 
     const existingAccount = await getAccountByGithubIdUseCase(githubUser.id);
 
@@ -47,18 +60,18 @@ export async function GET(request: Request): Promise<Response> {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: afterLoginUrl,
-        },
+          Location: afterLoginUrl
+        }
       });
     }
 
     if (!githubUser.email) {
       const githubUserEmailResponse = await fetch(
-        "https://api.github.com/user/emails",
+        'https://api.github.com/user/emails',
         {
           headers: {
-            Authorization: `Bearer ${tokens.accessToken}`,
-          },
+            Authorization: `Bearer ${tokens.accessToken}`
+          }
         }
       );
       const githubUserEmails = await githubUserEmailResponse.json();
@@ -71,8 +84,8 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: afterLoginUrl,
-      },
+        Location: afterLoginUrl
+      }
     });
   } catch (e) {
     console.error(e);
@@ -80,16 +93,16 @@ export async function GET(request: Request): Promise<Response> {
     if (e instanceof OAuth2RequestError) {
       // invalid code
       return new Response(null, {
-        status: 400,
+        status: 400
       });
     }
     return new Response(null, {
-      status: 500,
+      status: 500
     });
   }
 }
 
 function getPrimaryEmail(emails: Email[]): string {
-  const primaryEmail = emails.find((email) => email.primary);
+  const primaryEmail = emails.find(email => email.primary);
   return primaryEmail!.email;
 }

@@ -5,6 +5,7 @@ import { createGoogleUserUseCase } from '@/use-cases/users';
 import { getAccountByGoogleIdUseCase } from '@/use-cases/accounts';
 import { setSession } from '@/lib/session';
 import { afterLoginUrl } from '@/app-config';
+import { assertUserAllowed } from '@/util/auth-users-allowed';
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
@@ -39,6 +40,17 @@ export async function GET(request: Request): Promise<Response> {
       }
     );
     const googleUser: GoogleUser = await response.json();
+    // Check if user is allowed
+    try {
+      assertUserAllowed(googleUser.email);
+    } catch (e) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: '/sign-in?error=' + encodeURIComponent((e as Error).message)
+        }
+      });
+    }
 
     const existingAccount = await getAccountByGoogleIdUseCase(googleUser.sub);
 

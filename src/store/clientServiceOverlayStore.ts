@@ -19,7 +19,7 @@ export const useClientServiceOverlayStore = create<ClientServiceOverlayStore>(
 
     //function that takes an id and sets the clientId state to that value.
     setClientId: id => {
-      console.log('Setting serviceId in store:', id);
+      // console.log('Setting serviceId in store:', id);
       set({ clientId: id });
     },
 

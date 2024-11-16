@@ -23,8 +23,8 @@ interface ClientToServiceButtonProps {
 export default function ClientToServiceButton({
   clientId
 }: ClientToServiceButtonProps) {
-  console.log('CLIENT ID FROM C2S BUTTON', clientId);
-  console.log(typeof clientId);
+  // console.log('CLIENT ID FROM C2S BUTTON', clientId);
+  // console.log(typeof clientId);
   const { setIsOpen, setClientId } = useClientServiceOverlayStore();
 
   const handleCreateOrEditService = () => {

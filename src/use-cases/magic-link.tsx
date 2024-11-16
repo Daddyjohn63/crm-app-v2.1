@@ -14,8 +14,10 @@ import { MagicLinkEmail } from '@/emails/magic-link';
 import { sendEmail } from '@/lib/send-email';
 import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 import { PublicError } from './errors';
+import { assertUserAllowed } from '@/util/auth-users-allowed';
 
 export async function sendMagicLinkUseCase(email: string) {
+  assertUserAllowed(email);
   const token = await upsertMagicLink(email);
 
   await sendEmail(
@@ -27,7 +29,11 @@ export async function sendMagicLinkUseCase(email: string) {
 
 export async function loginWithMagicLinkUseCase(token: string) {
   const magicLinkInfo = await getMagicLinkByToken(token);
+  console.log('magicLinkInfo', magicLinkInfo);
 
+  if (magicLinkInfo) {
+    assertUserAllowed(magicLinkInfo.email);
+  }
   if (!magicLinkInfo) {
     throw new PublicError('Invalid or expired magic link');
   }
