@@ -1,32 +1,32 @@
-"use client";
+'use client';
 
-import { z } from "zod";
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { pageTitleStyles } from "@/styles/common";
-import { cn } from "@/lib/utils";
-import { useServerAction } from "zsa-react";
-import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
-import { signInAction } from "./actions";
-import { LoaderButton } from "@/components/loader-button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
+  FormMessage
+} from '@/components/ui/form';
+import { pageTitleStyles } from '@/styles/common';
+import { cn } from '@/lib/utils';
+import { useServerAction } from 'zsa-react';
+import Link from 'next/link';
+import { useToast } from '@/components/ui/use-toast';
+import { signInAction } from './actions';
+import { LoaderButton } from '@/components/loader-button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle, Terminal } from 'lucide-react';
 
 const registrationSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z.string().min(8)
 });
 
 export default function SignInPage() {
@@ -35,25 +35,25 @@ export default function SignInPage() {
   const { execute, isPending, error, reset } = useServerAction(signInAction, {
     onError({ err }) {
       toast({
-        title: "Something went wrong",
+        title: 'Something went wrong',
         description: err.message,
-        variant: "destructive",
+        variant: 'destructive'
       });
     },
     onSuccess() {
       toast({
         title: "Let's Go!",
-        description: "Enjoy your session",
+        description: 'Enjoy your session'
       });
-    },
+    }
   });
 
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
-      email: "",
-      password: "",
-    },
+      email: '',
+      password: ''
+    }
   });
 
   function onSubmit(values: z.infer<typeof registrationSchema>) {
@@ -62,7 +62,7 @@ export default function SignInPage() {
 
   return (
     <div className="py-24 mx-auto max-w-[400px] space-y-6">
-      <h1 className={cn(pageTitleStyles, "text-center")}>Sign In</h1>
+      <h1 className={cn(pageTitleStyles, 'text-center')}>Sign In</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -106,7 +106,7 @@ export default function SignInPage() {
 
           {error && (
             <Alert variant="destructive">
-              <Terminal className="h-4 w-4" />
+              <AlertCircle className="h-4 w-4" />
               <AlertTitle>Uh-oh, we couldn&apos;t log you in</AlertTitle>
               <AlertDescription>{error.message}</AlertDescription>
             </Alert>
@@ -135,7 +135,7 @@ export default function SignInPage() {
         </div>
       </div>
 
-      <Button className="w-full" variant={"secondary"}>
+      <Button className="w-full" variant={'secondary'}>
         <Link href="/sign-up">Create an account</Link>
       </Button>
     </div>

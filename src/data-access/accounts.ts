@@ -61,12 +61,15 @@ export async function createAccountViaGoogle(userId: UserId, googleId: string) {
     .onConflictDoNothing()
     .returning();
 }
+//if I want a user to sign in with their email, I need to get the account associated with their email.
 
 export async function getAccountByUserId(userId: UserId) {
+  // const account = await database.query.accounts.findFirst({
+  //   where: eq(accounts.userId, userId)
+  // });
   const account = await database.query.accounts.findFirst({
-    where: eq(accounts.userId, userId)
+    where: and(eq(accounts.userId, userId), eq(accounts.accountType, 'email'))
   });
-
   return account;
 }
 
