@@ -21,6 +21,7 @@ import {
   getContactByIdUseCase
 } from '@/use-cases/contacts';
 import { contactSchema } from '@/app/dashboard/validation';
+import { sanitizeUserInput } from '@/util/sanitize';
 
 const extendedContactSchema = contactSchema.extend({
   clientId: z.number(),
@@ -62,19 +63,20 @@ export const editContactAction = authenticatedAction
       await rateLimitByKey({
         key: `${user.id}-edit-contact`
       });
-      await editContactUseCase(user, contactId, {
-        last_name,
-        first_name,
-        job_title,
-        email,
-        phone,
-        address,
-        city,
-        county,
-        postcode,
-        country,
+      const sanitizedInput = {
+        last_name: sanitizeUserInput(last_name ?? ''),
+        first_name: sanitizeUserInput(first_name ?? ''),
+        job_title: sanitizeUserInput(job_title ?? ''),
+        email: sanitizeUserInput(email ?? ''),
+        phone: sanitizeUserInput(phone ?? ''),
+        address: sanitizeUserInput(address ?? ''),
+        city: sanitizeUserInput(city ?? ''),
+        county: sanitizeUserInput(county ?? ''),
+        postcode: sanitizeUserInput(postcode ?? ''),
+        country: sanitizeUserInput(country ?? ''),
         clientId
-      } as NewContactInput);
+      };
+      await editContactUseCase(user, contactId, sanitizedInput);
       revalidatePath(`/dashboard/clients/${clientId}/contacts`);
     }
   );
@@ -102,19 +104,21 @@ export const createContactAction = authenticatedAction
       await rateLimitByKey({
         key: `${user.id}-create-contact`
       });
-      await createContactUseCase(user, {
-        last_name,
-        first_name,
-        job_title,
-        email,
-        phone,
-        address,
-        city,
-        county,
-        postcode,
-        country,
+      const sanitizedInput = {
+        last_name: sanitizeUserInput(last_name ?? ''),
+        first_name: sanitizeUserInput(first_name ?? ''),
+        job_title: sanitizeUserInput(job_title ?? ''),
+        email: sanitizeUserInput(email ?? ''),
+        phone: sanitizeUserInput(phone ?? ''),
+        address: sanitizeUserInput(address ?? ''),
+        city: sanitizeUserInput(city ?? ''),
+        county: sanitizeUserInput(county ?? ''),
+        postcode: sanitizeUserInput(postcode ?? ''),
+        country: sanitizeUserInput(country ?? ''),
         clientId
-      } as NewContactInput);
+      };
+      await createContactUseCase(user, sanitizedInput);
+
       revalidatePath(`/dashboard/clients/${clientId}/contacts`);
     }
   );
