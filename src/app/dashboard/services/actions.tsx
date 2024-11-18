@@ -12,6 +12,7 @@ import {
   getServicesUseCase
 } from '@/use-cases/services';
 import { redirect } from 'next/navigation';
+import { sanitizeUserInput } from '@/util/sanitize';
 
 const extendedServiceSchema = serviceSchema.extend({
   serviceId: z.number() //this is optional as we are creating a new service
@@ -57,13 +58,19 @@ export const createServiceAction = authenticatedAction
       await rateLimitByKey({
         key: `${user.id}-create-service`
       });
-      await createServiceUseCase(user, {
-        name,
-        description,
-        included_services,
-        delivery_process,
-        pricing
-      });
+      const sanitizedInput = {
+        name: sanitizeUserInput(name ?? ''),
+        description: sanitizeUserInput(description ?? ''),
+        included_services: sanitizeUserInput(included_services ?? ''),
+        delivery_process: sanitizeUserInput(delivery_process ?? ''),
+        pricing: sanitizeUserInput(pricing ?? '')
+      };
+      await createServiceUseCase(user, sanitizedInput);
+      // description,
+      // included_services,
+      // delivery_process,
+      // pricing
+      // });
       revalidatePath(`/dashboard/services`);
     }
   );
@@ -89,7 +96,14 @@ export const editServiceAction = authenticatedAction
       key: `${user.id}-edit-service`
     });
     const { serviceId, ...serviceData } = input;
-    await editServiceUseCase(user, serviceId, serviceData);
+    const sanitizedInput = {
+      name: sanitizeUserInput(serviceData.name ?? ''),
+      description: sanitizeUserInput(serviceData.description ?? ''),
+      included_services: sanitizeUserInput(serviceData.included_services ?? ''),
+      delivery_process: sanitizeUserInput(serviceData.delivery_process ?? ''),
+      pricing: sanitizeUserInput(serviceData.pricing ?? '')
+    };
+    await editServiceUseCase(user, serviceId, sanitizedInput);
     revalidatePath('/dashboard/services');
   });
 
