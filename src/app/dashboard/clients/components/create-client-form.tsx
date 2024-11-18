@@ -38,10 +38,13 @@ import { LoaderButton } from '@/components/loader-button';
 import { btnIconStyles } from '@/styles/icons';
 import { User } from '@/db/schema';
 
+//const stripHtml = (str: string) => str.replace(/<[^>]*>/g, '');
+
 const FormSchema = z.object({
   business_name: z.string().min(1, {
     message: 'Business name must be at least 6 characters.'
   }),
+
   primary_address: z.string().min(1, {
     message: 'You must enter a business address.'
   }),

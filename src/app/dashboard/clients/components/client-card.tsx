@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 import { ClipboardCheck, Mail, Phone } from 'lucide-react';
+import sanitizeHtml from 'sanitize-html';
 
 export function ClientCard({
   client,
@@ -31,7 +32,7 @@ export function ClientCard({
       <CardHeader>
         <CardTitle className="truncate ">{client.business_name}</CardTitle>
         <CardDescription className="line-clamp-2 h-10 text-sm">
-          {client.business_description}
+          {sanitizeHtml(client.business_description)}
         </CardDescription>
       </CardHeader>
       <CardContent>

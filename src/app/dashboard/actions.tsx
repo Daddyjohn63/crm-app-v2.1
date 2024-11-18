@@ -18,8 +18,45 @@ import { redirect } from 'next/navigation';
 import { PublicError } from '@/use-cases/errors';
 import { getServiceIdsByClientId } from '@/data-access/clients';
 import { SALES_STAGE_FILTER_OPTIONS } from '@/use-cases/types';
+import { sanitizeUserInput } from '@/util/sanitize';
 
 //create client
+// export const createClientAction = authenticatedAction
+//   .createServerAction()
+//   .input(schema)
+//   .handler(
+//     async ({
+//       input: {
+//         business_name,
+//         primary_address,
+//         primary_email,
+//         primary_phone,
+//         business_description,
+//         date_onboarded,
+//         additional_info
+//       },
+//       ctx: { user }
+//     }) => {
+//       await rateLimitByKey({
+//         key: `${user.id}-create-client`
+//       });
+
+//       await createClientUseCase(user, {
+//         business_name,
+//         primary_address,
+//         primary_email,
+//         primary_phone,
+//         business_description,
+//         date_onboarded,
+//         additional_info
+//       } as NewClientInput);
+//       revalidatePath('/dashboard');
+//     }
+//   );
+
+//create client sanitized
+//import { sanitizeUserInput } from '@/lib/sanitize';
+
 export const createClientAction = authenticatedAction
   .createServerAction()
   .input(schema)
@@ -40,15 +77,17 @@ export const createClientAction = authenticatedAction
         key: `${user.id}-create-client`
       });
 
-      await createClientUseCase(user, {
-        business_name,
-        primary_address,
-        primary_email,
-        primary_phone,
-        business_description,
+      const sanitizedInput = {
+        business_name: sanitizeUserInput(business_name ?? ''),
+        primary_address: sanitizeUserInput(primary_address ?? ''),
+        primary_email: sanitizeUserInput(primary_email ?? ''),
+        primary_phone: sanitizeUserInput(primary_phone ?? ''),
+        business_description: sanitizeUserInput(business_description ?? ''),
         date_onboarded,
-        additional_info
-      } as NewClientInput);
+        additional_info: sanitizeUserInput(additional_info ?? '')
+      };
+
+      await createClientUseCase(user, sanitizedInput as NewClientInput);
       revalidatePath('/dashboard');
     }
   );
@@ -64,11 +103,29 @@ export const editClientAction = authenticatedAction
 
     const { client_id, ...updatedFields } = input;
 
+    const sanitizedInput = {
+      ...updatedFields,
+      business_name: sanitizeUserInput(updatedFields.business_name ?? ''),
+      primary_address: sanitizeUserInput(updatedFields.primary_address ?? ''),
+      primary_email: sanitizeUserInput(updatedFields.primary_email ?? ''),
+      primary_phone: sanitizeUserInput(updatedFields.primary_phone ?? ''),
+      business_description: sanitizeUserInput(
+        updatedFields.business_description ?? ''
+      ),
+      additional_info: sanitizeUserInput(updatedFields.additional_info ?? '')
+    };
+
     const existingClient = await editClientUseCase(
       user,
       parseInt(client_id, 10),
-      updatedFields as Partial<Omit<NewClient, 'userId'>>
+      sanitizedInput as Partial<Omit<NewClient, 'userId'>>
     );
+
+    // const existingClient = await editClientUseCase(
+    //   user,
+    //   parseInt(client_id, 10),
+    //   updatedFields as Partial<Omit<NewClient, 'userId'>>
+    // );
 
     revalidatePath(`/dashboard/clients/${client_id}/info`);
     return existingClient;

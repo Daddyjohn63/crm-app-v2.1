@@ -74,7 +74,7 @@ export default async function DashboardPage({
                 const searchString = formData.get('search') as string;
                 redirect(
                   searchString
-                    ? `/dashboard?search=${searchString}`
+                    ? `/dashboard?search=${encodeURIComponent(searchString)}`
                     : '/dashboard'
                 );
               }}
