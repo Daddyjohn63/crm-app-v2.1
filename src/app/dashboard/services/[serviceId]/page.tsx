@@ -15,6 +15,7 @@ import DeleteServiceButton from '../components/delete-service-button';
 import { NotFoundError } from '@/app/util';
 import CreateEditServiceButton from '../create-edit-service-button';
 import { Button } from '@/components/ui/button';
+import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 
 export default async function ServicePage({
   params
@@ -45,25 +46,40 @@ export default async function ServicePage({
                 <CardTitle>Service Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  <li>
-                    <strong>Service Name:</strong> {service.name}
-                  </li>
-                  <li>
-                    <strong>Service Description:</strong> {service.description}
-                  </li>
-                  <li>
-                    <strong>Services Included:</strong>{' '}
+                <div className="space-y-4 text-sm ">
+                  <p className="truncate flex items-center">
+                    <span className=" text-muted-foreground mr-1 flex items-center">
+                      Service name:
+                    </span>
+                    <span className="capitalize">
+                      {service.name.replace(/_/g, ' ')}
+                    </span>
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Description:
+                    </span>
+                    {service.description}
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Included services:
+                    </span>
                     {service.included_services}
-                  </li>
-                  <li>
-                    <strong>Delivery Process:</strong>{' '}
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Delivery process:
+                    </span>
                     {service.delivery_process}
-                  </li>
-                  <li>
-                    <strong>Pricing:</strong> {service.pricing}
-                  </li>
-                </ul>
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Pricing:
+                    </span>
+                    {service.pricing}
+                  </p>
+                </div>
 
                 <div className="flex justify-between">
                   <div className="pt-4  ">
@@ -80,7 +96,9 @@ export default async function ServicePage({
             {/* column 2 */}
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
-                <CardTitle>Clients that use this service go here</CardTitle>
+                <CardTitle>
+                  Clients that use this service will go here
+                </CardTitle>
               </CardHeader>
             </div>
           </div>

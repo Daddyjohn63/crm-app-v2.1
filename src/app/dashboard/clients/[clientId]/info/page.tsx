@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CreateEditClientButton } from '../../components/create-client-button';
+import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -58,30 +59,55 @@ export default async function ClientInfoPage({
                 <CardTitle>Client Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  <li>
-                    <strong>Business Name:</strong> {client.business_name}
-                  </li>
-                  <li>
-                    <strong>Email:</strong> {client.primary_email}
-                  </li>
-                  <li>
-                    <strong>Phone:</strong> {client.primary_phone}
-                  </li>
-                  <li>
-                    <strong>Address:</strong> {client.primary_address}
-                  </li>
-                  <li>
-                    <strong>Description:</strong> {client.business_description}
-                  </li>
-                  <li>
-                    <strong>Date Onboarded:</strong>{' '}
+                <div className="space-y-4 text-sm ">
+                  <p className="truncate flex items-center">
+                    <span className=" text-muted-foreground mr-1 flex items-center">
+                      Client name:
+                    </span>
+                    <span className="capitalize">{client.business_name}</span>
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Email:
+                    </span>
+                    {client.primary_email}
+                    <CopyToClipboardButton
+                      className="text-blue-500"
+                      text={client.primary_email}
+                    />
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Phone:
+                    </span>
+                    {client.primary_phone}
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Address:
+                    </span>
+                    {client.primary_address}
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Description:
+                    </span>
+                    {client.business_description}
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Date Onboarded:
+                    </span>
                     {client.date_onboarded.toDateString()}
-                  </li>
-                  <li>
-                    <strong>Additional Info:</strong> {client.additional_info}
-                  </li>
-                </ul>
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className="text-muted-foreground mr-1 flex items-center">
+                      Additional Info:
+                    </span>
+                    {client.additional_info}
+                  </p>
+                </div>
+
                 <div className="flex justify-between">
                   <div className="pt-4  ">
                     <CreateEditClientButton
@@ -111,7 +137,7 @@ export default async function ClientInfoPage({
                     {clientServices.map(service => (
                       <li key={service.id}>
                         <Link href={`/dashboard/services/${service.id}`}>
-                          <Badge className="bg-yellow-400">
+                          <Badge className="bg-gray-600 dark:bg-gray-400">
                             {service.name}
                           </Badge>
                         </Link>
@@ -122,7 +148,7 @@ export default async function ClientInfoPage({
                   <p>No services assigned to this client.</p>
                 )}
               </CardContent>
-              <Separator />
+              {/* <Separator /> */}
               <CardHeader>
                 <CardTitle>Reminders Here</CardTitle>
               </CardHeader>

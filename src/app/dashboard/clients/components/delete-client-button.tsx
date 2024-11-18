@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { DoorOpen } from 'lucide-react';
+import { DoorOpen, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { useServerAction } from 'zsa-react';
 import { cn } from '@/lib/utils';
@@ -44,7 +44,7 @@ export function DeleteClientButton() {
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button variant={'destructive'} className={cn(btnStyles, 'w-fit')}>
-          <DoorOpen className={btnIconStyles} /> Delete Client
+          <Trash className={btnIconStyles} /> Delete Client
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

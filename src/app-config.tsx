@@ -5,7 +5,7 @@ export const appConfig: {
 };
 
 export const protectedRoutes = ['/purchases', '/dashboard/'];
-export const allowedUsers = ['none'];
+export const allowedUsers = ['all'];
 export const bannedUsers = ['none'];
 export const applicationName = 'CRM Buddy';
 export const companyName = 'CRM, LTD';

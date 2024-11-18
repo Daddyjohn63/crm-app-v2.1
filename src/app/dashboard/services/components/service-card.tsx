@@ -17,8 +17,10 @@ export function ServiceCard({ service }: { service: Services }) {
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <p className="truncate flex  flex-col">
-            <span className="font-semibold mr-1 mb-2">Description:</span>
+          <p className="truncate flex">
+            <span className="text-muted-foreground mr-1 flex items-center mb-2">
+              Description:
+            </span>
             {service.description}
           </p>
         </div>

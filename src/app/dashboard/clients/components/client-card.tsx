@@ -9,6 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
+import { ClipboardCheck, Mail, Phone } from 'lucide-react';
 
 export function ClientCard({
   client,
@@ -28,28 +29,38 @@ export function ClientCard({
   return (
     <Card className={cn(cardStyles, 'overflow-hidden')}>
       <CardHeader>
-        <CardTitle className="truncate text-yellow-400">
-          {client.business_name}
-        </CardTitle>
+        <CardTitle className="truncate ">{client.business_name}</CardTitle>
         <CardDescription className="line-clamp-2 h-10 text-sm">
           {client.business_description}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-1 ">
-          <p className="truncate">
-            <span className="text-yellow-400">Sales Stage: </span>
+        <div className="space-y-1 text-sm ">
+          <p className="truncate flex items-center">
+            <span className=" text-muted-foreground mr-1 flex items-center">
+              <ClipboardCheck className="w-4 h-4 text-blue-500 mr-2" />
+              Sales Stage:
+            </span>
             <span className="capitalize">
               {client.sales_stage.replace(/_/g, ' ')}
             </span>
           </p>
           <p className="truncate flex items-center">
-            <span className="text-yellow-400 mr-1">Email:</span>
+            <span className="text-muted-foreground mr-1 flex items-center">
+              <Mail className="w-4 h-4 text-blue-500 mr-2" />
+              Email:
+            </span>
             {client.primary_email}
-            <CopyToClipboardButton text={client.primary_email} />
+            <CopyToClipboardButton
+              className="text-blue-500"
+              text={client.primary_email}
+            />
           </p>
-          <p className="truncate">
-            <span className="text-yellow-400">Phone:</span>{' '}
+          <p className="truncate flex items-center">
+            <span className="text-muted-foreground mr-1 flex items-center">
+              <Phone className="w-4 h-4 text-blue-500 mr-2" />
+              Phone:
+            </span>
             {client.primary_phone}
           </p>
         </div>
