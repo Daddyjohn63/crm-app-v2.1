@@ -38,10 +38,10 @@ export async function getPasswordResetToken(token: string) {
   return existingToken;
 }
 
-// export async function deletePasswordResetToken(token: string, trx = database) {
-//   await trx.delete(resetTokens).where(eq(resetTokens.token, token));
-// }
-
-export async function deletePasswordResetToken(token: string) {
-  await database.delete(resetTokens).where(eq(resetTokens.token, token));
+export async function deletePasswordResetToken(token: string, trx = database) {
+  await trx.delete(resetTokens).where(eq(resetTokens.token, token));
 }
+
+// export async function deletePasswordResetToken(token: string, trx = database) {
+//   await database.delete(resetTokens).where(eq(resetTokens.token, token));
+// }

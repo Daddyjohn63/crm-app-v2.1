@@ -221,22 +221,6 @@ export async function resetPasswordUseCase(email: string) {
   );
 }
 
-// export async function changePasswordUseCase(token: string, password: string) {
-//   const tokenEntry = await getPasswordResetToken(token);
-
-//   if (!tokenEntry) {
-//     throw new PublicError('Invalid token');
-//   }
-
-//   const userId = tokenEntry.userId;
-
-//   await createTransaction(async trx => {
-//     await deletePasswordResetToken(token, trx);
-//     await updatePassword(userId, password, trx);
-//     await deleteSessionForUser(userId, trx);
-//   });
-// }
-
 export async function changePasswordUseCase(token: string, password: string) {
   const tokenEntry = await getPasswordResetToken(token);
 
@@ -246,10 +230,26 @@ export async function changePasswordUseCase(token: string, password: string) {
 
   const userId = tokenEntry.userId;
 
-  await deletePasswordResetToken(token);
-  await updatePassword(userId, password);
-  await deleteSessionForUser(userId);
+  await createTransaction(async trx => {
+    await deletePasswordResetToken(token, trx);
+    await updatePassword(userId, password, trx);
+    await deleteSessionForUser(userId, trx);
+  });
 }
+
+// export async function changePasswordUseCase(token: string, password: string) {
+//   const tokenEntry = await getPasswordResetToken(token);
+
+//   if (!tokenEntry) {
+//     throw new PublicError('Invalid token');
+//   }
+
+//   const userId = tokenEntry.userId;
+
+//   await deletePasswordResetToken(token);
+//   await updatePassword(userId, password);
+//   await deleteSessionForUser(userId);
+// }
 
 export async function verifyEmailUseCase(token: string) {
   const tokenEntry = await getVerifyEmailToken(token);
