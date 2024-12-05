@@ -66,6 +66,7 @@
     "react-hook-form": "^7.53.0",
     "resend": "^4.0.0",
     "sanitize-html": "^2.13.0",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "unique-names-generator": "^4.7.1",
