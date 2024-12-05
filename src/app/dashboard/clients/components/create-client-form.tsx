@@ -82,7 +82,7 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
         preventCloseRef.current = false;
       },
       onError({ err }) {
-        console.log('Error occurred:', err);
+        // console.log('Error occurred:', err);
         toast({
           title: 'Something went wrong',
           description: err.message,

@@ -106,7 +106,7 @@ export async function registerUserUseCase(email: string, password: string) {
 export async function signInUseCase(email: string, password: string) {
   assertUserAllowed(email);
   const user = await getUserByEmail(email);
-  console.log('user', user); //correct, finds the right user id
+  //console.log('user', user); //correct, finds the right user id
 
   if (!user) {
     throw new LoginError();

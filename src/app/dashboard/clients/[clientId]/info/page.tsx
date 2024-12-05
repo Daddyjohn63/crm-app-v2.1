@@ -43,7 +43,7 @@ export default async function ClientInfoPage({
 
   try {
     const client = await getClientByIdUseCase(user, parseInt(clientId));
-    console.log('client info', client);
+    //console.log('client info', client);
 
     const clientServices = await getServicesByClientIdUseCase(
       parseInt(clientId)
