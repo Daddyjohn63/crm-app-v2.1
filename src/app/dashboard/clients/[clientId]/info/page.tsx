@@ -43,6 +43,8 @@ export default async function ClientInfoPage({
 
   try {
     const client = await getClientByIdUseCase(user, parseInt(clientId));
+    console.log('client info', client);
+
     const clientServices = await getServicesByClientIdUseCase(
       parseInt(clientId)
     );
@@ -65,6 +67,14 @@ export default async function ClientInfoPage({
                       Client name:
                     </span>
                     <span className="capitalize">{client.business_name}</span>
+                  </p>
+                  <p className="truncate flex items-center">
+                    <span className=" text-muted-foreground mr-1 flex items-center">
+                      Sales stage:
+                    </span>
+                    <span className="capitalize">
+                      {client.sales_stage.replace(/_/g, ' ')}
+                    </span>
                   </p>
                   <p className="flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-start">

@@ -1,5 +1,12 @@
 import { database } from '@/db/drizzle';
-import { Client, ClientId, NewClient, clients, services } from '@/db/schema';
+import {
+  Client,
+  ClientId,
+  NewClient,
+  ServicesId,
+  clients,
+  services
+} from '@/db/schema';
 import { asc, eq, ilike, sql, and, desc, inArray } from 'drizzle-orm';
 import {
   SALES_STAGE_FILTER_OPTIONS,
@@ -183,5 +190,17 @@ export async function getServicesByClientId(clientId: number) {
     .innerJoin(services, eq(clientsToServices.serviceId, services.id))
     .where(eq(clientsToServices.clientId, clientId));
 
+  return result;
+}
+
+export async function getClientsByServiceId(serviceId: ServicesId) {
+  const result = await database
+    .select({
+      id: clients.id,
+      business_name: clients.business_name
+    })
+    .from(clientsToServices)
+    .innerJoin(clients, eq(clientsToServices.clientId, clients.id))
+    .where(eq(clientsToServices.serviceId, serviceId));
   return result;
 }

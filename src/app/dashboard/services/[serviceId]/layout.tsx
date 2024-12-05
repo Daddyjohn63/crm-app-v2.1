@@ -37,11 +37,7 @@ export default async function ServiceLayout({
   const isServiceOwner = user.id === service.userId;
 
   if (!isServiceOwner) {
-    toast({
-      variant: 'destructive',
-      description: 'You are not the owner of this service'
-    });
-    redirect('/sign-in');
+    redirect('/dashboard/services');
   }
 
   return (

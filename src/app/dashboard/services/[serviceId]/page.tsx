@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 import { getCurrentUser } from '@/lib/session';
 import { notFound } from 'next/navigation';
@@ -14,6 +15,8 @@ import { cn } from '@/lib/utils';
 import DeleteServiceButton from '../components/delete-service-button';
 import { NotFoundError } from '@/app/util';
 import CreateEditServiceButton from '../create-edit-service-button';
+import { getClientsByServiceIdUseCase } from '@/use-cases/clients';
+import Link from 'next/link';
 
 export default async function ServicePage({
   params
@@ -28,7 +31,10 @@ export default async function ServicePage({
   // }
   try {
     const service = await getServiceByIdUseCase(parseInt(serviceId));
-
+    const serviceClients = await getClientsByServiceIdUseCase(
+      parseInt(serviceId)
+    );
+    console.log('SERVICE CLIENTS', serviceClients);
     //console.log('SERVICE BY ID/PARAM', service);
 
     return (
@@ -94,10 +100,25 @@ export default async function ServicePage({
             {/* column 2 */}
             <div className={cn(cardStyles, 'overflow-hidden')}>
               <CardHeader>
-                <CardTitle>
-                  Clients that use this service will go here
-                </CardTitle>
+                <CardTitle>Clients that use this service</CardTitle>
               </CardHeader>
+              <CardContent>
+                {serviceClients.length > 0 ? (
+                  <ul className="flex flex-wrap gap-2">
+                    {serviceClients.map(client => (
+                      <li key={client.id}>
+                        <Link href={`/dashboard/clients/${client.id}`}>
+                          <Badge className="bg-gray-600 dark:bg-gray-400">
+                            {client.business_name}
+                          </Badge>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No clients found for this service.</p>
+                )}
+              </CardContent>
             </div>
           </div>
         </div>

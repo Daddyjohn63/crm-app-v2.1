@@ -155,6 +155,7 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           primary_email: '',
           primary_phone: '',
           business_description: '',
+          sales_stage: 'lead',
           date_onboarded: new Date(),
           additional_info: ''
         }
@@ -257,7 +258,11 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Sales stage</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a sales stage" />

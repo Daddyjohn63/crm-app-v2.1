@@ -3,13 +3,14 @@
 //call create event
 //handle errors
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
-import { ClientId, NewClient } from '@/db/schema';
+import { ClientId, NewClient, ServicesId } from '@/db/schema';
 import { SalesStage, SalesStageFilter, UserSession } from './types';
 import {
   createClient,
   deleteClient,
   getClientByClientId,
   getClientById,
+  getClientsByServiceId,
   getClientsByUser,
   getServiceIdsByClientId,
   getServicesByClientId,
@@ -133,4 +134,9 @@ export async function updateClientServicesUseCase(
 export async function getServicesByClientIdUseCase(clientId: ClientId) {
   const clientServices = await getServicesByClientId(clientId);
   return clientServices;
+}
+
+export async function getClientsByServiceIdUseCase(serviceId: ServicesId) {
+  const serviceClients = await getClientsByServiceId(serviceId);
+  return serviceClients;
 }
