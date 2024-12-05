@@ -66,45 +66,51 @@ export default async function ClientInfoPage({
                     </span>
                     <span className="capitalize">{client.business_name}</span>
                   </p>
-                  <p className="truncate flex items-center">
-                    <span className="text-muted-foreground mr-1 flex items-center">
+                  <p className="flex flex-col items-start">
+                    <span className="text-muted-foreground mr-1 flex items-start">
                       Email:
                     </span>
-                    {client.primary_email}
-                    <CopyToClipboardButton
-                      className="text-blue-500"
-                      text={client.primary_email}
-                    />
+                    <span className="flex items-center">
+                      <span className="flex items-center">
+                        {client.primary_email}
+                        <CopyToClipboardButton
+                          className="text-blue-500 ml-1"
+                          text={client.primary_email}
+                        />
+                      </span>
+                    </span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className=" flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Phone:
                     </span>
-                    {client.primary_phone}
+                    <span className="mt-1">{client.primary_phone}</span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className="  flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Address:
                     </span>
-                    {client.primary_address}
+                    <span className="mt-1">{client.primary_address}</span>
                   </p>
-                  <p className="truncate flex items-center">
-                    <span className="text-muted-foreground mr-1 flex items-center">
+                  <p className="flex flex-col items-start">
+                    <span className="text-muted-foreground mr-1 items-center">
                       Description:
                     </span>
-                    {client.business_description}
+                    <span className="mt-1"> {client.business_description}</span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className=" flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Date Onboarded:
                     </span>
-                    {client.date_onboarded.toDateString()}
+                    <span className="mt-1">
+                      {client.date_onboarded.toDateString()}
+                    </span>
                   </p>
-                  <p className="truncate flex items-center">
-                    <span className="text-muted-foreground mr-1 flex items-center">
+                  <p className=" flex flex-col items-start">
+                    <span className="text-muted-foreground mr-1 flex items-center whitespace-nowrap">
                       Additional Info:
                     </span>
-                    {client.additional_info}
+                    <span className="mt-1"> {client.additional_info}</span>
                   </p>
                 </div>
 

@@ -255,7 +255,8 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <div className="flex m-1 justify-end ">
+                  <div className="flex m-1 ">
+                    <div className="flex-1"></div>
                     <PopoverClose>
                       <X
                         size={24}
@@ -266,8 +267,12 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
                   <Calendar
                     mode="single"
                     selected={field.value}
+                    defaultMonth={field.value}
                     onSelect={handleOnSelect}
-                    initialFocus
+                    weekStartsOn={1}
+                    fixedWeeks
+                    showOutsideDays
+                    captionLayout="dropdown-buttons"
                   />
                 </PopoverContent>
               </Popover>

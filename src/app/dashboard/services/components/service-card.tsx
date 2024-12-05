@@ -17,10 +17,10 @@ export function ServiceCard({ service }: { service: Services }) {
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <p className="truncate flex">
-            <span className="text-muted-foreground mr-1 flex items-center mb-2">
+          <p className="text-sm text-muted-foreground line-clamp-3">
+            {/* <span className="text-muted-foreground mr-1 flex items-center mb-2">
               Description:
-            </span>
+            </span> */}
             {service.description}
           </p>
         </div>

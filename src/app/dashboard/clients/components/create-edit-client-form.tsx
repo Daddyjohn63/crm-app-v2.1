@@ -334,6 +334,7 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <div className="flex m-1 justify-end ">
+                    <div className="flex-1"></div>
                     <PopoverClose>
                       <X
                         size={24}
@@ -343,9 +344,15 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
                   </div>
                   <Calendar
                     mode="single"
+                    defaultMonth={field.value}
                     selected={field.value}
                     onSelect={handleOnSelect}
                     initialFocus
+                    fixedWeeks
+                    weekStartsOn={1}
+                    fromDate={new Date(new Date().getFullYear() - 30, 0, 1)} // 10 years ago
+                    toDate={new Date(new Date().getFullYear() + 10, 11, 31)} // 10 years from now
+                    captionLayout="dropdown-buttons"
                   />
                 </PopoverContent>
               </Popover>

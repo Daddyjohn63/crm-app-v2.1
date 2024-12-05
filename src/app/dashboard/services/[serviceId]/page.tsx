@@ -14,8 +14,6 @@ import { cn } from '@/lib/utils';
 import DeleteServiceButton from '../components/delete-service-button';
 import { NotFoundError } from '@/app/util';
 import CreateEditServiceButton from '../create-edit-service-button';
-import { Button } from '@/components/ui/button';
-import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 
 export default async function ServicePage({
   params
@@ -46,38 +44,38 @@ export default async function ServicePage({
                 <CardTitle>Service Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4 text-sm ">
-                  <p className="truncate flex items-center">
-                    <span className=" text-muted-foreground mr-1 flex items-center">
+                <div className="flex flex-col space-y-4 text-sm ">
+                  <p className=" flex flex-col items-start">
+                    <span className=" text-muted-foreground mr-1 flex items-start">
                       Service name:
                     </span>
-                    <span className="capitalize">
+                    <span className="capitalize mt-1">
                       {service.name.replace(/_/g, ' ')}
                     </span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className="flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Description:
                     </span>
-                    {service.description}
+                    <span className="mt-1">{service.description}</span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className="flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Included services:
                     </span>
-                    {service.included_services}
+                    <span className="mt-1">{service.included_services}</span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className="flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Delivery process:
                     </span>
-                    {service.delivery_process}
+                    <span className="mt-1">{service.delivery_process}</span>
                   </p>
-                  <p className="truncate flex items-center">
+                  <p className="flex flex-col items-start">
                     <span className="text-muted-foreground mr-1 flex items-center">
                       Pricing:
                     </span>
-                    {service.pricing}
+                    <span className="mt-1">{service.pricing}</span>
                   </p>
                 </div>
 
