@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import { sessions } from '@/db/schema';
+import { sessions } from '@/db1/schema';
 import { UserId } from '@/use-cases/types';
 import { eq } from 'drizzle-orm';
 

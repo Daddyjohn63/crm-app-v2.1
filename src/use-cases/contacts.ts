@@ -1,4 +1,4 @@
-import { ClientId, NewContact, ContactId, Contact } from '@/db/schema';
+import { ClientId, NewContact, ContactId, Contact } from '@/db1/schema';
 import { UserSession } from './types';
 
 import { AuthenticationError, NotFoundError } from '@/app/util';

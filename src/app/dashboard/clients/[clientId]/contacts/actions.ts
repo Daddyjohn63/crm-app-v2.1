@@ -10,7 +10,7 @@ import {
 } from '@/use-cases/clients';
 import { revalidatePath } from 'next/cache';
 
-import { NewClient, NewClientInput, NewContactInput } from '@/db/schema';
+import { NewClient, NewClientInput, NewContactInput } from '@/db1/schema';
 //import { schema } from './validation';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';

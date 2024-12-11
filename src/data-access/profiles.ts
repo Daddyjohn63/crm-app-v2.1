@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import { Profile, profiles } from '@/db/schema';
+import { Profile, profiles } from '@/db1/schema';
 import { UserId } from '@/use-cases/types';
 import { eq } from 'drizzle-orm';
 

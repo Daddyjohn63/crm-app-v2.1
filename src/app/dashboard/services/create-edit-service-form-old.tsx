@@ -21,7 +21,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
-import { NewServices } from '@/db/schema';
+import { NewServices } from '@/db1/schema';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 import { Textarea } from '@/components/ui/textarea';
 import { createServiceAction, editServiceAction } from './actions';

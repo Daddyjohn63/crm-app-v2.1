@@ -1,4 +1,4 @@
-import { NewServiceInput } from '@/db/schema';
+import { NewServiceInput } from '@/db1/schema';
 import { UserSession } from './types';
 import {
   createService,

@@ -1,4 +1,4 @@
-import { Services } from '@/db/schema';
+import { Services } from '@/db1/schema';
 import { cn } from '@/lib/utils';
 import { headerStyles, pageTitleStyles } from '@/styles/common';
 

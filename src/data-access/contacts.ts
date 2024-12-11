@@ -9,7 +9,7 @@ import {
   NewContact,
   Contact,
   User
-} from '@/db/schema';
+} from '@/db1/schema';
 import { asc, eq, ilike, sql, and, inArray } from 'drizzle-orm';
 import { UserId, UserSession } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';

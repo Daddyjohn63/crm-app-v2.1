@@ -3,7 +3,7 @@
 //call create event
 //handle errors
 //when it comes to editing , I need to make sure that the user is entitled to edit that client
-import { ClientId, NewClient, ServicesId } from '@/db/schema';
+import { ClientId, NewClient, ServicesId } from '@/db1/schema';
 import { SalesStage, SalesStageFilter, UserSession } from './types';
 import {
   createClient,

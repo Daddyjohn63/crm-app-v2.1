@@ -4,13 +4,13 @@ import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase
 } from '@oslojs/encoding';
-import { Session, sessions, User, users } from '@/db/schema';
+import { Session, sessions, User, users } from '@/db1/schema';
 import { env } from '@/env';
 import { eq } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { UserId } from './use-cases/types';
 import { getSessionToken } from './lib/session';
-import { database } from './db/drizzle';
+import { database } from './db1';
 
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;

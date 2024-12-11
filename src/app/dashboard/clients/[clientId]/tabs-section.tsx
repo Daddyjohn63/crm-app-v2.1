@@ -1,7 +1,7 @@
 'use client';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Client } from '@/db/schema';
+import { Client } from '@/db1/schema';
 import { cn } from '@/lib/utils';
 import { tabStyles } from '@/styles/common';
 import Link from 'next/link';

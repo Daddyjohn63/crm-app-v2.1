@@ -6,7 +6,7 @@ import {
   ServicesId,
   clients,
   services
-} from '@/db/schema';
+} from '@/db1/schema';
 import { asc, eq, ilike, sql, and, desc, inArray } from 'drizzle-orm';
 import {
   SALES_STAGE_FILTER_OPTIONS,
@@ -15,7 +15,7 @@ import {
   UserId
 } from '@/use-cases/types';
 import { NotFoundError } from '@/app/util';
-import { clientsToServices } from '@/db/schema';
+import { clientsToServices } from '@/db1/schema';
 
 export async function createClient(newClient: NewClient) {
   const [client] = await database.insert(clients).values(newClient).returning();

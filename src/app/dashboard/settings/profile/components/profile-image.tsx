@@ -1,4 +1,4 @@
-import { Profile } from '@/db/schema';
+import { Profile } from '@/db1/schema';
 import { ProfileImageForm } from './profile-image-form';
 import { getCurrentUser } from '@/lib/session';
 import { getProfileImageUrl } from '@/use-cases/users';

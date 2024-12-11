@@ -1,4 +1,4 @@
-import { ClientId } from '@/db/schema';
+import { ClientId } from '@/db1/schema';
 import { UserId } from './types';
 import { uploadFileToBucket } from '@/lib/files';
 import { PublicError } from './errors';

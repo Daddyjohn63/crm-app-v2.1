@@ -45,7 +45,7 @@ import { CalendarIcon, CheckIcon, X } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { LoaderButton } from '@/components/loader-button';
 import { btnIconStyles } from '@/styles/icons';
-import { salesStageEnum, User } from '@/db/schema';
+import { salesStageEnum, User } from '@/db1/schema';
 import { SALES_STAGES, SalesStage } from '@/use-cases/types';
 const FormSchema = z.object({
   business_name: z.string().min(1, {
