@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 import {
   Body,
@@ -11,11 +11,11 @@ import {
   Preview,
   Section,
   Tailwind,
-  Text,
-} from "@react-email/components";
+  Text
+} from '@react-email/components';
 
-import { env } from "@/env";
-import { applicationName } from "@/app-config";
+import { env } from '@/env';
+import { applicationName } from '@/app-config';
 
 export const BASE_URL = env.HOST_NAME;
 
@@ -33,7 +33,7 @@ export function ResetPasswordEmail({ token }: { token: string }) {
                   src={`${BASE_URL}/group.jpeg`}
                   width="160"
                   height="48"
-                  alt="StarterKit"
+                  alt="CRM Buddy"
                   className="my-0 mx-auto"
                 />
               </Section>
