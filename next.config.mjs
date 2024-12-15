@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   experimental: {
+    output: 'standalone',
     serverComponentsExternalPackages: ['@aws-sdk/s3-request-presigner']
   },
   images: {
