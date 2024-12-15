@@ -38,7 +38,7 @@ async function ProfileImageContent() {
 
   return (
     <div className="flex flex-col sm:items-center">
-      <img
+      <Image
         src={getProfileImageFullUrl(profile)}
         width={200}
         height={200}
