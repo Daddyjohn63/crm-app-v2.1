@@ -37,6 +37,12 @@ const nextConfig = {
         hostname:
           'crm-buddy-database-next-js14-crm-buddy.fbhmyq.easypanel.host',
         pathname: '/api/users/**'
+      },
+      {
+        protocol: 'https',
+        hostname:
+          'crm-buddy-database-next-js14-crm-buddy.fbhmyq.easypanel.host',
+        pathname: '/api/clients/**'
       }
     ]
   }

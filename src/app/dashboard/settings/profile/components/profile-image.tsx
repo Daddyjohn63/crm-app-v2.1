@@ -39,8 +39,9 @@ async function ProfileImageContent() {
   return (
     <div className="flex flex-col sm:items-center">
       <Image
-        src={getProfileImageFullUrl(profile)}
+        //src={getProfileImageFullUrl(profile)}
         width={200}
+        src="https://crm-buddy-database-next-js14-crm-buddy.fbhmyq.easypanel.host/api/users/1/images/e9d7901e-6ec3-4ff8-bf27-0c05288fd91b"
         height={200}
         className="h-[200px] sm:h-[200px] w-full object-cover rounded-xl mb-4 sm:mb-6"
         alt="Profile image"
