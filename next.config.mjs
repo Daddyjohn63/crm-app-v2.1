@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
 
   experimental: {
-    output: 'standalone',
     serverComponentsExternalPackages: ['@aws-sdk/s3-request-presigner']
   },
   images: {
