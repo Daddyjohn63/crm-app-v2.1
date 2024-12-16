@@ -31,6 +31,12 @@ const nextConfig = {
         hostname: '*.r2.cloudflarestorage.com',
         port: '',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname:
+          'crm-buddy-database-next-js14-crm-buddy.fbhmyq.easypanel.host',
+        pathname: '/api/users/**'
       }
     ]
   }
