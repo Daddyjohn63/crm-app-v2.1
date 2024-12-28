@@ -1,6 +1,6 @@
 {
-  "id": "e422fcd8-5259-4cf5-b452-9ce7c5941411",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8faed9a1-02a3-4d7b-8259-19addde4b8d8",
+  "prevId": "e422fcd8-5259-4cf5-b452-9ce7c5941411",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -889,19 +889,19 @@
         },
         "service_description": {
           "name": "service_description",
-          "type": "varchar(500)",
+          "type": "varchar(3500)",
           "primaryKey": false,
           "notNull": true
         },
         "included_services": {
           "name": "included_services",
-          "type": "varchar(500)",
+          "type": "varchar(2000)",
           "primaryKey": false,
           "notNull": false
         },
         "deleivery_process": {
           "name": "deleivery_process",
-          "type": "varchar(500)",
+          "type": "varchar(3000)",
           "primaryKey": false,
           "notNull": false
         },
