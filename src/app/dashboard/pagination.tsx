@@ -23,6 +23,7 @@ export function ClientPagination({
   return (
     <Pagination>
       <PaginationContent>
+        {/* Render previous page link if current page is greater than 1 */}
         {page > 1 && (
           <>
             <PaginationItem>
@@ -33,12 +34,14 @@ export function ClientPagination({
               />
             </PaginationItem>
 
+            {/* Render ellipsis if there are more than two pages before the current page */}
             {page > 2 && (
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
             )}
 
+            {/* Render link to the previous page */}
             <PaginationItem>
               <PaginationLink
                 isActive={false}
@@ -52,14 +55,17 @@ export function ClientPagination({
           </>
         )}
 
+        {/* Render link for the current page, marked as active */}
         <PaginationItem>
           <PaginationLink isActive={true} href={`/dashboard?page=${page}`}>
             {page}
           </PaginationLink>
         </PaginationItem>
 
+        {/* Render next page link if current page is less than total pages */}
         {page < totalPages && (
           <>
+            {/* Render link to the next page */}
             <PaginationItem>
               <PaginationLink
                 href={`/dashboard?page=${
@@ -70,12 +76,14 @@ export function ClientPagination({
               </PaginationLink>
             </PaginationItem>
 
+            {/* Render ellipsis if there are more than two pages after the current page */}
             {page < totalPages - 1 && (
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
             )}
 
+            {/* Render next page link */}
             <PaginationItem>
               <PaginationNext
                 href={`/dashboard?page=${
