@@ -42,8 +42,8 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
             asChild
             className="flex items-center justify-center gap-2"
           >
-            <Link href={'/docs'}>
-              <BookIcon className="w-4 h-4" /> API Docs
+            <Link href={'/dashboard/projects'}>
+              <BookIcon className="w-4 h-4" /> Projects
             </Link>
           </Button>
         </div>
