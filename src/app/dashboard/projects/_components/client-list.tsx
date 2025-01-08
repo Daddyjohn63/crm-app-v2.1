@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { getCurrentUser } from '@/lib/session';
-import { getClientsByUser } from '@/data-access/clients';
+import { getClientBoardsByUserId } from '@/data-access/projects';
 import { Sidebar } from './sidebar';
 import { redirect } from 'next/navigation';
 
@@ -14,9 +14,9 @@ async function ClientListContent() {
   if (!user) {
     redirect('/sign-in');
   }
-  //TODO. NEED A USE-CASE HERE, NOT ACCESSING DB LAYER DIRECTLY. WE WILL NEED TO DO CHECKS TO SEE IF USER HAS PERMSISSION TO VIEW THE PROJECT.
-  const clients = await getClientsByUser(user.id);
-  return <Sidebar clients={clients} />;
+
+  const clientsWithBoards = await getClientBoardsByUserId(user.id);
+  return <Sidebar clients={clientsWithBoards} />;
 }
 
 export function ClientList() {

@@ -3,6 +3,7 @@ import type { Board, NewBoard } from '@/db/schema/projects';
 import { eq, and } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
+import { clients } from '@/db/schema/base';
 
 // Raw database types
 export type CreateBoardInput = Omit<NewBoard, 'id' | 'createdAt' | 'updatedAt'>;
@@ -108,4 +109,87 @@ export async function deleteBoardPermission(
         eq(boardPermissions.userId, userId)
       )
     );
+}
+
+// Function to get all clients and their project boards for a specific user
+// Returns an array of clients, each containing their basic info and an array of their boards
+export async function getClientBoardsByUserId(
+  userId: number,
+  trx = database
+): Promise<
+  Array<{
+    clientId: number;
+    clientName: string;
+    boards: Array<{
+      id: number;
+      name: string;
+      description: string | null;
+    }>;
+  }>
+> {
+  // Query the database to get all clients and their boards (if any)
+  // Using LEFT JOIN to ensure we get ALL clients, even those without boards
+  const result = await trx
+    .select({
+      clientId: clients.id,
+      clientName: clients.business_name,
+      boardId: boards.id, // Will be null for clients without boards
+      boardName: boards.name,
+      boardDescription: boards.description
+    })
+    .from(clients)
+    .leftJoin(boards, eq(boards.clientId, clients.id)) // LEFT JOIN keeps all clients, matches boards where available
+    .where(eq(clients.userId, userId));
+
+  // Transform the flat query results into a nested structure
+  // We need to group boards under their respective clients
+  const clientBoards = result.reduce(
+    (acc, row) => {
+      // Check if we've already added this client to our accumulator
+      const existingClient = acc.find(
+        (c: { clientId: number }) => c.clientId === row.clientId
+      );
+
+      if (existingClient) {
+        // If client exists and this row has a board, add it to the client's boards
+        if (row.boardId && row.boardName) {
+          existingClient.boards.push({
+            id: row.boardId,
+            name: row.boardName,
+            description: row.boardDescription
+          });
+        }
+      } else {
+        // If client doesn't exist in our accumulator, add them
+        // If this row has a board, include it, otherwise use empty array
+        acc.push({
+          clientId: row.clientId,
+          clientName: row.clientName,
+          boards:
+            row.boardId && row.boardName
+              ? [
+                  {
+                    id: row.boardId,
+                    name: row.boardName,
+                    description: row.boardDescription
+                  }
+                ]
+              : [] // Empty array for clients with no boards
+        });
+      }
+
+      return acc;
+    },
+    [] as Array<{
+      clientId: number;
+      clientName: string;
+      boards: Array<{
+        id: number;
+        name: string;
+        description: string | null;
+      }>;
+    }>
+  );
+
+  return clientBoards;
 }
