@@ -23,12 +23,12 @@ export async function createClient(newClient: NewClient) {
 }
 
 export async function getClientsByUser(userId: UserId) {
-  // console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
+  console.log('GET-CLIENTS-BY-USER-CHECK', userId); //yes, userId is correct
   const userClients = await database.query.clients.findMany({
     where: eq(clients.userId, userId),
     orderBy: [desc(clients.id)]
   });
-  //  console.log('FOUND CLIENTS:', userClients);
+  console.log('FOUND CLIENTS:', userClients);
   return userClients;
 }
 

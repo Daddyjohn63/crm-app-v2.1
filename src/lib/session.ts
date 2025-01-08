@@ -38,6 +38,7 @@ export const getCurrentUser = cache(async () => {
 
 export const assertAuthenticated = async () => {
   const user = await getCurrentUser();
+  console.log('USER FROM ASSERT AUTHENTICATED', user);
   if (!user) {
     throw new AuthenticationError();
   }
