@@ -57,10 +57,10 @@ export const Sidebar = ({
   }
 
   return (
-    <aside className="flex flex-col w-64 h-[calc(100vh-65px)] border-r border-gray-200 overflow-hidden">
-      <div className="font-medium text-xs flex items-center mb-1 border-b border-t border-gray-200 py-2 border-r-2 border-l-2">
-        <span className="pl-4">Projects</span>
-        <Button
+    <aside className="flex flex-col w-64 h-[calc(100vh-65px)] overflow-hidden">
+      <div className="font-medium flex items-center mt-8 mb-1   py-2 ">
+        <span className="">Projects by Client</span>
+        {/* <Button
           asChild
           type="button"
           variant="ghost"
@@ -70,7 +70,7 @@ export const Sidebar = ({
           <Link href="/dashboard/projects/new">
             <Plus className="w-4 h-4" />
           </Link>
-        </Button>
+        </Button> */}
       </div>
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         <Accordion

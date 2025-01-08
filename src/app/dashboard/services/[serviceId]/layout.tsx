@@ -8,7 +8,7 @@ import {
 import { NotFoundError } from '@/app/util';
 import { notFound, redirect } from 'next/navigation';
 import { getServiceByIdUseCase } from '@/use-cases/services';
-import { ServiceHeader } from '../components/service-header';
+import { ServiceHeader } from '../_components/service-header';
 import { toast } from '@/components/ui/use-toast';
 
 export default async function ServiceLayout({

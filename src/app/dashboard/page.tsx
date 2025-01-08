@@ -6,7 +6,7 @@
 //if we have clients, render clientCard component.pass in props client count, client, client.id and some button text 'view client.
 
 import { assertAuthenticated } from '@/lib/session';
-import { CreateEditClientButton } from './clients/components/create-client-button';
+import { CreateEditClientButton } from './clients/_components/create-client-button';
 import { getClientsUseCase, searchClientsUseCase } from '@/use-cases/clients';
 import {
   cardStyles,
@@ -17,7 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Search, XIcon } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
-import { ClientCard } from './clients/components/client-card';
+import { ClientCard } from './clients/_components/client-card';
 import { redirect } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ import {
   SalesStageFilter,
   UserSession
 } from '@/use-cases/types';
-import { SearchFilterForm } from './clients/components/search-filter-form';
+import { SearchFilterForm } from './clients/_components/search-filter-form';
 
 export default async function DashboardPage({
   searchParams

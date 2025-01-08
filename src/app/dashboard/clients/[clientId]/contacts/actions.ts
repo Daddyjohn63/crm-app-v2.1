@@ -128,7 +128,7 @@ export const deleteContactRowAction = authenticatedAction
   .input(z.object({ clientId: z.number(), rowIds: z.array(z.number()) }))
   .handler(async ({ input: { clientId, rowIds }, ctx: { user } }) => {
     // Delete multiple rows
-    console.log(`Deleting rows with IDs: ${rowIds.join(', ')}`);
+    //console.log(`Deleting rows with IDs: ${rowIds.join(', ')}`);
     await deleteContactsUseCase(user, clientId, rowIds);
     revalidatePath(`/dashboard/clients/${clientId}/contacts`);
     return { success: true };

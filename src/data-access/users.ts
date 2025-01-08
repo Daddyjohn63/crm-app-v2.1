@@ -67,18 +67,18 @@ export async function createMagicUser(email: string) {
 
 export async function verifyPassword(email: string, plainTextPassword: string) {
   const user = await getUserByEmail(email);
-  console.log('user from data access', user); //correct, finds the right user id
+  // console.log('user from data access', user); //correct, finds the right user id
 
   if (!user) {
-    console.log('No user found for email:', email);
+    //console.log('No user found for email:', email);
     return false;
   }
 
   const account = await getAccountByUserId(user.id);
-  console.log('account from data access', account); //correct, finds the incorrect account. There are 2 accounts for this user, one for their email and one for Google Auth.
+  // console.log('account from data access', account); //correct, finds the incorrect account. There are 2 accounts for this user, one for their email and one for Google Auth.
 
   if (!account) {
-    console.log('No account found for user:', user.id);
+    // console.log('No account found for user:', user.id);
     return false;
   }
 
@@ -86,13 +86,13 @@ export async function verifyPassword(email: string, plainTextPassword: string) {
   const savedPassword = account.password;
 
   if (!salt || !savedPassword) {
-    console.log('Missing salt or password for account:', account.id);
+    //console.log('Missing salt or password for account:', account.id);
     return false;
   }
 
   const hash = await hashPassword(plainTextPassword, salt);
   const matches = account.password === hash;
-  console.log('Password verification result:', matches);
+  //console.log('Password verification result:', matches);
   return matches;
 }
 

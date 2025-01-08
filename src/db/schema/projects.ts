@@ -5,11 +5,12 @@ import {
   boolean,
   pgTable,
   integer,
-  index
+  index,
+  uniqueIndex
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { users, clients } from './base';
-import { actionEnum, entityTypeEnum } from './enums';
+import { actionEnum, entityTypeEnum, boardPermissionEnum } from './enums';
 
 // Boards Schema
 export const boards = pgTable('boards', {
@@ -25,6 +26,60 @@ export const boards = pgTable('boards', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 });
+
+// Board Permissions Schema
+export const boardPermissions = pgTable(
+  'board_permissions',
+  {
+    id: serial('id').primaryKey(),
+    boardId: serial('board_id')
+      .notNull()
+      .references(() => boards.id, { onDelete: 'cascade' }),
+    userId: serial('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    permissionLevel: boardPermissionEnum('permission_level').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
+  },
+  table => {
+    return {
+      // Ensure unique board-user combination
+      boardUserIdx: uniqueIndex('board_user_idx').on(
+        table.boardId,
+        table.userId
+      )
+    };
+  }
+);
+
+// Define relations
+export const boardsRelations = relations(boards, ({ many, one }) => ({
+  lists: many(lists),
+  permissions: many(boardPermissions),
+  client: one(clients, {
+    fields: [boards.clientId],
+    references: [clients.id]
+  }),
+  owner: one(users, {
+    fields: [boards.userId],
+    references: [users.id]
+  })
+}));
+
+export const boardPermissionsRelations = relations(
+  boardPermissions,
+  ({ one }) => ({
+    board: one(boards, {
+      fields: [boardPermissions.boardId],
+      references: [boards.id]
+    }),
+    user: one(users, {
+      fields: [boardPermissions.userId],
+      references: [users.id]
+    })
+  })
+);
 
 // Lists Schema
 export const lists = pgTable('lists', {
@@ -111,18 +166,6 @@ export const auditLogs = pgTable(
 );
 
 // Relations
-export const boardsRelations = relations(boards, ({ one, many }) => ({
-  client: one(clients, {
-    fields: [boards.clientId],
-    references: [clients.id]
-  }),
-  user: one(users, {
-    fields: [boards.userId],
-    references: [users.id]
-  }),
-  lists: many(lists)
-}));
-
 export const listsRelations = relations(lists, ({ one, many }) => ({
   board: one(boards, {
     fields: [lists.boardId],

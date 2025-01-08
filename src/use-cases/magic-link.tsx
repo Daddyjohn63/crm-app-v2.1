@@ -29,7 +29,7 @@ export async function sendMagicLinkUseCase(email: string) {
 
 export async function loginWithMagicLinkUseCase(token: string) {
   const magicLinkInfo = await getMagicLinkByToken(token);
-  console.log('magicLinkInfo', magicLinkInfo);
+  //console.log('magicLinkInfo', magicLinkInfo);
 
   if (magicLinkInfo) {
     assertUserAllowed(magicLinkInfo.email);

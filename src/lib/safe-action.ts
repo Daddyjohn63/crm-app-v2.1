@@ -28,7 +28,7 @@ export const authenticatedAction = createServerActionProcedure()
   .experimental_shapeError(shapeErrors)
   .handler(async () => {
     const user = await assertAuthenticated();
-    console.log('USER FROM AUTHENTICATED ACTION', user);
+    // console.log('USER FROM AUTHENTICATED ACTION', user);
     await rateLimitByKey({
       key: `${user.id}-global`,
       limit: 10,

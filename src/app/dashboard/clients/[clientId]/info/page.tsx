@@ -6,7 +6,7 @@ import {
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
 import { User } from '@/db/schema/index';
-import { DeleteClientButton } from '@/app/dashboard/clients/components/delete-client-button';
+import { DeleteClientButton } from '@/app/dashboard/clients/_components/delete-client-button';
 import { cn } from '@/lib/utils';
 import { cardStyles } from '@/styles/common';
 import {
@@ -18,12 +18,12 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import ClientToServiceButton from '../../components/add-client-service-button';
+import ClientToServiceButton from '../../_components/add-client-service-button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CreateEditClientButton } from '../../components/create-client-button';
+import { CreateEditClientButton } from '../../_components/create-client-button';
 import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?

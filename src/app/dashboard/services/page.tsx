@@ -5,7 +5,7 @@ import { assertAuthenticated } from '@/lib/session';
 import { getServicesUseCase } from '@/use-cases/services';
 import { Services } from '@/db/schema/index';
 import Link from 'next/link';
-import { ServiceCard } from './components/service-card';
+import { ServiceCard } from './_components/service-card';
 
 interface CreateEditServiceButtonProps {
   serviceId: string | null | undefined;

@@ -1,27 +1,27 @@
 import { create } from 'zustand';
 
-interface ServiceOverlayStore {
+interface ProjectOverlayStore {
   isOpen: boolean;
-  serviceId: number | null;
+  projectId: number | null;
   setIsOpen: (isOpen: boolean) => void;
-  setServiceId: (id: number | null) => void;
+  setProjectId: (id: number | null) => void;
   reset: () => void;
 }
 
-export const useServiceOverlayStore = create<ServiceOverlayStore>(set => ({
+export const useProjectOverlayStore = create<ProjectOverlayStore>(set => ({
   //initial state
   isOpen: false,
-  serviceId: null,
+  projectId: null,
 
   //function that takes a boolean and sets the isOpen state to that value.
   setIsOpen: (isOpen: boolean) => set({ isOpen }),
 
   //function that takes an id and sets the contactId state to that value.
-  setServiceId: id => {
+  setProjectId: id => {
     // console.log('Setting serviceId in store:', id);
-    set({ serviceId: id });
+    set({ projectId: id });
   },
 
   //function to reset the store to its initial state
-  reset: () => set({ isOpen: false, serviceId: null })
+  reset: () => set({ isOpen: false, projectId: null })
 }));

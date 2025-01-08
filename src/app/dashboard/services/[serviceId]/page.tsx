@@ -12,7 +12,7 @@ import { getCurrentUser } from '@/lib/session';
 import { notFound } from 'next/navigation';
 import { getServiceByIdUseCase } from '@/use-cases/services';
 import { cn } from '@/lib/utils';
-import DeleteServiceButton from '../components/delete-service-button';
+import DeleteServiceButton from '../_components/delete-service-button';
 import { NotFoundError } from '@/app/util';
 import CreateEditServiceButton from '../create-edit-service-button';
 import { getClientsByServiceIdUseCase } from '@/use-cases/clients';

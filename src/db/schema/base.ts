@@ -13,25 +13,14 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
-
-export const roleEnum = pgEnum('role', ['member', 'admin']);
-export const accountTypeEnum = pgEnum('type', ['email', 'google', 'github']);
-
-export const salesStageEnum = pgEnum('sales_stage', [
-  'lead',
-  'prospect',
-  'qualified_opportunity',
-  'proposal',
-  'negotiation',
-  'closed_won',
-  'closed_lost'
-]);
+import { roleEnum, accountTypeEnum, salesStageEnum } from './enums';
 
 //users table
 export const users = pgTable('crm_user', {
   id: serial('id').primaryKey(),
   email: text('email').unique(),
-  emailVerified: timestamp('emailVerified', { mode: 'date' })
+  emailVerified: timestamp('emailVerified', { mode: 'date' }),
+  role: roleEnum('role').notNull().default('admin')
 });
 //how the user has chosen to sign in. It references the users table. The relationship is on the userId column.It is a one to one relationship.
 export const accounts = pgTable(

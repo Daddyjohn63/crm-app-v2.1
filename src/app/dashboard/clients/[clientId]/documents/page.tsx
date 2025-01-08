@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, FileIcon } from 'lucide-react';
 
-import { UploadDocumentButton } from '../../components/upload-document-button';
-import { UploadDocumentModal } from '../../components/upload-document-modal';
+import { UploadDocumentButton } from '../../_components/upload-document-button';
+import { UploadDocumentModal } from '../../_components/upload-document-modal';
 import { getDocuments } from '@/data-access/documents';
 import { getFileUrl } from '@/lib/files';
 import { getDocumentKey } from '@/use-cases/documents';
-import { DeleteDocumentButton } from '../../components/delete-document-button';
+import { DeleteDocumentButton } from '../../_components/delete-document-button';
 //import { DeleteDocumentButton } from '../../components/delete-document-button';
 
 export default async function DocumentsPage({
