@@ -1,6 +1,6 @@
 'use client';
 
-// import { ClientId } from '@/db/schema';
+// import { ClientId } from '@/db/schema/index';
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,7 +26,7 @@ import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
 import { useClientIdParam } from '@/util/safeparam';
-// import { User } from '@/db/schema';
+// import { User } from '@/db/schema/index';
 // import { assertAuthenticated } from '@/lib/session';
 // import { useEffect } from 'react';
 

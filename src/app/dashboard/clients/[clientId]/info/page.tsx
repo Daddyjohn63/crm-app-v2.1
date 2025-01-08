@@ -5,7 +5,7 @@ import {
 } from '@/use-cases/clients';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
-import { User } from '@/db/schema';
+import { User } from '@/db/schema/index';
 import { DeleteClientButton } from '@/app/dashboard/clients/components/delete-client-button';
 import { cn } from '@/lib/utils';
 import { cardStyles } from '@/styles/common';

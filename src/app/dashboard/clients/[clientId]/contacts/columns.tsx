@@ -5,7 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import ColumnActions from './column-actions';
-// import { ContactWithStringId as Contact } from '@/db/schema';
+// import { ContactWithStringId as Contact } from '@/db/schema/index';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Contacts = {

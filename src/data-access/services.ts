@@ -4,7 +4,7 @@ import {
   NewServices,
   services,
   ServicesId
-} from '@/db/schema';
+} from '@/db/schema/index';
 import { UserId } from '@/use-cases/types';
 import { and, eq } from 'drizzle-orm';
 

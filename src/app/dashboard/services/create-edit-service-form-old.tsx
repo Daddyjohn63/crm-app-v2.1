@@ -1,6 +1,5 @@
 'use client';
 
-// import { ClientId } from '@/db/schema';
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -21,7 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { PersonStanding, Terminal } from 'lucide-react';
 import { btnIconStyles } from '@/styles/icons';
 import { useOverlayStore } from '@/store/overlayStore';
-import { NewServices } from '@/db/schema';
+import { NewServices } from '@/db/schema/index';
 import { useServiceOverlayStore } from '@/store/serviceOverlayStore';
 import { Textarea } from '@/components/ui/textarea';
 import { createServiceAction, editServiceAction } from './actions';

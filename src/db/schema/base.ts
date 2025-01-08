@@ -347,6 +347,7 @@ export type Client = typeof clients.$inferSelect;
 export type NewClient = typeof clients.$inferInsert; // Ensure this line is correct
 export type NewClientInput = Omit<NewClient, 'id' | 'createdAt' | 'updatedAt'>;
 export type User = typeof users.$inferSelect;
+export type Account = typeof accounts.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;

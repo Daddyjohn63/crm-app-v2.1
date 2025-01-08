@@ -1,4 +1,4 @@
-import { Client } from '@/db/schema';
+import { Client } from '@/db/schema/index';
 import { getCurrentUser } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { headerStyles, pageTitleStyles } from '@/styles/common';

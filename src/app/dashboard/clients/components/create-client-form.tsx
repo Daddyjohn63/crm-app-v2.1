@@ -36,7 +36,7 @@ import { CalendarIcon, CheckIcon, X } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { LoaderButton } from '@/components/loader-button';
 import { btnIconStyles } from '@/styles/icons';
-import { User } from '@/db/schema';
+import { User } from '@/db/schema/index';
 
 //const stripHtml = (str: string) => str.replace(/<[^>]*>/g, '');
 

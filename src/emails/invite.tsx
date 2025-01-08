@@ -15,7 +15,7 @@ import {
 } from '@react-email/components';
 
 import { env } from '@/env';
-import { Client } from '@/db/schema';
+import { Client } from '@/db/schema/index';
 import { applicationName } from '@/app-config';
 
 export const BASE_URL = env.HOST_NAME;

@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import { User, accounts, users } from '@/db/schema';
+import { accounts, users, type User } from '@/db/schema/index';
 import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 import { UserId } from '@/use-cases/types';

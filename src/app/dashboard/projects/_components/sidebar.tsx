@@ -10,7 +10,7 @@ import {
   AccordionTrigger,
   AccordionContent
 } from '@/components/ui/accordion';
-import { Client } from '@/db/schema';
+import { Client } from '@/db/schema/index';
 import { useEffect, useState } from 'react';
 
 //storageKey will be used to store the state of the accordion i.e. open or closed. will use this to stop the accordion from collapsing after a rerender.

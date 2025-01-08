@@ -1,4 +1,4 @@
-import { Client } from '@/db/schema';
+import { Client } from '@/db/schema/index';
 import { cn } from '@/lib/utils';
 import { cardStyles } from '@/styles/common';
 import {

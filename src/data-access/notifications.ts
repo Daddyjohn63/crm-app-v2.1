@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import { ClientId, Notification, notifications } from '@/db/schema';
+import { ClientId, Notification, notifications } from '@/db/schema/index';
 import { UserId } from '@/use-cases/types';
 import { and, eq } from 'drizzle-orm';
 

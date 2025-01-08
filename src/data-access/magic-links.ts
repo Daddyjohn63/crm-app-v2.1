@@ -1,7 +1,7 @@
 import { TOKEN_LENGTH, TOKEN_TTL } from '@/app-config';
 import { generateRandomToken } from '@/data-access/utils';
 import { database } from '@/db/drizzle';
-import { magicLinks } from '@/db/schema';
+import { magicLinks } from '@/db/schema/index';
 import { eq } from 'drizzle-orm';
 
 export async function upsertMagicLink(email: string) {

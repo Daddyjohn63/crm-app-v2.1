@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { CreateEditClientForm } from './create-edit-client-form';
-import { User } from '@/db/schema';
+import { User } from '@/db/schema/index';
 
 export function CreateEditClientButton({
   params,
