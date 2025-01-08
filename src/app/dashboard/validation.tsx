@@ -23,37 +23,6 @@ export const schema = z.object({
   additional_info: z.string().optional()
 });
 
-// export const schema = z.object({
-//   business_name: z
-//     .string()
-//     .min(1, { message: 'Business name must be at least 6 characters.' })
-//     .transform(sanitizeUserInput),
-//   primary_address: z
-//     .string()
-//     .min(1, { message: 'You must enter a business address.' })
-//     .transform(sanitizeUserInput),
-//   primary_email: z
-//     .string()
-//     .email()
-//     .min(4, { message: 'You must enter an email address' })
-//     .transform(sanitizeUserInput),
-//   primary_phone: z
-//     .string()
-//     .min(1, { message: 'You must enter a phone number.' })
-//     .transform(sanitizeUserInput),
-//   business_description: z
-//     .string()
-//     .min(1, { message: 'You must enter a business description.' })
-//     .transform(sanitizeUserInput),
-//   date_onboarded: z.date({
-//     message: 'You must enter a date'
-//   }),
-//   additional_info: z
-//     .string()
-//     .min(1, { message: 'You must enter some additional information.' })
-//     .transform(sanitizeUserInput)
-// });
-
 export const contactSchema = z.object({
   last_name: z.string().min(1),
   first_name: z.string().min(1),
@@ -73,4 +42,11 @@ export const serviceSchema = z.object({
   included_services: z.string().optional(),
   delivery_process: z.string().optional(),
   pricing: z.string().optional()
+});
+
+// Project Schema
+export const projectSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  client_id: z.string().min(1)
 });

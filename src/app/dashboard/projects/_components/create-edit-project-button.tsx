@@ -6,6 +6,7 @@ import { PlusCircle } from 'lucide-react';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { useProjectOverlayStore } from '@/store/projectOverlayStore';
 import { ZustandInteractiveOverlay } from './zustand-intereactive-overlay';
+import CreateEditProjectForm from './create-edit-project-form';
 
 interface CreateEditProjectButtonProps {
   projectId: string | null | undefined;
@@ -32,7 +33,7 @@ export default function CreateEditProjectButton({
         description={
           projectId ? 'Edit an existing Project' : 'Create a new Project'
         }
-        form={<div>Form</div>}
+        form={<CreateEditProjectForm />}
       />
 
       <Button onClick={handleCreateOrEditProject} className={btnStyles}>

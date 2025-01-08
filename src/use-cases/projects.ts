@@ -5,7 +5,7 @@ import { BoardPermission } from '@/db/schema/enums';
 import * as projectsDb from '@/data-access/projects';
 
 export type CreateBoardInput = {
-  title: string;
+  name: string;
   description?: string;
   clientId: number;
 };

@@ -1,7 +1,57 @@
 'use server';
-
-import { getCurrentUser } from '@/lib/session';
+import { boards } from '@/db/schema';
+import { authenticatedAction } from '@/lib/safe-action';
+import { rateLimitByKey } from '@/lib/limiter';
+import { revalidatePath } from 'next/cache';
+//import { createProjectUseCase } from '@/use-cases/projects';
+import { sanitizeUserInput } from '@/util/sanitize';
+import { z } from 'zod';
 import { createBoard } from '@/use-cases/projects';
+import { getClientsByUser } from '@/data-access/clients';
+
+const projectSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  clientId: z.number()
+});
+
+export const createProjectAction = authenticatedAction
+  .createServerAction()
+  .input(projectSchema)
+  .handler(
+    async ({ input: { name, description, clientId }, ctx: { user } }) => {
+      await rateLimitByKey({
+        key: `${user.id}-create-project`
+      });
+
+      const sanitizedInput = {
+        name: sanitizeUserInput(name),
+        description: sanitizeUserInput(description),
+        clientId
+      };
+
+      await createBoard(sanitizedInput, user);
+      revalidatePath('/dashboard/projects');
+    }
+  );
+
+export const getClientsAction = authenticatedAction
+  .createServerAction()
+  .handler(async ({ ctx: { user } }) => {
+    return await getClientsByUser(user.id);
+  });
+
+export const getProjectsAction = authenticatedAction
+  .createServerAction()
+  .handler(async ({ ctx: { user } }) => {
+    return console.log('getProjectsAction');
+  });
+
+export const getProjectAction = authenticatedAction
+  .createServerAction()
+  .handler(async ({ ctx: { user } }) => {
+    return console.log('getProjectAction');
+  });
 
 // Server action
 // async function createProjectBoard(input: CreateBoardInput) {

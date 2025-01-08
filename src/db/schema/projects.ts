@@ -21,7 +21,7 @@ export const boards = pgTable('boards', {
   userId: serial('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
+  name: text('name').notNull(),
   description: text('description'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -87,7 +87,7 @@ export const lists = pgTable('lists', {
   boardId: serial('board_id')
     .notNull()
     .references(() => boards.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
+  name: text('name').notNull(),
   order: integer('order').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -99,7 +99,7 @@ export const cards = pgTable('cards', {
   listId: serial('list_id')
     .notNull()
     .references(() => lists.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
+  name: text('name').notNull(),
   description: text('description'),
   order: integer('order').notNull(),
   dueDate: timestamp('due_date', { mode: 'date' }),
