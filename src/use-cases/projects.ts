@@ -147,3 +147,11 @@ export async function canUserAccessBoard(
 
   return userPermissionIndex <= requiredPermissionIndex;
 }
+
+// export async function getBoardById(boardId: number): Promise<Board | null> {
+//   return await projectsDb.getBoardById(boardId);
+// }
+
+export async function getProjectById(projectId: number): Promise<Board | null> {
+  return await projectsDb.getBoardById(projectId);
+}

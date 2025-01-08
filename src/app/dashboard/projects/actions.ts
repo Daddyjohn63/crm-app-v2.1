@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 //import { createProjectUseCase } from '@/use-cases/projects';
 import { sanitizeUserInput } from '@/util/sanitize';
 import { z } from 'zod';
-import { createBoard } from '@/use-cases/projects';
+import { createBoard, getProjectById } from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
 
 const projectSchema = z.object({
@@ -41,16 +41,23 @@ export const getClientsAction = authenticatedAction
     return await getClientsByUser(user.id);
   });
 
-export const getProjectsAction = authenticatedAction
-  .createServerAction()
-  .handler(async ({ ctx: { user } }) => {
-    return console.log('getProjectsAction');
-  });
+// export const getProjectsAction = authenticatedAction
+//   .createServerAction()
+//   .handler(async ({ ctx: { user } }) => {
+//     return console.log('getProjectsAction');
+//   });
 
-export const getProjectAction = authenticatedAction
+// export const getProjectAction = authenticatedAction
+//   .createServerAction()
+//   .handler(async ({ ctx: { user } }) => {
+//     return console.log('getProjectAction');
+//   });
+
+export const getProjectByIdAction = authenticatedAction
   .createServerAction()
-  .handler(async ({ ctx: { user } }) => {
-    return console.log('getProjectAction');
+  .input(z.string())
+  .handler(async ({ input: projectId }) => {
+    return await getProjectById(parseInt(projectId));
   });
 
 // Server action

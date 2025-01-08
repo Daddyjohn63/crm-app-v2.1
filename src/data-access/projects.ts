@@ -32,13 +32,13 @@ export async function insertBoardPermission(
 export async function getBoardById(
   id: number,
   trx = database
-): Promise<Board | undefined> {
+): Promise<Board | null> {
   const result = await trx
     .select()
     .from(boards)
     .where(eq(boards.id, id))
     .limit(1);
-  return result[0];
+  return result[0] || null;
 }
 
 export async function getBoardsByUserId(

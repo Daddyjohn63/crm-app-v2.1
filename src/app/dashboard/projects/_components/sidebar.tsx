@@ -109,7 +109,7 @@ export const Sidebar = ({
                       {client.boards.map(board => (
                         <Link
                           key={board.id}
-                          href={`/dashboard/boards/${board.id}`}
+                          href={`/dashboard/projects/${board.id}`}
                           className="block py-1 text-sm hover:text-primary"
                         >
                           {board.name}
