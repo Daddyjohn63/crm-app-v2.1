@@ -2,14 +2,16 @@
 
 import { Button } from '@/components/ui/button';
 import { ListWrapper } from './list-wrapper';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useState, useRef, ElementRef } from 'react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import { FormInput } from './form-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Input } from '@/components/ui/input';
+import { useParams } from 'next/navigation';
+import { LoaderButton } from '@/components/loader-button';
+import { getCurrentUser } from '@/lib/session';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Title is required')
@@ -17,8 +19,10 @@ const formSchema = z.object({
 
 export const ListForm = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const formRef = useRef<ElementRef<'form'>>(null);
   const inputRef = useRef<ElementRef<'input'>>(null);
+  const params = useParams();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -54,11 +58,20 @@ export const ListForm = () => {
           <form ref={formRef} className="relative w-full">
             <FormInput
               ref={inputRef}
-              //errors={fieldErrors}
               id="name"
               className="text-sm px-2 py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition"
               placeholder="Enter list title..."
             />
+            <input hidden value={params.projectId} name="projectId" />
+
+            <div className="flex items-center gap-x-1">
+              <LoaderButton className="w-full mt-4" isLoading={isPending}>
+                Add list
+              </LoaderButton>
+              <Button onClick={disableEditing} size="sm" variant="ghost">
+                <X className="h-5 w-5 mt-4" />
+              </Button>
+            </div>
           </form>
         </Form>
       </ListWrapper>

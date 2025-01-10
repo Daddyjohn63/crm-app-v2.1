@@ -1,18 +1,27 @@
 import { List, User, Card } from '@/db/schema';
 import { ListForm } from './list-form';
+import { type Permission } from '@/util/auth-projects';
 
 interface ListContainerProps {
   boardId: number;
   data: (List & { cards: Card[] })[];
   user: User;
+  permission: Permission;
+  canUseListForm: boolean;
 }
 
-export const ListContainer = ({ boardId, data, user }: ListContainerProps) => {
+export const ListContainer = ({
+  boardId,
+  data,
+  user,
+  permission,
+  canUseListForm
+}: ListContainerProps) => {
   // console.log(data);
   return (
     <div className="flex gap-4 p-4 overflow-x-auto">
       <ol>
-        <ListForm />
+        {canUseListForm && <ListForm />}
         <div className="flex-shrink-0 w-1" />
       </ol>
       {/* {data.map(list => (

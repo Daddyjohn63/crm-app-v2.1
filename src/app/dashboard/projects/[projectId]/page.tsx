@@ -1,5 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
-import { getProjectById, getListsByBoardId } from '@/use-cases/projects';
+import {
+  getProjectById,
+  getListsByBoardId,
+  getBoardPermission
+} from '@/use-cases/projects';
 import { Board, List, Card } from '@/db/schema';
 import { Suspense } from 'react';
 import { PublicError } from '@/use-cases/errors';
@@ -7,6 +11,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Settings } from 'lucide-react';
 import { getCurrentUser } from '@/lib/session';
 import { ListContainer } from '../_components/list-container';
+import {
+  canAccessSettings,
+  canUseListForm,
+  type Permission
+} from '@/util/auth-projects';
 
 interface PageProps {
   params: {
@@ -71,22 +80,37 @@ type ListWithCards = List & {
 function ProjectDetails({
   project,
   user,
-  lists
+  lists,
+  permission
 }: {
   project: Board;
   user: any;
   lists: ListWithCards[];
+  permission: Permission;
 }) {
+  console.log('Permission object:', permission);
+  console.log('Permission type:', typeof permission);
+  console.log('Permission role:', permission?.role);
+  console.log('Can access settings:', canAccessSettings(permission));
+
   return (
     <div className="pt-8 space-y-6">
       <nav className="flex bg-indigo-900">
         <div className="flex justify-between items-center w-full p-3">
           <h1 className="text-3xl font-bold">{project.name}</h1>
-          <Settings className="w-6 h-6 cursor-pointer" />
+          {canAccessSettings(permission) && (
+            <Settings className="w-6 h-6 cursor-pointer" />
+          )}
         </div>
       </nav>
       <div className="space-y-2 overflow-x-auto">
-        <ListContainer boardId={project.id} data={lists} user={user} />
+        <ListContainer
+          boardId={project.id}
+          data={lists}
+          user={user}
+          permission={permission}
+          canUseListForm={canUseListForm(permission)}
+        />
       </div>
     </div>
   );
@@ -108,14 +132,38 @@ async function AsyncProjectContent({ projectId }: { projectId: string }) {
     getCurrentUserData()
   ]);
 
-  const lists = (await getListsByBoardId(project.id)) as ListWithCards[];
-  return <ProjectDetails project={project} user={user} lists={lists} />;
+  const [lists, permission] = await Promise.all([
+    getListsByBoardId(project.id),
+    getUserBoardPermission(user.id, project.id)
+  ]);
+
+  return (
+    <ProjectDetails
+      project={project}
+      user={user}
+      lists={lists}
+      permission={permission as Permission}
+    />
+  );
 }
 
+//user currently returns system role, we also need project permissions.
 async function getCurrentUserData() {
   const user = await getCurrentUser();
   if (!user) {
     redirect('/sign-in');
   }
   return user;
+}
+
+async function getUserBoardPermission(
+  userId: number,
+  boardId: number
+): Promise<Permission> {
+  const permissionRole = await getBoardPermission(userId, boardId);
+  // Convert the string role into a proper Permission object
+  return {
+    role: permissionRole as 'owner' | 'editor' | 'viewer',
+    canEdit: permissionRole === 'owner' || permissionRole === 'editor'
+  };
 }

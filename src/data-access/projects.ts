@@ -206,3 +206,17 @@ export async function getClientBoardsByUserId(
 
   return clientBoards;
 }
+
+export async function getBoardPermission(
+  userId: number,
+  boardId: number
+): Promise<BoardPermission | null> {
+  const permission = await database.query.boardPermissions.findFirst({
+    where: (boardPermission, { eq, and }) =>
+      and(
+        eq(boardPermission.userId, userId),
+        eq(boardPermission.boardId, boardId)
+      )
+  });
+  return permission?.permissionLevel ?? null;
+}

@@ -171,3 +171,11 @@ export async function getListsByBoardId(
 ): Promise<ListWithCards[]> {
   return await projectsDb.getListsByBoardId(boardId);
 }
+
+//take user id and board id and return the permission level
+export async function getBoardPermission(
+  userId: number,
+  boardId: number
+): Promise<BoardPermission | null> {
+  return await projectsDb.getBoardPermission(userId, boardId);
+}
