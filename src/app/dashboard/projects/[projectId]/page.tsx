@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import { getProjectById, getListsByBoardId } from '@/use-cases/projects';
-import { Board, users } from '@/db/schema';
+import { Board, List, Card } from '@/db/schema';
 import { Suspense } from 'react';
 import { PublicError } from '@/use-cases/errors';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -64,7 +64,10 @@ async function getProject(projectId: string): Promise<Board> {
   }
 }
 
-// Project details component
+type ListWithCards = List & {
+  cards: Card[];
+};
+
 function ProjectDetails({
   project,
   user,
@@ -72,30 +75,17 @@ function ProjectDetails({
 }: {
   project: Board;
   user: any;
-  lists: any[];
+  lists: ListWithCards[];
 }) {
   return (
-    <div className="pt-8 space-y-6 ">
-      <nav className="flex  bg-indigo-900">
+    <div className="pt-8 space-y-6">
+      <nav className="flex bg-indigo-900">
         <div className="flex justify-between items-center w-full p-3">
           <h1 className="text-3xl font-bold">{project.name}</h1>
-          {/* TODO: Add settings modal */}
           <Settings className="w-6 h-6 cursor-pointer" />
         </div>
       </nav>
       <div className="space-y-2 overflow-auto">
-        <p className="text-sm text-muted-foreground">
-          Project ID: {project.id}
-          <br />
-          Project Name: {project.name}
-          <br />
-          Created: {project.createdAt?.toLocaleDateString()}
-        </p>
-        {project.updatedAt && (
-          <p className="text-sm text-muted-foreground">
-            Last updated: {project.updatedAt.toLocaleDateString()}
-          </p>
-        )}
         <ListContainer boardId={project.id} data={lists} user={user} />
       </div>
     </div>
@@ -112,15 +102,13 @@ export default async function ProjectPage({ params }: PageProps) {
   );
 }
 
-// Async component to handle the data fetching
 async function AsyncProjectContent({ projectId }: { projectId: string }) {
   const [project, user] = await Promise.all([
     getProject(projectId),
     getCurrentUserData()
   ]);
 
-  const lists = await getListsByBoardId(project.id);
-  console.log(lists);
+  const lists = (await getListsByBoardId(project.id)) as ListWithCards[];
   return <ProjectDetails project={project} user={user} lists={lists} />;
 }
 
