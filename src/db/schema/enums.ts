@@ -1,7 +1,7 @@
 import { pgEnum } from 'drizzle-orm/pg-core';
 
 // System-wide role enum (determines what a user can do in the system)
-export const roleEnum = pgEnum('role', ['admin', 'guest']);
+export const roleEnum = pgEnum('role', ['admin', 'guest', 'member']);
 
 // Account type enum
 export const accountTypeEnum = pgEnum('type', ['email', 'google', 'github']);

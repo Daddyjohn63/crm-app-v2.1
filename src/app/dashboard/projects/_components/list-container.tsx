@@ -1,4 +1,5 @@
 import { List, User, Card } from '@/db/schema';
+import { ListForm } from './list-form';
 
 interface ListContainerProps {
   boardId: number;
@@ -7,10 +8,14 @@ interface ListContainerProps {
 }
 
 export const ListContainer = ({ boardId, data, user }: ListContainerProps) => {
-  console.log(data);
+  // console.log(data);
   return (
     <div className="flex gap-4 p-4 overflow-x-auto">
-      {data.map(list => (
+      <ol>
+        <ListForm />
+        <div className="flex-shrink-0 w-1" />
+      </ol>
+      {/* {data.map(list => (
         <div
           key={list.id}
           className="bg-gray-100 rounded-lg p-4 min-w-[300px] max-w-[300px]"
@@ -44,7 +49,7 @@ export const ListContainer = ({ boardId, data, user }: ListContainerProps) => {
             ))}
           </div>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import { boards, boardPermissions, lists, cards } from '@/db/schema/projects';
-import type { Board, List, NewBoard } from '@/db/schema/projects';
+import type { Board, Card, List, NewBoard } from '@/db/schema/projects';
 import { eq, and, asc } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients } from '@/db/schema/base';
+import { ListWithCards } from '@/use-cases/types';
 
 // Raw database types
 export type CreateBoardInput = Omit<NewBoard, 'id' | 'createdAt' | 'updatedAt'>;
@@ -50,7 +51,7 @@ export async function getListsByBoardId(boardId: number) {
         orderBy: [asc(cards.order)]
       }
     }
-  })) as (List & { cards: any[] })[];
+  })) as ListWithCards[];
 }
 
 export async function getBoardsByUserId(

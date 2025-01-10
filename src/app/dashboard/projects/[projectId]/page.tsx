@@ -85,7 +85,7 @@ function ProjectDetails({
           <Settings className="w-6 h-6 cursor-pointer" />
         </div>
       </nav>
-      <div className="space-y-2 overflow-auto">
+      <div className="space-y-2 overflow-x-auto">
         <ListContainer boardId={project.id} data={lists} user={user} />
       </div>
     </div>

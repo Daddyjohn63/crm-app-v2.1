@@ -1,5 +1,8 @@
+import { Card, List } from '@/db/schema';
+
 export type Plan = 'free' | 'basic' | 'premium';
-export type Role = 'owner' | 'admin' | 'member';
+export type Role = 'admin' | 'guest' | 'member';
+export type BoardPermission = 'owner' | 'admin' | 'editor' | 'viewer';
 
 export type UserProfile = {
   id: UserId;
@@ -39,6 +42,10 @@ export const SALES_STAGE_FILTER_OPTIONS = {
 export type SalesStage = (typeof SALES_STAGES)[keyof typeof SALES_STAGES];
 export type SalesStageFilter =
   (typeof SALES_STAGE_FILTER_OPTIONS)[keyof typeof SALES_STAGE_FILTER_OPTIONS];
+
+export type ListWithCards = List & { cards: Card[] };
+
+export type CardWithList = Card & { list: List };
 
 // export type ClientInfo = {
 //   clientId: number;

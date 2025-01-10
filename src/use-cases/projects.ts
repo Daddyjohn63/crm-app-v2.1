@@ -1,8 +1,9 @@
 import { database } from '@/db/drizzle';
-import type { Board, List } from '@/db/schema/projects';
+import type { Board, List, Card } from '@/db/schema/projects';
 import type { User } from '@/db/schema/base';
 import { BoardPermission } from '@/db/schema/enums';
 import * as projectsDb from '@/data-access/projects';
+import { ListWithCards } from '@/use-cases/types';
 
 export type CreateBoardInput = {
   name: string;
@@ -165,6 +166,8 @@ export async function getProjectById(projectId: number): Promise<Board | null> {
 //   return user.role === 'guest';
 // }
 
-export async function getListsByBoardId(boardId: number): Promise<List[]> {
+export async function getListsByBoardId(
+  boardId: number
+): Promise<ListWithCards[]> {
   return await projectsDb.getListsByBoardId(boardId);
 }
