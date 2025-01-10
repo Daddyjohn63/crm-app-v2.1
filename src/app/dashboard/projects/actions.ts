@@ -57,7 +57,12 @@ export const getProjectByIdAction = authenticatedAction
   .createServerAction()
   .input(z.string())
   .handler(async ({ input: projectId }) => {
-    return await getProjectById(parseInt(projectId));
+    try {
+      const project = await getProjectById(parseInt(projectId));
+      return [project, null] as const;
+    } catch (error) {
+      return [null, error] as const;
+    }
   });
 
 // Server action

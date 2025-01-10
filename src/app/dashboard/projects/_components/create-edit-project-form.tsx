@@ -31,12 +31,7 @@ import {
 //   getClientsAction
 // } from './actions';
 import { useEffect, useState } from 'react';
-import {
-  createProjectAction,
-  getClientsAction,
-  getProjectsAction,
-  getProjectAction
-} from '../actions';
+import { createProjectAction, getClientsAction } from '../actions';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -121,7 +116,7 @@ export default function CreateEditProjectForm() {
           name="name"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Project Name</FormLabel>
+              <FormLabel>Project Name *</FormLabel>
               <FormControl>
                 <Input placeholder="Enter Project Name" {...field} />
               </FormControl>
@@ -134,7 +129,7 @@ export default function CreateEditProjectForm() {
           name="description"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Project Description</FormLabel>
+              <FormLabel>Project Description *</FormLabel>
               <FormControl>
                 <Textarea
                   rows={6}
@@ -151,7 +146,7 @@ export default function CreateEditProjectForm() {
           name="clientId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Client</FormLabel>
+              <FormLabel>Client *</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>

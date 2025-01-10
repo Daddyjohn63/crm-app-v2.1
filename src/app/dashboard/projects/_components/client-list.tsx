@@ -14,7 +14,7 @@ async function ClientListContent() {
   if (!user) {
     redirect('/sign-in');
   }
-
+  //coming from data-access
   const clientsWithBoards = await getClientBoardsByUserId(user.id);
   return <Sidebar clients={clientsWithBoards} />;
 }

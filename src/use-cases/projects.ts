@@ -1,5 +1,5 @@
 import { database } from '@/db/drizzle';
-import type { Board } from '@/db/schema/projects';
+import type { Board, List } from '@/db/schema/projects';
 import type { User } from '@/db/schema/base';
 import { BoardPermission } from '@/db/schema/enums';
 import * as projectsDb from '@/data-access/projects';
@@ -9,7 +9,7 @@ export type CreateBoardInput = {
   description?: string;
   clientId: number;
 };
-
+//pass in the values from the form and the user.
 export async function createBoard(
   input: CreateBoardInput,
   user: User
@@ -20,7 +20,7 @@ export async function createBoard(
   }
 
   return await database.transaction(async trx => {
-    // Create the board
+    // Spread the input and add the userId and create the board.
     const board = await projectsDb.insertBoard(
       {
         ...input,
@@ -154,4 +154,17 @@ export async function canUserAccessBoard(
 
 export async function getProjectById(projectId: number): Promise<Board | null> {
   return await projectsDb.getBoardById(projectId);
+}
+
+//determin if user is admin or guest
+// export function isAdmin(user: User) {
+//   return user.role === 'admin';
+// }
+
+// export function isGuest(user: User) {
+//   return user.role === 'guest';
+// }
+
+export async function getListsByBoardId(boardId: number): Promise<List[]> {
+  return await projectsDb.getListsByBoardId(boardId);
 }

@@ -1,15 +1,21 @@
 import React from 'react';
 import { ClientList } from './_components/client-list';
+import { getCurrentUser } from '@/lib/session';
+import { redirect } from 'next/navigation';
 
-export default function ProjectsLayout({
+export default async function ProjectsLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect('/sign-in');
+  }
   return (
     <main className="container">
       <div>
-        <div className="flex gap-x-7">
+        <div className="flex gap-x-4">
           <div className="w-64 shrink-0 hidden md:block">
             <ClientList />
           </div>

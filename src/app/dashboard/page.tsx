@@ -1,10 +1,3 @@
-//check if user is logged in
-//check if user has clients
-//if user has clients, show them
-//if user has no clients, show them message and a create client <button></button>
-//get the number of clients so we can display this.
-//if we have clients, render clientCard component.pass in props client count, client, client.id and some button text 'view client.
-
 import { assertAuthenticated } from '@/lib/session';
 import { CreateEditClientButton } from './clients/_components/create-client-button';
 import { getClientsUseCase, searchClientsUseCase } from '@/use-cases/clients';
@@ -48,12 +41,8 @@ export default async function DashboardPage({
     : undefined;
   const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
-  const user = await assertAuthenticated(); //yes, user is authenticated
+  const user = await assertAuthenticated();
   const clients = await getClientsUseCase(user);
-  // const { clientId } = params;
-
-  //console.log('DASHBOARD-USER-CHECK', user);
-  //console.log('DASHBOARD-CLIENTS-CHECK', clients);
 
   const hasClients = clients.length > 0;
 
@@ -111,7 +100,12 @@ export default async function DashboardPage({
             </form>
             <CreateEditClientButton
               params={{}}
-              user={{ id: user.id, email: null, emailVerified: null }}
+              user={{
+                id: user.id,
+                email: null,
+                emailVerified: null,
+                role: user.role
+              }}
             />
           </div>
           {!hasClients && <div>No clients found</div>}
@@ -138,7 +132,12 @@ export default async function DashboardPage({
             />
             <CreateEditClientButton
               params={{}}
-              user={{ id: user.id, email: null, emailVerified: null }}
+              user={{
+                id: user.id,
+                email: null,
+                emailVerified: null,
+                role: user.role
+              }}
             />
           </div>
         </div>

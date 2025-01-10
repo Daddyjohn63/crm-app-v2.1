@@ -25,6 +25,13 @@ export const boardPermissionEnum = pgEnum('board_permission_level', [
   'viewer' // Can only view the board
 ]);
 
+export const taskStatusEnum = pgEnum('task_status', [
+  'todo',
+  'in_progress',
+  'done',
+  'blocked'
+]);
+
 export const actionEnum = pgEnum('action', ['CREATE', 'UPDATE', 'DELETE']);
 
 export const entityTypeEnum = pgEnum('entity_type', ['BOARD', 'LIST', 'CARD']);
@@ -36,3 +43,4 @@ export type SalesStage = (typeof salesStageEnum.enumValues)[number];
 export type BoardPermission = (typeof boardPermissionEnum.enumValues)[number];
 export type Action = (typeof actionEnum.enumValues)[number];
 export type EntityType = (typeof entityTypeEnum.enumValues)[number];
+export type TaskStatus = (typeof taskStatusEnum.enumValues)[number];

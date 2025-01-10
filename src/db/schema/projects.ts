@@ -10,7 +10,12 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { users, clients } from './base';
-import { actionEnum, entityTypeEnum, boardPermissionEnum } from './enums';
+import {
+  actionEnum,
+  entityTypeEnum,
+  boardPermissionEnum,
+  taskStatusEnum
+} from './enums';
 
 // Boards Schema
 export const boards = pgTable('boards', {
@@ -82,35 +87,50 @@ export const boardPermissionsRelations = relations(
 );
 
 // Lists Schema
-export const lists = pgTable('lists', {
-  id: serial('id').primaryKey(),
-  boardId: serial('board_id')
-    .notNull()
-    .references(() => boards.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  order: integer('order').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
-});
+export const lists = pgTable(
+  'lists',
+  {
+    id: serial('id').primaryKey(),
+    boardId: serial('board_id')
+      .notNull()
+      .references(() => boards.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    order: integer('order').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
+  },
+  table => ({
+    boardIdIdx: index('lists_board_id_idx').on(table.boardId)
+  })
+);
 
 // Cards Schema
-export const cards = pgTable('cards', {
-  id: serial('id').primaryKey(),
-  listId: serial('list_id')
-    .notNull()
-    .references(() => lists.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  description: text('description'),
-  order: integer('order').notNull(),
-  dueDate: timestamp('due_date', { mode: 'date' }),
-  assignedTo: serial('assigned_to').references(() => users.id),
-  estimatedMinutes: integer('estimated_minutes'),
-  totalMinutes: integer('total_minutes').default(0),
-  isTimerActive: boolean('is_timer_active').default(false),
-  lastTimerStart: timestamp('last_timer_start'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
-});
+export const cards = pgTable(
+  'cards',
+  {
+    id: serial('id').primaryKey(),
+    listId: serial('list_id')
+      .notNull()
+      .references(() => lists.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    description: text('description'),
+    status: taskStatusEnum('status').notNull(),
+    order: integer('order').notNull(),
+    dueDate: timestamp('due_date', { mode: 'date' }),
+    assignedTo: serial('assigned_to').references(() => users.id),
+    estimatedMinutes: integer('estimated_minutes'),
+    totalMinutes: integer('total_minutes').default(0),
+    isTimerActive: boolean('is_timer_active').default(false),
+    lastTimerStart: timestamp('last_timer_start'),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
+  },
+  table => ({
+    listIdIdx: index('cards_list_id_idx').on(table.listId),
+    assignedToIdx: index('cards_assigned_to_idx').on(table.assignedTo),
+    listOrderIdx: index('cards_list_order_idx').on(table.listId, table.order)
+  })
+);
 
 // Time Entries Schema
 export const timeEntries = pgTable(

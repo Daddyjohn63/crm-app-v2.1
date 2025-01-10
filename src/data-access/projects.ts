@@ -1,6 +1,6 @@
-import { boards, boardPermissions } from '@/db/schema/projects';
-import type { Board, NewBoard } from '@/db/schema/projects';
-import { eq, and } from 'drizzle-orm';
+import { boards, boardPermissions, lists, cards } from '@/db/schema/projects';
+import type { Board, List, NewBoard } from '@/db/schema/projects';
+import { eq, and, asc } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients } from '@/db/schema/base';
@@ -39,6 +39,18 @@ export async function getBoardById(
     .where(eq(boards.id, id))
     .limit(1);
   return result[0] || null;
+}
+
+export async function getListsByBoardId(boardId: number) {
+  return (await database.query.lists.findMany({
+    where: (list, { eq }) => eq(list.boardId, boardId),
+    orderBy: [asc(lists.order)],
+    with: {
+      cards: {
+        orderBy: [asc(cards.order)]
+      }
+    }
+  })) as (List & { cards: any[] })[];
 }
 
 export async function getBoardsByUserId(
