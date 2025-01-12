@@ -78,11 +78,13 @@ export const ListForm = () => {
 
   useOnClickOutside(formRef, () => {
     setIsEditing(false);
+    form.reset();
   });
 
   useEventListener('keydown', e => {
     if (e.key === 'Escape') {
       setIsEditing(false);
+      form.reset();
     }
   });
 
@@ -129,15 +131,23 @@ export const ListForm = () => {
             </FormItem>
           )}
         />
-
-        <div className="flex items-center">
-          <LoaderButton className="w-full mt-4" isLoading={isPending}>
-            Add list
-          </LoaderButton>
-          <Button onClick={() => setIsEditing(false)} size="sm" variant="ghost">
-            <X className="h-5 w-5 mt-4" />
-          </Button>
-        </div>
+        {isEditing && (
+          <div className="flex items-center">
+            <LoaderButton className="w-full mt-4" isLoading={isPending}>
+              Add list
+            </LoaderButton>
+            <Button
+              onClick={() => {
+                setIsEditing(false);
+                form.reset();
+              }}
+              size="sm"
+              variant="ghost"
+            >
+              <X className="h-5 w-5 mt-4" />
+            </Button>
+          </div>
+        )}
       </form>
     </Form>
   );
