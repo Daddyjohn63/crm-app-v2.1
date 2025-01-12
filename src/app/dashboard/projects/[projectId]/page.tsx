@@ -2,7 +2,8 @@ import { notFound, redirect } from 'next/navigation';
 import {
   getProjectById,
   getListsByBoardId,
-  getBoardPermission
+  getBoardPermission,
+  checkUserProjectAccess
 } from '@/use-cases/projects';
 import { Board, List, Card } from '@/db/schema';
 import { Suspense } from 'react';
@@ -16,6 +17,7 @@ import {
   canUseListForm,
   type Permission
 } from '@/util/auth-projects';
+import { ProjectIdProvider } from '../_components/project-id-provider';
 
 interface PageProps {
   params: {
@@ -88,10 +90,10 @@ function ProjectDetails({
   lists: ListWithCards[];
   permission: Permission;
 }) {
-  console.log('Permission object:', permission);
-  console.log('Permission type:', typeof permission);
-  console.log('Permission role:', permission?.role);
-  console.log('Can access settings:', canAccessSettings(permission));
+  // console.log('Permission object:', permission);
+  // console.log('Permission type:', typeof permission);
+  // console.log('Permission role:', permission?.role);
+  // console.log('Can access settings:', canAccessSettings(permission));
 
   return (
     <div className="pt-8 space-y-6">
@@ -118,11 +120,13 @@ function ProjectDetails({
 
 export const revalidate = 3600;
 
-export default async function ProjectPage({ params }: PageProps) {
+export default function ProjectPage({ params }: PageProps) {
   return (
-    <Suspense fallback={<ProjectSkeleton />}>
-      <AsyncProjectContent projectId={params.projectId} />
-    </Suspense>
+    <ProjectIdProvider projectId={Number(params.projectId)}>
+      <Suspense fallback={<ProjectSkeleton />}>
+        <AsyncProjectContent projectId={params.projectId} />
+      </Suspense>
+    </ProjectIdProvider>
   );
 }
 
@@ -132,17 +136,29 @@ async function AsyncProjectContent({ projectId }: { projectId: string }) {
     getCurrentUserData()
   ]);
 
+  // First check if user has basic access to this project
+  const hasAccess = await checkUserProjectAccess(project.id, user.id);
+  if (!hasAccess) {
+    redirect('/sign-in'); // Redirect to sign-in if no access
+  }
+
+  // If they have access, get their specific permission level and lists
   const [lists, permission] = await Promise.all([
     getListsByBoardId(project.id),
     getUserBoardPermission(user.id, project.id)
   ]);
+
+  // If for some reason we couldn't get their permission level, redirect to projects
+  if (!permission.role) {
+    redirect('/dashboard/projects');
+  }
 
   return (
     <ProjectDetails
       project={project}
       user={user}
       lists={lists}
-      permission={permission as Permission}
+      permission={permission}
     />
   );
 }
@@ -156,6 +172,7 @@ async function getCurrentUserData() {
   return user;
 }
 
+//get user board permission.
 async function getUserBoardPermission(
   userId: number,
   boardId: number

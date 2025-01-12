@@ -1,92 +1,98 @@
 'use client';
-
-import { Button } from '@/components/ui/button';
-import { ListWrapper } from './list-wrapper';
-import { Plus, X } from 'lucide-react';
-import { useState, useRef, ElementRef } from 'react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
-import { FormInput } from './form-input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useParams } from 'next/navigation';
 import { LoaderButton } from '@/components/loader-button';
-import { getCurrentUser } from '@/lib/session';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useServerAction } from 'zsa-react';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { useProjectStore } from '@/store/projectStore';
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Title is required')
+  name: z.string().min(1, 'A List Name is required'),
+  projectId: z.number()
 });
 
 export const ListForm = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-  const formRef = useRef<ElementRef<'form'>>(null);
-  const inputRef = useRef<ElementRef<'input'>>(null);
-  const params = useParams();
+  const formRef = useRef<HTMLFormElement>(null);
+  const currentProjectId = useProjectStore(state => state.currentProjectId);
+  //console.log('project id', currentProjectId);
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      projectId: currentProjectId!
     }
   });
 
-  const enableEditing = () => {
-    setIsEditing(true);
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
-  };
-
-  const disableEditing = () => {
+  const onSubmit = form.handleSubmit((values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    form.reset({
+      name: '',
+      projectId: currentProjectId!
+    });
     setIsEditing(false);
-  };
+  });
 
-  const onKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      disableEditing();
+  useOnClickOutside(formRef, () => {
+    setIsEditing(false);
+  });
+
+  useEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      setIsEditing(false);
     }
-  };
-
-  useEventListener('keydown', onKeyDown);
-  useOnClickOutside(formRef, disableEditing);
-
-  if (isEditing) {
-    return (
-      <ListWrapper>
-        <Form {...form}>
-          <form ref={formRef} className="relative w-full">
-            <FormInput
-              ref={inputRef}
-              id="name"
-              className="text-sm px-2 py-1 h-7 font-medium border-transparent hover:border-input focus:border-input transition"
-              placeholder="Enter list title..."
-            />
-            <input hidden value={params.projectId} name="projectId" />
-
-            <div className="flex items-center gap-x-1">
-              <LoaderButton className="w-full mt-4" isLoading={isPending}>
-                Add list
-              </LoaderButton>
-              <Button onClick={disableEditing} size="sm" variant="ghost">
-                <X className="h-5 w-5 mt-4" />
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </ListWrapper>
-    );
-  }
+  });
 
   return (
-    <ListWrapper>
-      <Button
-        onClick={enableEditing}
-        className="w-full rounded-md bg-white/80 hover:bg-white/50 transition p-3 items-center font-medium text-sm"
-      >
-        <Plus className="w-4 h-4 mr-2" />
-        Add List
-      </Button>
-    </ListWrapper>
+    <Form {...form}>
+      <form ref={formRef} onSubmit={onSubmit}>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel></FormLabel>
+              <FormControl>
+                <Input
+                  className="text-sm px-4 py-2 h-9 border-2 border-white/20 font-medium hover:border-input focus:border-input transition"
+                  placeholder="Add a List Name"
+                  {...field}
+                  onFocus={() => setIsEditing(true)}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        {isEditing && (
+          <div className="flex items-center gap-x-1">
+            <LoaderButton className="w-full mt-4" isLoading={false}>
+              Add list
+            </LoaderButton>
+            <Button
+              onClick={() => setIsEditing(false)}
+              size="sm"
+              variant="ghost"
+            >
+              <X className="h-5 w-5 mt-4" />
+            </Button>
+          </div>
+        )}
+      </form>
+    </Form>
   );
 };

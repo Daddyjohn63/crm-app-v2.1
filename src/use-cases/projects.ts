@@ -179,3 +179,12 @@ export async function getBoardPermission(
 ): Promise<BoardPermission | null> {
   return await projectsDb.getBoardPermission(userId, boardId);
 }
+
+export async function checkUserProjectAccess(
+  projectId: number,
+  userId: number
+): Promise<boolean> {
+  const permission = await projectsDb.findBoardPermission(projectId, userId);
+  // Simply check if they have any permission record
+  return permission !== null;
+}

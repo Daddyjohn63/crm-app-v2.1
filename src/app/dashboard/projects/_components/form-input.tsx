@@ -17,7 +17,9 @@ interface FormInputProps {
   errors?: Record<string, string[] | undefined>;
   className?: string;
   defaultValue?: string;
-  onBlur?: () => void;
+  name?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -32,6 +34,8 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       errors,
       className,
       defaultValue = '',
+      name,
+      onChange,
       onBlur
     },
     ref
@@ -51,10 +55,11 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           ) : null}
           <Input
             onBlur={onBlur}
+            onChange={onChange}
             defaultValue={defaultValue}
             ref={ref}
             required={required}
-            name={id}
+            name={name || id}
             id={id}
             placeholder={placeholder}
             type={type}
