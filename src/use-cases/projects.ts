@@ -180,11 +180,19 @@ export async function getBoardPermission(
   return await projectsDb.getBoardPermission(userId, boardId);
 }
 
-export async function checkUserProjectAccess(
-  projectId: number,
+export async function checkUserBoardAccess(
+  boardId: number,
   userId: number
 ): Promise<boolean> {
-  const permission = await projectsDb.findBoardPermission(projectId, userId);
+  const permission = await projectsDb.findBoardPermission(boardId, userId);
   // Simply check if they have any permission record
   return permission !== null;
+}
+
+export async function createList(
+  name: string,
+  boardId: number,
+  user: User
+): Promise<List> {
+  return await projectsDb.createList(name, boardId, user);
 }

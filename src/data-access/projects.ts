@@ -1,9 +1,15 @@
 import { boards, boardPermissions, lists, cards } from '@/db/schema/projects';
-import type { Board, Card, List, NewBoard } from '@/db/schema/projects';
-import { eq, and, asc } from 'drizzle-orm';
+import type {
+  Board,
+  Card,
+  List,
+  NewBoard,
+  NewList
+} from '@/db/schema/projects';
+import { eq, and, asc, sql } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
-import { clients } from '@/db/schema/base';
+import { clients, User } from '@/db/schema/base';
 import { ListWithCards } from '@/use-cases/types';
 
 // Raw database types
@@ -219,4 +225,27 @@ export async function getBoardPermission(
       )
   });
   return permission?.permissionLevel ?? null;
+}
+
+export async function createList(
+  name: string,
+  boardId: number,
+  user: User
+): Promise<List> {
+  // Get the maximum order value for the current board
+  const [maxOrderResult] = await database
+    .select({
+      maxOrder: sql`COALESCE(MAX(${lists.order}), -1)`.mapWith(Number)
+    })
+    .from(lists)
+    .where(eq(lists.boardId, boardId));
+
+  const newList: NewList = {
+    name,
+    boardId,
+    order: (maxOrderResult?.maxOrder ?? -1) + 1
+  };
+
+  const [list] = await database.insert(lists).values(newList).returning();
+  return list;
 }

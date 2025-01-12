@@ -19,7 +19,7 @@ export const ListContainer = ({
 }: ListContainerProps) => {
   // console.log(data);
   return (
-    <div className="flex gap-4 p-4 overflow-x-auto">
+    <div className="flex gap-4  overflow-x-auto">
       <ol>
         {canUseListForm && <ListForm />}
         <div className="flex-shrink-0 w-1" />

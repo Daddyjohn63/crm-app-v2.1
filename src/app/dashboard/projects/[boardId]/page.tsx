@@ -3,7 +3,7 @@ import {
   getProjectById,
   getListsByBoardId,
   getBoardPermission,
-  checkUserProjectAccess
+  checkUserBoardAccess
 } from '@/use-cases/projects';
 import { Board, List, Card } from '@/db/schema';
 import { Suspense } from 'react';
@@ -17,11 +17,11 @@ import {
   canUseListForm,
   type Permission
 } from '@/util/auth-projects';
-import { ProjectIdProvider } from '../_components/project-id-provider';
+import { BoardIdProvider } from '../_components/board-id-provider';
 
 interface PageProps {
   params: {
-    projectId: string;
+    boardId: string;
   };
 }
 
@@ -52,9 +52,9 @@ function ProjectSkeleton() {
 }
 
 // Separate data fetching logic
-async function getProject(projectId: string): Promise<Board> {
+async function getProject(boardId: string): Promise<Board> {
   try {
-    const id = parseInt(projectId, 10);
+    const id = parseInt(boardId, 10);
     if (isNaN(id)) {
       throw new Error('Invalid project ID');
     }
@@ -80,12 +80,12 @@ type ListWithCards = List & {
 };
 
 function ProjectDetails({
-  project,
+  board,
   user,
   lists,
   permission
 }: {
-  project: Board;
+  board: Board;
   user: any;
   lists: ListWithCards[];
   permission: Permission;
@@ -96,10 +96,10 @@ function ProjectDetails({
   // console.log('Can access settings:', canAccessSettings(permission));
 
   return (
-    <div className="pt-8 space-y-6">
-      <nav className="flex bg-indigo-900">
-        <div className="flex justify-between items-center w-full p-3">
-          <h1 className="text-3xl font-bold">{project.name}</h1>
+    <div className="pt-8 space-y-6 ml-4">
+      <nav className="flex bg-indigo-900 rounded-lg">
+        <div className="flex justify-between items-center w-full p-2">
+          <h1 className="text-3xl font-bold">{board.name}</h1>
           {canAccessSettings(permission) && (
             <Settings className="w-6 h-6 cursor-pointer" />
           )}
@@ -107,7 +107,7 @@ function ProjectDetails({
       </nav>
       <div className="space-y-2 overflow-x-auto">
         <ListContainer
-          boardId={project.id}
+          boardId={board.id}
           data={lists}
           user={user}
           permission={permission}
@@ -122,30 +122,30 @@ export const revalidate = 3600;
 
 export default function ProjectPage({ params }: PageProps) {
   return (
-    <ProjectIdProvider projectId={Number(params.projectId)}>
+    <BoardIdProvider boardId={Number(params.boardId)}>
       <Suspense fallback={<ProjectSkeleton />}>
-        <AsyncProjectContent projectId={params.projectId} />
+        <AsyncProjectContent boardId={params.boardId} />
       </Suspense>
-    </ProjectIdProvider>
+    </BoardIdProvider>
   );
 }
 
-async function AsyncProjectContent({ projectId }: { projectId: string }) {
-  const [project, user] = await Promise.all([
-    getProject(projectId),
+async function AsyncProjectContent({ boardId }: { boardId: string }) {
+  const [board, user] = await Promise.all([
+    getProject(boardId),
     getCurrentUserData()
   ]);
 
   // First check if user has basic access to this project
-  const hasAccess = await checkUserProjectAccess(project.id, user.id);
+  const hasAccess = await checkUserBoardAccess(board.id, user.id);
   if (!hasAccess) {
     redirect('/sign-in'); // Redirect to sign-in if no access
   }
 
   // If they have access, get their specific permission level and lists
   const [lists, permission] = await Promise.all([
-    getListsByBoardId(project.id),
-    getUserBoardPermission(user.id, project.id)
+    getListsByBoardId(board.id),
+    getUserBoardPermission(user.id, board.id)
   ]);
 
   // If for some reason we couldn't get their permission level, redirect to projects
@@ -155,7 +155,7 @@ async function AsyncProjectContent({ projectId }: { projectId: string }) {
 
   return (
     <ProjectDetails
-      project={project}
+      board={board}
       user={user}
       lists={lists}
       permission={permission}

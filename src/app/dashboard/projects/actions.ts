@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 //import { createProjectUseCase } from '@/use-cases/projects';
 import { sanitizeUserInput } from '@/util/sanitize';
 import { z } from 'zod';
-import { createBoard, getProjectById } from '@/use-cases/projects';
+import { createBoard, createList, getProjectById } from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
 
 const projectSchema = z.object({
@@ -63,6 +63,13 @@ export const getProjectByIdAction = authenticatedAction
     } catch (error) {
       return [null, error] as const;
     }
+  });
+
+export const createListAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ name: z.string().min(1), boardId: z.number() }))
+  .handler(async ({ input: { name, boardId }, ctx: { user } }) => {
+    return await createList(name, boardId, user);
   });
 
 // Server action
