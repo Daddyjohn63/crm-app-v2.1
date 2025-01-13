@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { useBoardStore } from '@/store/boardStore';
 import { updateListAction } from '../actions';
+import { ListOptions } from './list-options';
 
 const formSchema = z.object({
   name: z.string().min(1, 'A List Name is required'),
@@ -172,6 +173,7 @@ export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
           {title}
         </div>
       )}
+      <ListOptions onAddCard={() => {}} data={data} />
     </div>
   );
 };
