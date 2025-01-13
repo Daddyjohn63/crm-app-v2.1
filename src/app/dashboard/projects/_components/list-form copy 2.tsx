@@ -57,8 +57,8 @@ export const ListForm = () => {
     try {
       setIsPending(true);
       const values = form.getValues();
-      console.log('Form values:', values);
-      console.log('Form data:', data);
+      //  console.log('Form values:', values);
+      //  console.log('Form data:', data);
       // TODO: Add your API call here
     } catch (error) {
       console.error('Error submitting form:', error);

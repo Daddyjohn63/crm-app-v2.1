@@ -69,6 +69,7 @@ export const createListAction = authenticatedAction
   .createServerAction()
   .input(z.object({ name: z.string().min(1), boardId: z.number() }))
   .handler(async ({ input: { name, boardId }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
     return await createList(name, boardId, user);
   });
 

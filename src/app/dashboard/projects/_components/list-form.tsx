@@ -16,7 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useBoardStore } from '@/store/boardStore';
 import { createListAction } from '../actions';
@@ -111,44 +111,51 @@ export const ListForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <form ref={formRef} onSubmit={onSubmit} className="p-2">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel></FormLabel>
-              <FormControl>
-                <Input
-                  className="text-sm h-9 border-2 border-white/20 font-medium hover:border-2 hover:border-input focus:border-2 focus:border-input transition w-[272px]"
-                  placeholder="Add a List Name"
-                  {...field}
-                  onFocus={() => setIsEditing(true)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {isEditing && (
-          <div className="flex items-center">
-            <LoaderButton className="w-full mt-4" isLoading={isPending}>
-              Add list
-            </LoaderButton>
-            <Button
-              onClick={() => {
-                setIsEditing(false);
-                form.reset();
-              }}
-              size="sm"
-              variant="ghost"
-            >
-              <X className="h-5 w-5 mt-4" />
-            </Button>
-          </div>
-        )}
-      </form>
-    </Form>
+    <li className="shrink-0 h-full w-[272px] select-none">
+      <div className="w-full rounded-md bg-[#f1f2f4] shadow-md pb-2">
+        <Form {...form}>
+          <form ref={formRef} onSubmit={onSubmit} className="pt-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="px-2 space-y-0">
+                  <FormLabel></FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Plus className="h-8 w-8 absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        className="text-sm text-black h-7 border-transparent font-medium hover:border-input focus:border-input transition w-full rounded-md bg-[#f1f2f4] pl-12 focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0"
+                        placeholder="Add a List Name"
+                        {...field}
+                        onFocus={() => setIsEditing(true)}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {isEditing && (
+              <div className="flex items-center gap-x-1 px-2 mt-1">
+                <LoaderButton className="w-full" isLoading={isPending}>
+                  Add list
+                </LoaderButton>
+                <Button
+                  onClick={() => {
+                    setIsEditing(false);
+                    form.reset();
+                  }}
+                  size="sm"
+                  // variant="ghost"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
+          </form>
+        </Form>
+      </div>
+    </li>
   );
 };
