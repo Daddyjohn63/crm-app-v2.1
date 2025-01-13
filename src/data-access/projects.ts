@@ -249,3 +249,30 @@ export async function createList(
   const [list] = await database.insert(lists).values(newList).returning();
   return list;
 }
+
+export async function updateList(
+  listId: number,
+  name: string,
+  trx = database
+): Promise<List> {
+  const [updatedList] = await trx
+    .update(lists)
+    .set({ name })
+    .where(eq(lists.id, listId))
+    .returning();
+
+  return updatedList;
+}
+
+export async function getListById(
+  listId: number,
+  trx = database
+): Promise<List | undefined> {
+  const [list] = await trx
+    .select()
+    .from(lists)
+    .where(eq(lists.id, listId))
+    .limit(1);
+
+  return list;
+}

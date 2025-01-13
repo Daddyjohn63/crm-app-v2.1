@@ -112,20 +112,19 @@ export const ListForm = () => {
 
   return (
     <li className="shrink-0 h-full w-[272px] select-none">
-      <div className="w-full rounded-md bg-[#f1f2f4] shadow-md pb-2">
+      <div className="w-full rounded-md bg-[#f1f2f4] shadow-md p-1">
         <Form {...form}>
-          <form ref={formRef} onSubmit={onSubmit} className="pt-2">
+          <form ref={formRef} onSubmit={onSubmit} className="">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="px-2 space-y-0">
-                  <FormLabel></FormLabel>
+                <FormItem className=" space-y-0">
                   <FormControl>
                     <div className="relative">
-                      <Plus className="h-8 w-8 absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                      <Plus className="h-8 w-8 absolute left-2 top-[50%] transform -translate-y-1/2 text-muted-foreground" />
                       <Input
-                        className="text-sm text-black h-7 border-transparent font-medium hover:border-input focus:border-input transition w-full rounded-md bg-[#f1f2f4] pl-12 focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0"
+                        className="text-sm text-black h-9 border-transparent font-medium hover:border-input focus:border-input transition w-full rounded-md bg-[#f1f2f4] pl-12 focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-0"
                         placeholder="Add a List Name"
                         {...field}
                         onFocus={() => setIsEditing(true)}

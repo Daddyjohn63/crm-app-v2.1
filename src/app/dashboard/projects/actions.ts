@@ -6,7 +6,12 @@ import { revalidatePath } from 'next/cache';
 //import { createProjectUseCase } from '@/use-cases/projects';
 import { sanitizeUserInput } from '@/util/sanitize';
 import { z } from 'zod';
-import { createBoard, createList, getProjectById } from '@/use-cases/projects';
+import {
+  createBoard,
+  createList,
+  getProjectById,
+  updateList
+} from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
 
 const projectSchema = z.object({
@@ -71,6 +76,20 @@ export const createListAction = authenticatedAction
   .handler(async ({ input: { name, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
     return await createList(name, boardId, user);
+  });
+
+export const updateListAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      listId: z.number(),
+      name: z.string().min(1),
+      boardId: z.number()
+    })
+  )
+  .handler(async ({ input: { listId, name, boardId }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
+    return await updateList(listId, name, user);
   });
 
 // Server action

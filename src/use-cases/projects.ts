@@ -196,3 +196,21 @@ export async function createList(
 ): Promise<List> {
   return await projectsDb.createList(name, boardId, user);
 }
+
+export async function updateList(
+  listId: number,
+  name: string,
+  user: User
+): Promise<List> {
+  // Verify user has permission to update this list
+  const list = await projectsDb.getListById(listId);
+  if (!list) throw new Error('List not found');
+
+  const permission = await projectsDb.findBoardPermission(
+    list.boardId,
+    user.id
+  );
+  if (!permission) throw new Error('Not authorized to update this list');
+
+  return await projectsDb.updateList(listId, name);
+}
