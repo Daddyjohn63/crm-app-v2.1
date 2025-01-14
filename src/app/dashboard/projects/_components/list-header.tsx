@@ -260,6 +260,7 @@ export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
           onCopyList={onCopyList}
           onDeleteList={onDeleteList}
           data={data}
+          isCopyPending={isCopyPending}
         />
       )}
     </div>

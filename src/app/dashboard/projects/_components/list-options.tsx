@@ -23,15 +23,27 @@ interface ListOptionsProps {
   onCopyList: () => void;
   onDeleteList: () => void;
   data: List;
+  isCopyPending?: boolean;
 }
 
 export const ListOptions = ({
   onAddCard,
   onCopyList,
   onDeleteList,
-  data
+  data,
+  isCopyPending
 }: ListOptionsProps) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  // const [isCopying, setIsCopying] = useState(false);
+
+  // const handleCopy = async () => {
+  //   try {
+  //     setIsCopying(true);
+  //     await onCopyList();
+  //   } finally {
+  //     setIsCopying(false);
+  //   }
+  // };
 
   return (
     <>
@@ -72,9 +84,10 @@ export const ListOptions = ({
             onClick={onCopyList}
             className="rounded-none text-black w-full h-auto p-2 px-5 justify-start font-normal text-sm"
             variant="ghost"
+            disabled={isCopyPending}
           >
             <Copy className="h-4 w-4 mr-2" />
-            Copy List...
+            {isCopyPending ? 'Copying...' : 'Copy List...'}
           </Button>
           <Button
             onClick={() => setShowDeleteDialog(true)}
