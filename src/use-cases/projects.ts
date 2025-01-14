@@ -260,7 +260,7 @@ export async function copyList(listId: number, user: User): Promise<List> {
           listId: copiedList.id,
           order: index,
           status: card.status,
-          assignedTo: card.assignedTo
+          assignedTo: card.assignedTo ?? undefined
         });
       })
     );
@@ -274,102 +274,40 @@ export async function createCard(
     name: string;
     description?: string;
     listId: number;
+    assignedTo?: number;
   },
   user: User
 ): Promise<Card> {
-  process.stdout.write(
-    `\n[DEBUG] Use Case: createCard started ${JSON.stringify(
-      { params, userId: user.id },
-      null,
-      2
-    )}\n`
-  );
-
+  // Verify user has permission to create cards in this list
   const list = await projectsDb.getListById(params.listId);
   if (!list) {
-    process.stdout.write(
-      `\n[ERROR] Use Case: List not found ${JSON.stringify(
-        { listId: params.listId },
-        null,
-        2
-      )}\n`
-    );
     throw new Error('List not found');
   }
 
-  // Verify user has permission to create cards in this list
   const permission = await projectsDb.findBoardPermission(
     list.boardId,
     user.id
   );
   if (!permission) {
-    process.stdout.write(
-      `\n[ERROR] Use Case: User not authorized ${JSON.stringify(
-        {
-          userId: user.id,
-          listId: params.listId,
-          boardId: list.boardId
-        },
-        null,
-        2
-      )}\n`
-    );
     throw new Error('Not authorized to create cards in this list');
   }
 
-  process.stdout.write(
-    `\n[DEBUG] Use Case: Permission verified ${JSON.stringify(
-      {
-        permission,
-        userId: user.id,
-        listId: params.listId
-      },
-      null,
-      2
-    )}\n`
-  );
+  // Get the board to find its owner
+  const board = await projectsDb.getBoardById(list.boardId);
+  if (!board) {
+    throw new Error('Board not found');
+  }
 
   // Get max order for the list
   const cards = await projectsDb.getCardsByListId(params.listId);
   const maxOrder = cards.reduce((max, card) => Math.max(max, card.order), -1);
 
-  process.stdout.write(
-    `\n[DEBUG] Use Case: Creating card with params ${JSON.stringify(
-      {
-        name: params.name,
-        description: params.description ?? null,
-        listId: params.listId,
-        order: maxOrder + 1,
-        status: taskStatusEnum.enumValues[0]
-      },
-      null,
-      2
-    )}\n`
-  );
-
-  try {
-    const card = await projectsDb.createCard({
-      name: params.name,
-      description: params.description ?? null,
-      listId: params.listId,
-      order: maxOrder + 1,
-      status: taskStatusEnum.enumValues[0] as TaskStatus
-    });
-
-    process.stdout.write(
-      `\n[DEBUG] Use Case: Card created successfully ${JSON.stringify(
-        card,
-        null,
-        2
-      )}\n`
-    );
-    return card;
-  } catch (error) {
-    process.stdout.write(
-      `\n[ERROR] Use Case: Error creating card: ${
-        error instanceof Error ? error.message : String(error)
-      }\n`
-    );
-    throw error;
-  }
+  return await projectsDb.createCard({
+    name: params.name,
+    description: params.description ?? null,
+    listId: params.listId,
+    order: maxOrder + 1,
+    status: taskStatusEnum.enumValues[0] as TaskStatus,
+    assignedTo: params.assignedTo ?? board.userId // Use board owner as default assignee
+  });
 }

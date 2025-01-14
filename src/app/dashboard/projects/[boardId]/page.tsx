@@ -17,8 +17,7 @@ import {
   canUseListForm,
   type Permission
 } from '@/util/auth-projects';
-import { BoardIdProvider } from '../_components/board-id-provider';
-import { CardProvider } from '../_components/card-provider';
+import { BoardStoreInitializer } from '../_components/board-store-initializer';
 
 interface PageProps {
   params: {
@@ -91,13 +90,9 @@ function ProjectDetails({
   lists: ListWithCards[];
   permission: Permission;
 }) {
-  // console.log('Permission object:', permission);
-  // console.log('Permission type:', typeof permission);
-  // console.log('Permission role:', permission?.role);
-  // console.log('Can access settings:', canAccessSettings(permission));
-
   return (
-    <CardProvider>
+    <>
+      <BoardStoreInitializer boardId={board.id} />
       <div className="pt-8 space-y-6 ml-4">
         <nav className="flex bg-indigo-900 rounded-lg">
           <div className="flex justify-between items-center w-full p-2">
@@ -117,7 +112,7 @@ function ProjectDetails({
           />
         </div>
       </div>
-    </CardProvider>
+    </>
   );
 }
 
@@ -125,11 +120,9 @@ export const revalidate = 3600;
 
 export default function ProjectPage({ params }: PageProps) {
   return (
-    <BoardIdProvider boardId={Number(params.boardId)}>
-      <Suspense fallback={<ProjectSkeleton />}>
-        <AsyncProjectContent boardId={params.boardId} />
-      </Suspense>
-    </BoardIdProvider>
+    <Suspense fallback={<ProjectSkeleton />}>
+      <AsyncProjectContent boardId={params.boardId} />
+    </Suspense>
   );
 }
 

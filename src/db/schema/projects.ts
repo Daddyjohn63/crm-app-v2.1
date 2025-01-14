@@ -117,7 +117,7 @@ export const cards = pgTable(
     status: taskStatusEnum('status').notNull(),
     order: integer('order').notNull(),
     dueDate: timestamp('due_date', { mode: 'date' }),
-    assignedTo: serial('assigned_to').references(() => users.id),
+    assignedTo: integer('assigned_to').references(() => users.id),
     estimatedMinutes: integer('estimated_minutes'),
     totalMinutes: integer('total_minutes').default(0),
     isTimerActive: boolean('is_timer_active').default(false),

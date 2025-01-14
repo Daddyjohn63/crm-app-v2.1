@@ -3,7 +3,7 @@
 /**
  * CardForm Component
  * Handles the form submission for creating new cards.
- * Gets listId and boardId from the CardDialog context, which is set up by CardModal.
+ * Gets listId and boardId from the Zustand store, which is set up by CardModal.
  */
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { createCardAction } from '../actions';
-import { useCardDialog } from './card-provider';
+import { useCardDialogStore } from '@/store/cardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
 
 // Form validation schema
@@ -31,10 +31,10 @@ const formSchema = z.object({
 });
 
 export const CardForm = () => {
-  // Get listId and boardId from the CardDialog context
+  // Get listId and boardId directly from the Zustand store
   // These are set by CardModal before the form is displayed
-  const { listId, boardId } = useCardDialog();
-  const { setIsOpen } = useCardDialog();
+  const { listId, boardId, setIsOpen } = useCardDialogStore();
+  console.log('CardForm render:', { listId, boardId });
   const { toast } = useToast();
 
   // Set up the server action for creating cards
@@ -68,7 +68,7 @@ export const CardForm = () => {
 
   // Handle form submission
   const onSubmit = form.handleSubmit(async values => {
-    // Verify that we have both required IDs from the context
+    // Verify that we have both required IDs from the Zustand store
     if (!listId || !boardId) {
       toast({
         title: 'Error',

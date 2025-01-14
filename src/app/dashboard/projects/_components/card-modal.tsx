@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { useCardDialog } from './card-provider';
+import { useCardDialogStore } from '@/store/cardDialogStore';
 import { CardForm } from './card-form';
 import { ListWithCards } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
@@ -23,24 +23,22 @@ interface CardModalProps {
 }
 
 export const CardModal = ({ data }: CardModalProps) => {
-  // Get dialog state and controls from the CardDialog context
-  // This context is provided by CardProvider at the page level
-  const { isOpen, setIsOpen, setListId, setBoardId } = useCardDialog();
+  // Get dialog state and controls directly from Zustand store
+  const { isOpen, setIsOpen, setListId, setBoardId } = useCardDialogStore();
 
-  // Get the current board ID from the global board store
-  // This is set by BoardIdProvider when the page loads
+  // Get the current board ID from the board store
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
   const handleAddCard = () => {
     // Ensure we have a valid board ID before proceeding
     if (!currentBoardId) return;
 
-    // Set up the context for the card form:
+    // Set up the state in the Zustand store:
     // - listId comes from the list data (data.id)
-    // - boardId comes from the global store (currentBoardId)
+    // - boardId comes from the board store (currentBoardId)
     setListId(data.id);
     setBoardId(currentBoardId);
-    // Open the dialog after setting up the context
+    // Open the dialog after setting up the state
     setIsOpen(true);
   };
 

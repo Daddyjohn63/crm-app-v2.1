@@ -20,7 +20,7 @@ import { useServerAction } from 'zsa-react';
 import { useBoardStore } from '@/store/boardStore';
 import { updateListAction, copyListAction, deleteListAction } from '../actions';
 import { ListOptions } from './list-options';
-import { useCardDialog } from './card-provider';
+import { useCardDialogStore } from '@/store/cardDialogStore';
 
 const formSchema = z.object({
   name: z.string().min(1, 'A List Name is required'),
@@ -41,7 +41,9 @@ export const ListHeader = ({
   //console.log('data from list header', data);
   const { toast } = useToast();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
-  const { setIsOpen, setListId, setBoardId } = useCardDialog();
+  // Get the card dialog controls from Zustand store
+  const { setIsOpen, setListId, setBoardId } = useCardDialogStore();
+
   //console.log('currentBoardId', currentBoardId);
   const [title, setTitle] = useState(data.name);
   const [isEditing, setIsEditing] = useState(false);
@@ -236,6 +238,7 @@ export const ListHeader = ({
       return;
     }
 
+    // Set the IDs in the card dialog store
     setListId(data.id);
     setBoardId(currentBoardId);
     setIsOpen(true);

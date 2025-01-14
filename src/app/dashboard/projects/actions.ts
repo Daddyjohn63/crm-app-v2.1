@@ -116,12 +116,13 @@ export const createCardAction = authenticatedAction
       name: z.string().min(1),
       description: z.string().optional(),
       listId: z.number(),
-      boardId: z.number()
+      boardId: z.number(),
+      assignedTo: z.number().optional()
     })
   )
   .handler(
     async ({
-      input: { name, description, listId, boardId },
+      input: { name, description, listId, boardId, assignedTo },
       ctx: { user }
     }) => {
       try {
@@ -145,28 +146,17 @@ export const createCardAction = authenticatedAction
             description: description
               ? sanitizeUserInput(description)
               : undefined,
-            listId
+            listId,
+            assignedTo
           },
           user
         );
 
-        process.stdout.write(
-          `\n[DEBUG] Server Action: Card created successfully ${JSON.stringify(
-            card,
-            null,
-            2
-          )}\n`
-        );
-
         revalidatePath(`/dashboard/projects/${boardId}`);
-        return { success: true, card };
+        return [card, null] as const;
       } catch (error) {
-        process.stdout.write(
-          `\n[ERROR] Server Action: createCardAction error: ${
-            error instanceof Error ? error.message : String(error)
-          }\n`
-        );
-        throw error;
+        console.error('Error in createCardAction:', error);
+        return [null, error] as const;
       }
     }
   );
