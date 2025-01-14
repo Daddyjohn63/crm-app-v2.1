@@ -17,7 +17,7 @@ import {
   DrawerTitle
 } from '@/components/ui/drawer';
 import useMediaQuery from '@/hooks/use-media-query';
-import { useProjectOverlayStore } from '@/store/projectOverlayStore';
+import { useBoardOverlayStore } from '@/store/boardOverlayStore';
 
 type Props = {
   title: string;
@@ -28,7 +28,7 @@ type Props = {
 export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const { isMobile } = useMediaQuery();
   const preventCloseRef = useRef(false);
-  const { isOpen, setIsOpen } = useProjectOverlayStore();
+  const { isOpen, setIsOpen } = useBoardOverlayStore();
 
   useEffect(() => {
     console.log('ZustandInteractiveOverlay isOpen changed:', isOpen);

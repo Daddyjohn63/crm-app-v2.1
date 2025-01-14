@@ -1,27 +1,27 @@
 import { create } from 'zustand';
 
-interface ProjectOverlayStore {
+interface BoardOverlayStore {
   isOpen: boolean;
-  projectId: number | null;
+  boardId: number | null;
   setIsOpen: (isOpen: boolean) => void;
-  setProjectId: (id: number | null) => void;
+  setBoardId: (id: number | null) => void;
   reset: () => void;
 }
 
-export const useProjectOverlayStore = create<ProjectOverlayStore>(set => ({
+export const useBoardOverlayStore = create<BoardOverlayStore>(set => ({
   //initial state
   isOpen: false,
-  projectId: null,
+  boardId: null,
 
   //function that takes a boolean and sets the isOpen state to that value.
   setIsOpen: (isOpen: boolean) => set({ isOpen }),
 
   //function that takes an id and sets the contactId state to that value.
-  setProjectId: id => {
+  setBoardId: id => {
     // console.log('Setting serviceId in store:', id);
-    set({ projectId: id });
+    set({ boardId: id });
   },
 
   //function to reset the store to its initial state
-  reset: () => set({ isOpen: false, projectId: null })
+  reset: () => set({ isOpen: false, boardId: null })
 }));

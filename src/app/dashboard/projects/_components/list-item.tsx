@@ -3,6 +3,8 @@
 import { ListWithCards } from '@/use-cases/types';
 import { ListHeader } from './list-header';
 import { ElementRef, useRef, useState } from 'react';
+import { CardForm } from './card-form';
+import { ListCards } from './list-cards';
 
 interface ListItemProps {
   data: ListWithCards;
@@ -34,6 +36,8 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
           data={data}
           canUseListForm={canUseListForm}
         />
+        <ListCards />
+        <CardForm />
       </div>
     </li>
   );

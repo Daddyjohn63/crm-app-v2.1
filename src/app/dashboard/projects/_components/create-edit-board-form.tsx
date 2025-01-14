@@ -15,7 +15,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
-import { useProjectOverlayStore } from '@/store/projectOverlayStore';
+import { useBoardOverlayStore } from '@/store/boardOverlayStore';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -45,8 +45,8 @@ const formSchema = z.object({
   })
 });
 
-export default function CreateEditProjectForm() {
-  const { setIsOpen } = useProjectOverlayStore();
+export default function CreateEditBoardForm() {
+  const { setIsOpen } = useBoardOverlayStore();
   const { toast } = useToast();
   const [clients, setClients] = useState<
     Array<{ id: number; business_name: string }>

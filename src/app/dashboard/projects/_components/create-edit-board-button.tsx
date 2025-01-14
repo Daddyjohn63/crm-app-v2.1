@@ -2,22 +2,21 @@
 
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-
 import { btnIconStyles, btnStyles } from '@/styles/icons';
 import { useBoardOverlayStore } from '@/store/boardOverlayStore';
 import { ZustandInteractiveOverlay } from './zustand-intereactive-overlay';
 import CreateEditBoardForm from './create-edit-board-form';
 
-interface CreateEditProjectButtonProps {
+interface CreateEditBoardButtonProps {
   boardId: string | null | undefined;
 }
 
-export default function CreateEditProjectButton({
+export default function CreateEditBoardButton({
   boardId
-}: CreateEditProjectButtonProps) {
+}: CreateEditBoardButtonProps) {
   const { setIsOpen, setBoardId } = useBoardOverlayStore();
 
-  const handleCreateOrEditProject = () => {
+  const handleCreateOrEditBoard = () => {
     if (boardId) {
       setBoardId(parseInt(boardId));
     } else {
@@ -34,7 +33,7 @@ export default function CreateEditProjectButton({
         form={<CreateEditBoardForm />}
       />
 
-      <Button onClick={handleCreateOrEditProject} className={btnStyles}>
+      <Button onClick={handleCreateOrEditBoard} className={btnStyles}>
         <PlusCircle className={btnIconStyles} />
         {boardId ? 'Edit Board' : 'Create Board'}
       </Button>
