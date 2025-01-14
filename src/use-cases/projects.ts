@@ -214,3 +214,57 @@ export async function updateList(
 
   return await projectsDb.updateList(listId, name);
 }
+
+export async function deleteList(listId: number, user: User): Promise<void> {
+  // Verify user has permission to delete this list
+  const list = await projectsDb.getListById(listId);
+  if (!list) throw new Error('List not found');
+
+  const permission = await projectsDb.findBoardPermission(
+    list.boardId,
+    user.id
+  );
+  if (!permission) throw new Error('Not authorized to delete this list');
+
+  await projectsDb.deleteList(listId);
+}
+
+export async function copyList(listId: number, user: User): Promise<List> {
+  // Verify user has permission to copy this list
+  const list = await projectsDb.getListById(listId);
+  if (!list) throw new Error('List not found');
+
+  const permission = await projectsDb.findBoardPermission(
+    list.boardId,
+    user.id
+  );
+  if (!permission) throw new Error('Not authorized to copy this list');
+
+  // Get all cards from the original list
+  const cards = await projectsDb.getCardsByListId(listId);
+
+  // Create a copy of the list with a new name
+  const copiedList = await projectsDb.createList(
+    `${list.name} (copy)`,
+    list.boardId,
+    user
+  );
+
+  // Copy all cards to the new list
+  if (cards.length > 0) {
+    await Promise.all(
+      cards.map(async (card, index) => {
+        await projectsDb.createCard({
+          name: card.name,
+          description: card.description,
+          listId: copiedList.id,
+          order: index,
+          status: card.status,
+          assignedTo: card.assignedTo
+        });
+      })
+    );
+  }
+
+  return copiedList;
+}

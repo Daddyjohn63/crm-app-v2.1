@@ -10,7 +10,9 @@ import {
   createBoard,
   createList,
   getProjectById,
-  updateList
+  updateList,
+  deleteList,
+  copyList
 } from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
 
@@ -90,6 +92,32 @@ export const updateListAction = authenticatedAction
   .handler(async ({ input: { listId, name, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
     return await updateList(listId, name, user);
+  });
+
+export const deleteListAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      listId: z.number(),
+      boardId: z.number()
+    })
+  )
+  .handler(async ({ input: { listId, boardId }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
+    return await deleteList(listId, user);
+  });
+
+export const copyListAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      listId: z.number(),
+      boardId: z.number()
+    })
+  )
+  .handler(async ({ input: { listId, boardId }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
+    return await copyList(listId, user);
   });
 
 // Server action

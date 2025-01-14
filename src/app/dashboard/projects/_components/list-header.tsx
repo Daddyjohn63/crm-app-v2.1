@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
 import { useBoardStore } from '@/store/boardStore';
-import { updateListAction } from '../actions';
+import { updateListAction, copyListAction, deleteListAction } from '../actions';
 import { ListOptions } from './list-options';
 
 const formSchema = z.object({
@@ -61,7 +61,7 @@ export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
     }
 
     try {
-      await execute({
+      await executeUpdate({
         listId: data.id,
         name: values.name,
         boardId: currentBoardId
@@ -119,24 +119,105 @@ export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
 
   useEventListener('keydown', onKeyDown);
 
-  const { execute, isPending } = useServerAction(updateListAction, {
-    onSuccess() {
-      toast({
-        title: 'List updated',
-        description: 'The list has been updated successfully.',
-        duration: 3000
-      });
-      setIsEditing(false);
-    },
-    onError() {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong updating the list.',
-        duration: 3000
-      });
+  const { execute: executeUpdate, isPending: isUpdatePending } =
+    useServerAction(updateListAction, {
+      onSuccess() {
+        toast({
+          title: 'List updated',
+          description: 'The list has been updated successfully.',
+          duration: 3000
+        });
+        setIsEditing(false);
+      },
+      onError() {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: 'Something went wrong updating the list.',
+          duration: 3000
+        });
+      }
+    });
+
+  const { execute: executeCopy, isPending: isCopyPending } = useServerAction(
+    copyListAction,
+    {
+      onSuccess() {
+        toast({
+          title: 'List copied',
+          description: 'The list has been copied successfully.',
+          duration: 3000
+        });
+      },
+      onError() {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: 'Something went wrong copying the list.',
+          duration: 3000
+        });
+      }
     }
-  });
+  );
+
+  const { execute: executeDelete, isPending: isDeletePending } =
+    useServerAction(deleteListAction, {
+      onSuccess() {
+        toast({
+          title: 'List deleted',
+          description: 'The list has been deleted successfully.',
+          duration: 3000
+        });
+      },
+      onError() {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: 'Something went wrong deleting the list.',
+          duration: 3000
+        });
+      }
+    });
+
+  const onCopyList = async () => {
+    if (!currentBoardId) {
+      toast({
+        title: 'Error',
+        description: 'No project selected. Please select a project first.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      await executeCopy({
+        listId: data.id,
+        boardId: currentBoardId
+      });
+    } catch (error) {
+      console.error('Error copying list:', error);
+    }
+  };
+
+  const onDeleteList = async () => {
+    if (!currentBoardId) {
+      toast({
+        title: 'Error',
+        description: 'No project selected. Please select a project first.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      await executeDelete({
+        listId: data.id,
+        boardId: currentBoardId
+      });
+    } catch (error) {
+      console.error('Error deleting list:', error);
+    }
+  };
 
   return (
     <div className="px-2 text-sm font-semibold flex justify-between items-center h-9">
@@ -173,7 +254,14 @@ export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
           {title}
         </div>
       )}
-      <ListOptions onAddCard={() => {}} data={data} />
+      {canUseListForm && (
+        <ListOptions
+          onAddCard={() => {}}
+          onCopyList={onCopyList}
+          onDeleteList={onDeleteList}
+          data={data}
+        />
+      )}
     </div>
   );
 };

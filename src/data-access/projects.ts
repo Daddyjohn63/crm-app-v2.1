@@ -276,3 +276,42 @@ export async function getListById(
 
   return list;
 }
+
+export async function deleteList(
+  listId: number,
+  trx = database
+): Promise<void> {
+  await trx.delete(lists).where(eq(lists.id, listId));
+}
+
+export async function getCardsByListId(
+  listId: number,
+  trx = database
+): Promise<Card[]> {
+  return await trx
+    .select()
+    .from(cards)
+    .where(eq(cards.listId, listId))
+    .orderBy(asc(cards.order));
+}
+
+export async function createCard(
+  data: {
+    name: string;
+    description: string | null;
+    listId: number;
+    order: number;
+    status: 'todo' | 'in_progress' | 'done' | 'blocked';
+    assignedTo?: number;
+  },
+  trx = database
+): Promise<Card> {
+  const [card] = await trx
+    .insert(cards)
+    .values({
+      ...data,
+      assignedTo: data.assignedTo || undefined
+    })
+    .returning();
+  return card;
+}
