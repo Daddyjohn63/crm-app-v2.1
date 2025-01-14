@@ -48,18 +48,6 @@ export const getClientsAction = authenticatedAction
     return await getClientsByUser(user.id);
   });
 
-// export const getProjectsAction = authenticatedAction
-//   .createServerAction()
-//   .handler(async ({ ctx: { user } }) => {
-//     return console.log('getProjectsAction');
-//   });
-
-// export const getProjectAction = authenticatedAction
-//   .createServerAction()
-//   .handler(async ({ ctx: { user } }) => {
-//     return console.log('getProjectAction');
-//   });
-
 export const getProjectByIdAction = authenticatedAction
   .createServerAction()
   .input(z.string())
@@ -119,19 +107,3 @@ export const copyListAction = authenticatedAction
     revalidatePath(`/dashboard/projects/${boardId}`);
     return await copyList(listId, user);
   });
-
-// Server action
-// async function createProjectBoard(input: CreateBoardInput) {
-//   const user = await getCurrentUser();
-//   return await createBoard(input, user);  // calls use-case
-// }
-
-// // Use-case handles:
-// - Checking if user is admin
-// - Creating board
-// - Setting up owner permission
-// - Managing transaction
-
-// // Data-access handles:
-// - Raw database operations
-// - No business logic

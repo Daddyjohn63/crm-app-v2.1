@@ -27,11 +27,16 @@ const formSchema = z.object({
 });
 
 interface ListHeaderProps {
+  //onAddCard: () => void;
   data: List;
   canUseListForm: boolean;
 }
 
-export const ListHeader = ({ data, canUseListForm }: ListHeaderProps) => {
+export const ListHeader = ({
+  // onAddCard,
+  data,
+  canUseListForm
+}: ListHeaderProps) => {
   console.log('data from list header', data);
   const { toast } = useToast();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
