@@ -20,6 +20,7 @@ import { useServerAction } from 'zsa-react';
 import { useBoardStore } from '@/store/boardStore';
 import { updateListAction, copyListAction, deleteListAction } from '../actions';
 import { ListOptions } from './list-options';
+import { useCardDialog } from './card-provider';
 
 const formSchema = z.object({
   name: z.string().min(1, 'A List Name is required'),
@@ -37,10 +38,11 @@ export const ListHeader = ({
   data,
   canUseListForm
 }: ListHeaderProps) => {
-  console.log('data from list header', data);
+  //console.log('data from list header', data);
   const { toast } = useToast();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
-  console.log('currentBoardId', currentBoardId);
+  const { setIsOpen, setListId, setBoardId } = useCardDialog();
+  //console.log('currentBoardId', currentBoardId);
   const [title, setTitle] = useState(data.name);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -224,6 +226,21 @@ export const ListHeader = ({
     }
   };
 
+  const onAddCard = () => {
+    if (!currentBoardId) {
+      toast({
+        title: 'Error',
+        description: 'No project selected. Please select a project first.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setListId(data.id);
+    setBoardId(currentBoardId);
+    setIsOpen(true);
+  };
+
   return (
     <div className="px-2 text-sm font-semibold flex justify-between items-center h-9">
       {isEditing ? (
@@ -261,7 +278,7 @@ export const ListHeader = ({
       )}
       {canUseListForm && (
         <ListOptions
-          onAddCard={() => {}}
+          onAddCard={onAddCard}
           onCopyList={onCopyList}
           onDeleteList={onDeleteList}
           data={data}

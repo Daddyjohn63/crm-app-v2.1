@@ -18,6 +18,7 @@ import {
   type Permission
 } from '@/util/auth-projects';
 import { BoardIdProvider } from '../_components/board-id-provider';
+import { CardProvider } from '../_components/card-provider';
 
 interface PageProps {
   params: {
@@ -96,25 +97,27 @@ function ProjectDetails({
   // console.log('Can access settings:', canAccessSettings(permission));
 
   return (
-    <div className="pt-8 space-y-6 ml-4">
-      <nav className="flex bg-indigo-900 rounded-lg">
-        <div className="flex justify-between items-center w-full p-2">
-          <h1 className="text-3xl font-bold">{board.name}</h1>
-          {canAccessSettings(permission) && (
-            <Settings className="w-6 h-6 cursor-pointer" />
-          )}
+    <CardProvider>
+      <div className="pt-8 space-y-6 ml-4">
+        <nav className="flex bg-indigo-900 rounded-lg">
+          <div className="flex justify-between items-center w-full p-2">
+            <h1 className="text-3xl font-bold">{board.name}</h1>
+            {canAccessSettings(permission) && (
+              <Settings className="w-6 h-6 cursor-pointer" />
+            )}
+          </div>
+        </nav>
+        <div className="space-y-2 overflow-x-auto">
+          <ListContainer
+            boardId={board.id}
+            data={lists}
+            user={user}
+            permission={permission}
+            canUseListForm={canUseListForm(permission)}
+          />
         </div>
-      </nav>
-      <div className="space-y-2 overflow-x-auto">
-        <ListContainer
-          boardId={board.id}
-          data={lists}
-          user={user}
-          permission={permission}
-          canUseListForm={canUseListForm(permission)}
-        />
       </div>
-    </div>
+    </CardProvider>
   );
 }
 

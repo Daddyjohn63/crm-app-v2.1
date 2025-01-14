@@ -304,6 +304,7 @@ export async function createCard(
     status: 'todo' | 'in_progress' | 'done' | 'blocked';
     assignedTo?: number;
   },
+
   trx = database
 ): Promise<Card> {
   const [card] = await trx

@@ -12,7 +12,8 @@ import {
   getProjectById,
   updateList,
   deleteList,
-  copyList
+  copyList,
+  createCard
 } from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
 
@@ -107,3 +108,65 @@ export const copyListAction = authenticatedAction
     revalidatePath(`/dashboard/projects/${boardId}`);
     return await copyList(listId, user);
   });
+
+export const createCardAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(1),
+      description: z.string().optional(),
+      listId: z.number(),
+      boardId: z.number()
+    })
+  )
+  .handler(
+    async ({
+      input: { name, description, listId, boardId },
+      ctx: { user }
+    }) => {
+      try {
+        process.stdout.write(
+          `\n[DEBUG] Server Action: createCardAction started ${JSON.stringify(
+            {
+              name,
+              description,
+              listId,
+              boardId,
+              userId: user.id
+            },
+            null,
+            2
+          )}\n`
+        );
+
+        const card = await createCard(
+          {
+            name: sanitizeUserInput(name),
+            description: description
+              ? sanitizeUserInput(description)
+              : undefined,
+            listId
+          },
+          user
+        );
+
+        process.stdout.write(
+          `\n[DEBUG] Server Action: Card created successfully ${JSON.stringify(
+            card,
+            null,
+            2
+          )}\n`
+        );
+
+        revalidatePath(`/dashboard/projects/${boardId}`);
+        return { success: true, card };
+      } catch (error) {
+        process.stdout.write(
+          `\n[ERROR] Server Action: createCardAction error: ${
+            error instanceof Error ? error.message : String(error)
+          }\n`
+        );
+        throw error;
+      }
+    }
+  );

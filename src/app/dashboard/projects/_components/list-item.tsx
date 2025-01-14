@@ -3,7 +3,7 @@
 import { ListWithCards } from '@/use-cases/types';
 import { ListHeader } from './list-header';
 import { ElementRef, useRef, useState } from 'react';
-import { CardForm } from './card-form';
+import { CardModal } from './card-modal';
 import { ListCards } from './list-cards';
 
 interface ListItemProps {
@@ -31,13 +31,9 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
   return (
     <li className="shrink-0 h-full w-[272px] select-none">
       <div className="w-full rounded-md bg-[#f1f2f4] shadow-md py-1">
-        <ListHeader
-          // onAddCard={enableEditing}
-          data={data}
-          canUseListForm={canUseListForm}
-        />
+        <ListHeader data={data} canUseListForm={canUseListForm} />
         <ListCards />
-        <CardForm />
+        <CardModal data={data} />
       </div>
     </li>
   );
