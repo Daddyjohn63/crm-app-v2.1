@@ -68,7 +68,7 @@ export default function ProjectsPage() {
           <Plus className="w-4 h-4 mr-2" />
           New Project
         </Button> */}
-        <CreateEditProjectButton projectId={null} />
+        <CreateEditProjectButton boardId={null} />
       </div>
 
       {/* Statistics Cards */}

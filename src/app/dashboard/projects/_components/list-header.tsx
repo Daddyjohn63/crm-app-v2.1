@@ -238,7 +238,7 @@ export const ListHeader = ({
       return;
     }
 
-    // Set the IDs in the card dialog store
+    // Set the IDs in the card dialog store and the card dialog is opened. making sure we have the ids before opening the dialog.
     setListId(data.id);
     setBoardId(currentBoardId);
     setIsOpen(true);
