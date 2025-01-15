@@ -24,24 +24,20 @@ interface CardModalProps {
 
 export const CardModal = ({ data }: CardModalProps) => {
   // Get dialog state and controls directly from Zustand store
-  const { isOpen, setIsOpen, setListId, setBoardId, setListName, listName } =
-    useCardDialogStore();
-
-  // Get the current board ID from the board store
+  const { isOpen, setIsOpen, openCardDialog, listName } = useCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
   const handleAddCard = () => {
     // Ensure we have a valid board ID before proceeding
     if (!currentBoardId) return;
 
-    // Set up the state in the Zustand store:
-    // - listId comes from the list data (data.id)
-    // - boardId comes from the board store (currentBoardId)
-    setListId(data.id);
-    setBoardId(currentBoardId);
-    setListName(data.name);
-    // Open the dialog after setting up the state
-    setIsOpen(true);
+    // Use the new convenience method instead of multiple setter calls
+    openCardDialog({
+      listId: data.id,
+      boardId: currentBoardId,
+      cardId: 0,
+      listName: data.name
+    });
   };
 
   return (

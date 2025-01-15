@@ -14,15 +14,10 @@ interface CreateEditBoardButtonProps {
 export default function CreateEditBoardButton({
   boardId
 }: CreateEditBoardButtonProps) {
-  const { setIsOpen, setBoardId } = useBoardOverlayStore();
+  const { openBoardOverlay } = useBoardOverlayStore();
 
   const handleCreateOrEditBoard = () => {
-    if (boardId) {
-      setBoardId(parseInt(boardId));
-    } else {
-      setBoardId(null);
-    }
-    setIsOpen(true);
+    openBoardOverlay(boardId ? parseInt(boardId) : 0);
   };
 
   return (
