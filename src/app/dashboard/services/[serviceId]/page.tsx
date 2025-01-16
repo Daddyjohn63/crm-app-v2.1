@@ -34,7 +34,7 @@ export default async function ServicePage({
     const serviceClients = await getClientsByServiceIdUseCase(
       parseInt(serviceId)
     );
-    console.log('SERVICE CLIENTS', serviceClients);
+    // console.log('SERVICE CLIENTS', serviceClients);
     //console.log('SERVICE BY ID/PARAM', service);
 
     return (

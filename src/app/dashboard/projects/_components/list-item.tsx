@@ -15,7 +15,7 @@ interface ListItemProps {
 }
 
 export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
-  console.log('list item', data);
+  //console.log('list item', data);
 
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
