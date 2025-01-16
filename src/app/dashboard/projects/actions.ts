@@ -13,9 +13,12 @@ import {
   updateList,
   deleteList,
   copyList,
-  createCard
+  createCard,
+  reorderLists,
+  reorderCards
 } from '@/use-cases/projects';
 import { getClientsByUser } from '@/data-access/clients';
+import { listReorderSchema, cardReorderSchema } from '../validation';
 
 const projectSchema = z.object({
   name: z.string().min(1),
@@ -160,3 +163,23 @@ export const createCardAction = authenticatedAction
       }
     }
   );
+
+export const reorderListsAction = authenticatedAction
+  .createServerAction()
+  .input(listReorderSchema)
+  .handler(async ({ input: { boardId, items }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
+    return await reorderLists(boardId, items, user);
+  });
+
+export const reorderCardsAction = authenticatedAction
+  .createServerAction()
+  .input(cardReorderSchema)
+  .handler(async ({ input: { listId, cards }, ctx: { user } }) => {
+    const sourceListId = listId;
+    const destinationListId = cards[0]?.listId;
+    if (!destinationListId) throw new Error('No destination list ID provided');
+
+    revalidatePath(`/dashboard/projects/${listId}`);
+    return await reorderCards(sourceListId, destinationListId, cards, user);
+  });

@@ -31,13 +31,14 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
             </div>
 
             <Droppable droppableId={data.id.toString()} type="card">
-              {provided => (
+              {(provided, snapshot) => (
                 <ol
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={cn(
-                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2',
-                    data.cards.length > 0 ? 'mt-2' : 'mt-0'
+                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2 min-h-[20px]',
+                    data.cards.length > 0 ? 'mt-2' : 'mt-0',
+                    snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
                   )}
                 >
                   {data.cards.map((card, index) => (

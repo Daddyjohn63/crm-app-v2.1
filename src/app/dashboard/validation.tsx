@@ -50,3 +50,32 @@ export const projectSchema = z.object({
   description: z.string().min(1),
   client_id: z.string().min(1)
 });
+
+// Drag and Drop Schemas
+export const listReorderSchema = z.object({
+  boardId: z.number(),
+  items: z.array(
+    z.object({
+      id: z.number(),
+      order: z.number().min(0)
+    })
+  )
+});
+
+export const cardReorderSchema = z.object({
+  listId: z.number(),
+  cards: z.array(
+    z.object({
+      id: z.number(),
+      order: z.number().min(0),
+      listId: z.number()
+    })
+  )
+});
+
+export const cardMoveSchema = z.object({
+  cardId: z.number(),
+  sourceListId: z.number(),
+  destinationListId: z.number(),
+  order: z.number().min(0)
+});

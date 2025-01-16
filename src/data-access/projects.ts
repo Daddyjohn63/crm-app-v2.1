@@ -316,3 +316,28 @@ export async function createCard(
     .returning();
   return card;
 }
+
+export async function updateListOrder(
+  items: { id: number; order: number }[],
+  trx = database
+): Promise<void> {
+  await Promise.all(
+    items.map(item =>
+      trx.update(lists).set({ order: item.order }).where(eq(lists.id, item.id))
+    )
+  );
+}
+
+export async function updateCardOrder(
+  cardUpdates: { id: number; order: number; listId: number }[],
+  trx = database
+): Promise<void> {
+  await Promise.all(
+    cardUpdates.map(card =>
+      trx
+        .update(cards)
+        .set({ order: card.order, listId: card.listId })
+        .where(eq(cards.id, card.id))
+    )
+  );
+}

@@ -6,6 +6,7 @@ import { type Permission } from '@/util/auth-projects';
 import { useEffect, useState } from 'react';
 import { ListItem } from './list-item';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { reorderListsAction, reorderCardsAction } from '../actions';
 
 interface ListContainerProps {
   boardId: number;
@@ -38,7 +39,7 @@ export const ListContainer = ({
     setOrderedData(data);
   }, [data]);
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = async (result: any) => {
     //extract what we need.
     const { destination, source, type } = result;
     if (!destination) {
@@ -60,24 +61,31 @@ export const ListContainer = ({
       );
 
       setOrderedData(items);
-      // console.log('items', items);
-      //TODO: trigger server action.
+
+      // Trigger server action
+      try {
+        await reorderListsAction({
+          boardId,
+          items: items.map(item => ({ id: item.id, order: item.order }))
+        });
+      } catch (error) {
+        console.error('Failed to reorder lists:', error);
+        // Revert optimistic update on error
+        setOrderedData(data);
+      }
     }
 
     //User moves a card.
     if (type === 'card') {
       let newOrderedData = [...orderedData];
-      console.log('newOrderedData', newOrderedData);
 
       const sourceList = newOrderedData.find(
         list => list.id === Number(source.droppableId)
       );
-      console.log('sourceList', sourceList);
 
       const destList = newOrderedData.find(
         list => list.id === Number(destination.droppableId)
       );
-      console.log('destList', destList);
 
       if (!sourceList || !destList) {
         return;
@@ -104,27 +112,64 @@ export const ListContainer = ({
         });
         sourceList.cards = reorderedCards;
         setOrderedData(newOrderedData);
-        //TODO: trigger server action.
+
+        // Trigger server action
+        try {
+          await reorderCardsAction({
+            listId: sourceList.id,
+            cards: reorderedCards.map(card => ({
+              id: card.id,
+              order: card.order,
+              listId: sourceList.id
+            }))
+          });
+        } catch (error) {
+          console.error('Failed to reorder cards:', error);
+          // Revert optimistic update on error
+          setOrderedData(data);
+        }
       } else {
         const [movedCard] = sourceList.cards.splice(source.index, 1);
 
         // Assign the new listId to the moved card
-        movedCard.listId = destination.droppableId;
+        movedCard.listId = destList.id;
 
         // Add card to the destination list
         destList.cards.splice(destination.index, 0, movedCard);
 
+        // Update the order for each card in both lists
         sourceList.cards.forEach((card, idx) => {
           card.order = idx;
         });
 
-        // Update the order for each card in the destination list
         destList.cards.forEach((card, idx) => {
           card.order = idx;
         });
 
         setOrderedData(newOrderedData);
-        //TODO: trigger server action.
+
+        // Trigger server action for both source and destination list cards
+        try {
+          await reorderCardsAction({
+            listId: sourceList.id,
+            cards: [
+              ...sourceList.cards.map(card => ({
+                id: card.id,
+                order: card.order,
+                listId: sourceList.id
+              })),
+              ...destList.cards.map(card => ({
+                id: card.id,
+                order: card.order,
+                listId: destList.id
+              }))
+            ]
+          });
+        } catch (error) {
+          console.error('Failed to move card between lists:', error);
+          // Revert optimistic update on error
+          setOrderedData(data);
+        }
       }
     }
   };

@@ -311,3 +311,43 @@ export async function createCard(
     assignedTo: params.assignedTo ?? board.userId // Use board owner as default assignee
   });
 }
+
+export async function reorderLists(
+  boardId: number,
+  items: { id: number; order: number }[],
+  user: User
+): Promise<void> {
+  // Verify user has permission to update this board
+  const permission = await projectsDb.findBoardPermission(boardId, user.id);
+  if (!permission) throw new Error('Not authorized to update this board');
+
+  await projectsDb.updateListOrder(items);
+}
+
+export async function reorderCards(
+  sourceListId: number,
+  destinationListId: number,
+  cards: { id: number; order: number; listId: number }[],
+  user: User
+): Promise<void> {
+  // Verify user has permission to update these lists
+  const sourceList = await projectsDb.getListById(sourceListId);
+  if (!sourceList) throw new Error('Source list not found');
+
+  const permission = await projectsDb.findBoardPermission(
+    sourceList.boardId,
+    user.id
+  );
+  if (!permission) throw new Error('Not authorized to update these lists');
+
+  if (sourceListId !== destinationListId) {
+    const destList = await projectsDb.getListById(destinationListId);
+    if (!destList) throw new Error('Destination list not found');
+
+    if (destList.boardId !== sourceList.boardId) {
+      throw new Error('Cannot move cards between different boards');
+    }
+  }
+
+  await projectsDb.updateCardOrder(cards);
+}
