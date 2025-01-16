@@ -3,7 +3,6 @@ import { boards } from '@/db/schema';
 import { authenticatedAction } from '@/lib/safe-action';
 import { rateLimitByKey } from '@/lib/limiter';
 import { revalidatePath } from 'next/cache';
-//import { createProjectUseCase } from '@/use-cases/projects';
 import { sanitizeUserInput } from '@/util/sanitize';
 import { z } from 'zod';
 import {
@@ -17,6 +16,7 @@ import {
   reorderLists,
   reorderCards
 } from '@/use-cases/projects';
+import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
 import { listReorderSchema, cardReorderSchema } from '../validation';
 
@@ -180,6 +180,10 @@ export const reorderCardsAction = authenticatedAction
     const destinationListId = cards[0]?.listId;
     if (!destinationListId) throw new Error('No destination list ID provided');
 
-    revalidatePath(`/dashboard/projects/${listId}`);
+    // Get the board ID from the source list
+    const list = await projectsDb.getListById(sourceListId);
+    if (!list) throw new Error('Source list not found');
+
+    revalidatePath(`/dashboard/projects/${list.boardId}`);
     return await reorderCards(sourceListId, destinationListId, cards, user);
   });
