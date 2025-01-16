@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { useLocalStorage } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import {
   Accordion,
   AccordionItem,
@@ -11,6 +12,7 @@ import {
   AccordionContent
 } from '@/components/ui/accordion';
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 interface Board {
   id: number;
@@ -72,6 +74,8 @@ export const Sidebar = ({
       typeof client.clientId === 'number'
   );
 
+  const pathname = usePathname();
+
   return (
     <aside className="flex flex-col w-64 h-[calc(100vh-65px)] overflow-hidden">
       <div className="font-medium flex items-center mt-8 mb-1 py-2">
@@ -90,30 +94,30 @@ export const Sidebar = ({
               className="overflow-hidden"
             >
               <AccordionTrigger
+                className="hover:no-underline"
                 onClick={() => onExpand(client.clientId.toString())}
               >
                 {client.clientName}
               </AccordionTrigger>
-              <AccordionContent className="overflow-hidden">
-                <div className="flex flex-col space-y-1">
-                  {/* <div className="pl-4 py-2">
-                    <Link
-                      href={`/dashboard/clients/${client.clientId}`}
-                      className="text-sm text-muted-foreground hover:text-primary"
-                    >
-                      View Client Details
-                    </Link>
-                  </div> */}
+              <AccordionContent className="overflow-hidden ">
+                <div className="flex flex-col space-y-1 ">
                   {client.boards.length > 0 ? (
-                    <div className="pl-4 space-y-1">
-                      {client.boards.map(board => (
-                        <Link
-                          key={board.id}
-                          href={`/dashboard/projects/${board.id}`}
-                          className="block py-1 text-sm hover:text-primary"
-                        >
-                          {board.name}
-                        </Link>
+                    <div className="pl-2 space-y-1">
+                      {client.boards.map((board, index) => (
+                        <div key={board.id}>
+                          {index > 0 && <Separator className="my-1" />}
+                          <Link
+                            href={`/dashboard/projects/${board.id}`}
+                            className={`block py-1 px-2 text-sm transition-colors
+                              ${
+                                pathname === `/dashboard/projects/${board.id}`
+                                  ? 'bg-slate-700 text-white'
+                                  : 'hover:bg-slate-700'
+                              }`}
+                          >
+                            {board.name}
+                          </Link>
+                        </div>
                       ))}
                     </div>
                   ) : (

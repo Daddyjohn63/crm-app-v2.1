@@ -94,8 +94,8 @@ function ProjectDetails({
     <>
       <BoardStoreInitializer boardId={board.id} />
       <div className="pt-8 space-y-6 ml-4">
-        <nav className="flex bg-indigo-900 rounded-lg">
-          <div className="flex justify-between items-center w-full p-2">
+        <nav className="flex bg-indigo-900 rounded-lg max-w-7xl">
+          <div className="flex justify-between items-center w-full  p-2">
             <h1 className="text-3xl font-bold">{board.name}</h1>
             {canAccessSettings(permission) && (
               <Settings className="w-6 h-6 cursor-pointer" />
