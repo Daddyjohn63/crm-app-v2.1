@@ -1,4 +1,4 @@
-import { Card, List } from '@/db/schema';
+import { Card, List, Profile } from '@/db/schema';
 
 export type Plan = 'free' | 'basic' | 'premium';
 export type Role = 'admin' | 'guest' | 'member';
@@ -43,7 +43,15 @@ export type SalesStage = (typeof SALES_STAGES)[keyof typeof SALES_STAGES];
 export type SalesStageFilter =
   (typeof SALES_STAGE_FILTER_OPTIONS)[keyof typeof SALES_STAGE_FILTER_OPTIONS];
 
-export type ListWithCards = List & { cards: Card[] };
+export type CardWithProfile = Card & {
+  assignedUserProfile: Profile | null;
+};
+
+export type ListWithCards = List & {
+  cards: (Card & {
+    assignedUserProfile: Profile | null;
+  })[];
+};
 
 export type CardWithList = Card & { list: List };
 

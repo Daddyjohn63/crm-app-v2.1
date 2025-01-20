@@ -7,9 +7,14 @@ import { CardModal } from './card-modal';
 import { ListCards } from './list-cards';
 import { cn } from '@/lib/utils';
 import { CardItem } from './card-item';
+import { Card, List, Profile } from '@/db/schema';
 
 interface ListItemProps {
-  data: ListWithCards;
+  data: List & {
+    cards: (Card & {
+      assignedUserProfile: Profile | null;
+    })[];
+  };
   index: number;
   canUseListForm: boolean;
 }
