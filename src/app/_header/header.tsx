@@ -18,7 +18,7 @@ import { SignOutItem } from '@/app/_header/sign-out-item';
 import { MenuButton } from './menu-button';
 import { getUserProfileUseCase } from '@/use-cases/users';
 import { LightDarkToggle } from '@/components/light-dark-toggle';
-import { getProfileImageFullUrl } from '../dashboard/settings/profile/components/profile-image';
+import { getProfileImageFullUrl } from '../dashboard/settings/profile/_components/profile-image';
 
 export async function Header() {
   const user = await getCurrentUser();

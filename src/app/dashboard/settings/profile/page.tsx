@@ -6,28 +6,30 @@ import { Suspense, cache } from 'react';
 import { getUserProfileUseCase } from '@/use-cases/users';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ConfigurationPanel } from '@/components/configuration-panel';
-import { ProfileImage } from './components/profile-image';
+import { ProfileImage } from './_components/profile-image';
+import { ProfileNameBio } from './_components/profile-name-bio';
 
 export const getUserProfileLoader = cache(getUserProfileUseCase);
 
 export default async function SettingsPage() {
   const user = await assertAuthenticated();
-  //const profile = await getUserProfileUseCase(user.id);
+  const profile = await getUserProfileLoader(user.id);
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <ProfileImage />
-        {/* <ProfileName /> */}
-
-        <div>Profile Name</div>
+        <ProfileNameBio
+          initialName={profile?.displayName || ''}
+          initialBio={profile.bio}
+        />
       </div>
 
-      <ConfigurationPanel title="Profile Bio">
+      {/* <ConfigurationPanel title="Profile Bio">
         <Suspense fallback={<Skeleton className="w-full h-[400px] rounded" />}>
-          {/* <BioFormWrapper /> */}
-          <div>Bio Form</div>
+        
         </Suspense>
-      </ConfigurationPanel>
+      </ConfigurationPanel> */}
     </div>
   );
 }

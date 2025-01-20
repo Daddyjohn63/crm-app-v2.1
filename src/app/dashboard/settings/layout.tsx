@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { headerStyles } from '@/styles/common';
 import { ReactNode, Suspense } from 'react';
-import { SettingsTab } from './profile/components/tabs-section';
+import { SettingsTab } from './profile/_components/tabs-section';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
