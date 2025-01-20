@@ -26,7 +26,12 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             isPressed ? 'bg-slate-500' : 'bg-white'
           }`}
         >
-          {data.name}
+          <div className="flex justify-between">
+            <span>{data.name}</span>
+            <span>{data.assignedTo}</span>
+          </div>
+          {data.description}
+          {data.status}
         </div>
       )}
     </Draggable>
