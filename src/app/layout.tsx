@@ -11,8 +11,9 @@ import { getCurrentUser } from '@/lib/session';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'CRM Buddy',
-  description: 'CRM Buddy is a CRM for small businesses.',
+  title: 'CAPLT',
+  description:
+    'CAPLT is a CRM, Project Management, and Task Management tool for small businesses.',
   robots: {
     index: false,
     follow: false,

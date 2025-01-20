@@ -23,9 +23,9 @@ export function HeroSection() {
             </h1>
             <p className="mt-5 text-gray-500 text-lg max-w-[600px]">
               A simple but effective toolset to help you manage your client
-              base, service list and documentation. CRM Buddy provides you with
-              the means to capture all of your client information, services and
-              important documentation all in one place.
+              base, service list and documentation. CAPLT provides you with the
+              the means to capture all of your client information, services,
+              manage projects and important documentation all in one place.
             </p>
             <div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4 mt-10">
               <SignedIn>

@@ -351,3 +351,8 @@ export async function reorderCards(
 
   await projectsDb.updateCardOrder(cards);
 }
+
+//get all users for a board and their displayName from the gf_profile table
+export async function getBoardUsers(boardId: number): Promise<User[]> {
+  return await projectsDb.getBoardUsers(boardId);
+}

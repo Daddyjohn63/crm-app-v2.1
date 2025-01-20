@@ -11,6 +11,8 @@ import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients, User } from '@/db/schema/base';
 import { ListWithCards } from '@/use-cases/types';
+import { users } from '@/db/schema/base';
+import { profiles } from '@/db/schema/base';
 
 // Raw database types
 export type CreateBoardInput = Omit<NewBoard, 'id' | 'createdAt' | 'updatedAt'>;
@@ -340,4 +342,21 @@ export async function updateCardOrder(
         .where(eq(cards.id, card.id))
     )
   );
+}
+
+export async function getBoardUsers(boardId: number): Promise<User[]> {
+  const result = await database
+    .select({
+      id: users.id,
+      email: users.email,
+      emailVerified: users.emailVerified,
+      role: users.role,
+      displayName: profiles.displayName
+    })
+    .from(boardPermissions)
+    .innerJoin(users, eq(users.id, boardPermissions.userId))
+    .leftJoin(profiles, eq(users.id, profiles.userId))
+    .where(eq(boardPermissions.boardId, boardId));
+
+  return result;
 }

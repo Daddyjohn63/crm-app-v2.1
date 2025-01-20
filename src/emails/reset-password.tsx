@@ -33,7 +33,7 @@ export function ResetPasswordEmail({ token }: { token: string }) {
                   src={`${BASE_URL}/group.jpeg`}
                   width="160"
                   height="48"
-                  alt="CRM Buddy"
+                  alt="CAPLT"
                   className="my-0 mx-auto"
                 />
               </Section>
