@@ -49,12 +49,7 @@ export type ListWithCards = List & {
 
 export type CardWithProfile = Card & {
   assignedUserProfile: {
-    id: number;
-    userId: number;
-    image: string | null;
     displayName: string | null;
-    imageId: string | null;
-    bio: string;
   } | null;
 };
 
