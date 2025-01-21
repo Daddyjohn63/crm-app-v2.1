@@ -9,7 +9,7 @@ import {
   uniqueIndex
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { users, clients } from './base';
+import { users, clients, profiles } from './base';
 import {
   actionEnum,
   entityTypeEnum,
@@ -117,7 +117,7 @@ export const cards = pgTable(
     status: taskStatusEnum('status').notNull(),
     order: integer('order').notNull(),
     dueDate: timestamp('due_date', { mode: 'date' }),
-    assignedTo: integer('assigned_to').references(() => users.id),
+    assignedTo: serial('assigned_to').references(() => users.id),
     estimatedMinutes: integer('estimated_minutes'),
     totalMinutes: integer('total_minutes').default(0),
     isTimerActive: boolean('is_timer_active').default(false),
@@ -202,6 +202,10 @@ export const cardsRelations = relations(cards, ({ one, many }) => ({
   assignedUser: one(users, {
     fields: [cards.assignedTo],
     references: [users.id]
+  }),
+  assignedUserProfile: one(profiles, {
+    fields: [cards.assignedTo],
+    references: [profiles.userId]
   }),
   timeEntries: many(timeEntries)
 }));

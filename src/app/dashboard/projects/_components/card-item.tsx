@@ -1,14 +1,16 @@
 import { Card } from '@/db/schema';
-import { CardWithList } from '@/use-cases/types';
+import { CardWithProfile } from '@/use-cases/types';
 import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
+import { CardModal } from './card-modal';
 
 interface CardItemProps {
-  data: Card;
+  data: CardWithProfile;
   index: number;
 }
 
 export const CardItem = ({ data, index }: CardItemProps) => {
+  console.log('data from card item', data);
   const [isPressed, setIsPressed] = useState(false);
 
   return (
@@ -27,6 +29,7 @@ export const CardItem = ({ data, index }: CardItemProps) => {
           }`}
         >
           {data.name}
+          {data.assignedUserProfile?.displayName}
         </div>
       )}
     </Draggable>

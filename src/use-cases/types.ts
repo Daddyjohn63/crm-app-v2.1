@@ -43,7 +43,13 @@ export type SalesStage = (typeof SALES_STAGES)[keyof typeof SALES_STAGES];
 export type SalesStageFilter =
   (typeof SALES_STAGE_FILTER_OPTIONS)[keyof typeof SALES_STAGE_FILTER_OPTIONS];
 
-export type ListWithCards = List & { cards: Card[] };
+export type ListWithCards = List & { cards: CardWithProfile[] };
+
+export type CardWithProfile = Card & {
+  assignedUserProfile?: {
+    displayName: string;
+  };
+};
 
 export type CardWithList = Card & { list: List };
 

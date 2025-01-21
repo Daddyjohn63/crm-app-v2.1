@@ -56,7 +56,14 @@ export async function getListsByBoardId(boardId: number) {
     orderBy: [asc(lists.order)],
     with: {
       cards: {
-        orderBy: [asc(cards.order)]
+        orderBy: [asc(cards.order)],
+        with: {
+          assignedUserProfile: {
+            columns: {
+              displayName: true
+            }
+          }
+        }
       }
     }
   })) as ListWithCards[];
