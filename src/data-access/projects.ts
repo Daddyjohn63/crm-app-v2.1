@@ -60,7 +60,12 @@ export async function getListsByBoardId(boardId: number) {
         with: {
           assignedUserProfile: {
             columns: {
-              displayName: true
+              id: true,
+              userId: true,
+              displayName: true,
+              image: true,
+              imageId: true,
+              bio: true
             }
           }
         }

@@ -21,6 +21,7 @@ import { useBoardStore } from '@/store/boardStore';
 import { updateListAction, copyListAction, deleteListAction } from '../actions';
 import { ListOptions } from './list-options';
 import { useCardDialogStore } from '@/store/cardDialogStore';
+import { ListWithCards } from '@/use-cases/types';
 
 const formSchema = z.object({
   name: z.string().min(1, 'A List Name is required'),
@@ -29,7 +30,7 @@ const formSchema = z.object({
 
 interface ListHeaderProps {
   //onAddCard: () => void;
-  data: List;
+  data: ListWithCards;
   canUseListForm: boolean;
 }
 

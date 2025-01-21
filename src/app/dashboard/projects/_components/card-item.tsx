@@ -6,7 +6,7 @@ import { CardModal } from './card-modal';
 
 interface CardItemProps {
   data: CardWithProfile;
-  data: CardWithProfile;
+
   index: number;
 }
 

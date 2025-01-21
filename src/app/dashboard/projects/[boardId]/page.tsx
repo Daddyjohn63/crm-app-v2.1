@@ -5,7 +5,8 @@ import {
   getBoardPermission,
   checkUserBoardAccess
 } from '@/use-cases/projects';
-import { Board, List, Card } from '@/db/schema';
+import { Board } from '@/db/schema/projects';
+import { User } from '@/db/schema/base';
 import { Suspense } from 'react';
 import { PublicError } from '@/use-cases/errors';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -76,23 +77,25 @@ async function getProject(boardId: string): Promise<Board> {
   }
 }
 
+interface ProjectDetailsProps {
+  board: Board;
+  user: User;
+  lists: ListWithCards[];
+  permission: Permission;
+}
+
 function ProjectDetails({
   board,
   user,
   lists,
   permission
-}: {
-  board: Board;
-  user: any;
-  lists: ListWithCards[];
-  permission: Permission;
-}) {
+}: ProjectDetailsProps) {
   return (
     <>
       <BoardStoreInitializer boardId={board.id} />
       <div className="pt-8 space-y-6 ml-4">
         <nav className="flex bg-indigo-900 rounded-lg">
-          <div className="flex justify-between items-center w-full  p-2">
+          <div className="flex justify-between items-center w-full p-2">
             <h1 className="text-3xl font-bold">{board.name}</h1>
             {canAccessSettings(permission) && (
               <Settings className="w-6 h-6 cursor-pointer" />
@@ -165,15 +168,25 @@ async function getCurrentUserData() {
   return user;
 }
 
-//get user board permission.
 async function getUserBoardPermission(
   userId: number,
   boardId: number
 ): Promise<Permission> {
-  const permissionRole = await getBoardPermission(userId, boardId);
-  // Convert the string role into a proper Permission object
-  return {
-    role: permissionRole as 'owner' | 'editor' | 'viewer',
-    canEdit: permissionRole === 'owner' || permissionRole === 'editor'
-  };
+  const role = await getBoardPermission(userId, boardId);
+  if (!role) {
+    return { role: 'viewer' }; // Default to viewer if no permission is found
+  }
+
+  // Map database permissions to frontend permissions
+  switch (role) {
+    case 'owner':
+      return { role: 'owner' };
+    case 'admin':
+    case 'editor':
+      return { role: 'editor' };
+    case 'viewer':
+      return { role: 'viewer' };
+    default:
+      return { role: 'viewer' }; // Default case
+  }
 }

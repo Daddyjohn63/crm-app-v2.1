@@ -10,11 +10,7 @@ import { CardItem } from './card-item';
 import { Card, List, Profile } from '@/db/schema';
 
 interface ListItemProps {
-  data: List & {
-    cards: (Card & {
-      assignedUserProfile: Profile | null;
-    })[];
-  };
+  data: ListWithCards;
   index: number;
   canUseListForm: boolean;
 }
