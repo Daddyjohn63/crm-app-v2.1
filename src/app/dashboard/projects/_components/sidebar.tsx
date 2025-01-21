@@ -111,8 +111,8 @@ export const Sidebar = ({
                             className={`block py-1 px-2 text-sm transition-colors
                               ${
                                 pathname === `/dashboard/projects/${board.id}`
-                                  ? 'bg-slate-700 text-white'
-                                  : 'hover:bg-slate-700'
+                                  ? 'bg-slate-700 text-white rounded-md py-2 px-2'
+                                  : 'hover:bg-slate-500 rounded-md py-2 px-2'
                               }`}
                           >
                             {board.name}

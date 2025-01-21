@@ -54,14 +54,3 @@ export type CardWithProfile = Card & {
 };
 
 export type CardWithList = Card & { list: List };
-
-// export type ClientInfo = {
-//   clientId: number;
-//   business_name: string;
-//   primary_address: string | null;
-//   primary_email: string | null;
-//   primary_phone: string | null;
-//   business_description: string | null;
-//   date_onboarded: Date | null;
-//   additional_info: string | null;
-// };

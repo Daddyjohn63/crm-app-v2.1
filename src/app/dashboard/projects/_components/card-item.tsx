@@ -35,8 +35,12 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             isPressed ? 'bg-slate-500' : 'bg-white'
           }`}
         >
-          {data.name}
-          {data.assignedUserProfile?.displayName}
+          <div className="flex items-center justify-between">
+            <p>{data.name}</p>
+            <p className="rounded-full bg-indigo-500 text-white text-xs w-8 h-8 flex items-center justify-center shrink-0">
+              {getInitials(data.assignedUserProfile?.displayName || '')}
+            </p>
+          </div>
         </div>
       )}
     </Draggable>
