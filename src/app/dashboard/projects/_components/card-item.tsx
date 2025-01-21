@@ -6,8 +6,15 @@ import { CardModal } from './card-modal';
 
 interface CardItemProps {
   data: CardWithProfile;
+  data: CardWithProfile;
   index: number;
 }
+
+const getInitials = (name: string) => {
+  const names = name.split(' ');
+  const initials = names.map(name => name[0]).join('');
+  return initials;
+};
 
 export const CardItem = ({ data, index }: CardItemProps) => {
   console.log('data from card item', data);
@@ -24,7 +31,7 @@ export const CardItem = ({ data, index }: CardItemProps) => {
           onMouseDown={() => setIsPressed(true)}
           onMouseUp={() => setIsPressed(false)}
           onMouseLeave={() => setIsPressed(false)}
-          className={`truncate border-2 border-transparent hover:border-black py-2 px-3 text-sm text-black rounded-md shadow-sm ${
+          className={`border-2 border-transparent hover:border-black py-2 px-3 text-sm text-black rounded-md shadow-sm ${
             isPressed ? 'bg-slate-500' : 'bg-white'
           }`}
         >

@@ -14,7 +14,8 @@ import {
   copyList,
   createCard,
   reorderLists,
-  reorderCards
+  reorderCards,
+  getBoardUsers
 } from '@/use-cases/projects';
 import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
@@ -187,3 +188,15 @@ export const reorderCardsAction = authenticatedAction
     revalidatePath(`/dashboard/projects/${list.boardId}`);
     return await reorderCards(sourceListId, destinationListId, cards, user);
   });
+
+export async function getBoardUsersAction(boardId: number) {
+  'use server';
+
+  try {
+    const users = await getBoardUsers(boardId);
+    return users;
+  } catch (error) {
+    console.error('Error fetching board users:', error);
+    throw new Error('Failed to fetch board users');
+  }
+}

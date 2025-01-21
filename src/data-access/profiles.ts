@@ -2,18 +2,32 @@ import { database } from '@/db/drizzle';
 import { Profile, profiles } from '@/db/schema/index';
 import { UserId } from '@/use-cases/types';
 import { eq } from 'drizzle-orm';
+import {
+  uniqueNamesGenerator,
+  Config,
+  colors,
+  animals
+} from 'unique-names-generator';
+
+const nameConfig: Config = {
+  dictionaries: [colors, animals],
+  separator: '',
+  style: 'capital',
+  length: 2
+};
 
 export async function createProfile(
   userId: UserId,
-  displayName: string,
+  displayName?: string,
   image?: string
 ) {
+  const defaultName = displayName || uniqueNamesGenerator(nameConfig); // Generate name like "BlueDolphin"
   const [profile] = await database
     .insert(profiles)
     .values({
       userId,
       image,
-      displayName
+      displayName: defaultName
     })
     .onConflictDoNothing()
     .returning();

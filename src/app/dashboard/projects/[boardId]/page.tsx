@@ -18,6 +18,7 @@ import {
   type Permission
 } from '@/util/auth-projects';
 import { BoardStoreInitializer } from '../_components/board-store-initializer';
+import { ListWithCards } from '@/use-cases/types';
 
 interface PageProps {
   params: {
@@ -74,10 +75,6 @@ async function getProject(boardId: string): Promise<Board> {
     throw new Error('Failed to load project');
   }
 }
-
-type ListWithCards = List & {
-  cards: Card[];
-};
 
 function ProjectDetails({
   board,

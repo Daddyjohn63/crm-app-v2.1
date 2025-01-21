@@ -20,24 +20,66 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
-import { createCardAction } from '../actions';
+import { createCardAction, getBoardUsersAction } from '../actions';
 import { useCardDialogStore } from '@/store/cardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
+import { useEffect, useState } from 'react';
+
+type BoardUser = {
+  id: number;
+  email: string | null;
+  emailVerified: Date | null;
+  role: 'admin' | 'guest' | 'member';
+  displayName: string | null;
+};
 
 // Form validation schema
 const formSchema = z.object({
   name: z.string().min(1),
-  description: z.string().optional()
+  description: z.string().optional(),
+  assignedTo: z.number().optional()
 });
 
 export const CardForm = () => {
-  // Get listId and boardId directly from the Zustand store
-  // These are set by CardModal before the form is displayed
   const { listId, boardId, setIsOpen } = useCardDialogStore();
-  console.log('CardForm render:', { listId, boardId });
+  const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
 
-  // Set up the server action for creating cards
+  useEffect(() => {
+    const fetchBoardUsers = async () => {
+      if (boardId) {
+        try {
+          const users = await getBoardUsersAction(boardId);
+          setBoardUsers(users as unknown as BoardUser[]);
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to fetch board users',
+            variant: 'destructive'
+          });
+        }
+      }
+    };
+    fetchBoardUsers();
+  }, [boardId, toast]);
+
   const { execute, isPending } = useServerAction(createCardAction, {
     onSuccess() {
       toast({
@@ -57,7 +99,6 @@ export const CardForm = () => {
     }
   });
 
-  // Initialize the form with react-hook-form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,9 +107,7 @@ export const CardForm = () => {
     }
   });
 
-  // Handle form submission
   const onSubmit = form.handleSubmit(async values => {
-    // Verify that we have both required IDs from the Zustand store
     if (!listId || !boardId) {
       toast({
         title: 'Error',
@@ -78,12 +117,12 @@ export const CardForm = () => {
       return;
     }
 
-    // Execute the server action with form values and IDs
     await execute({
       name: values.name,
       description: values.description,
       listId,
-      boardId
+      boardId,
+      assignedTo: values.assignedTo
     });
   });
 
@@ -110,8 +149,39 @@ export const CardForm = () => {
             <FormItem className="flex-1">
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Enter Description" {...field} />
+                <Textarea
+                  placeholder="Enter description"
+                  className="resize-none"
+                  {...field}
+                />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="assignedTo"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Assignee</FormLabel>
+              <Select
+                onValueChange={value => field.onChange(parseInt(value))}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select assignee" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {boardUsers.map(user => (
+                    <SelectItem key={user.id} value={user.id.toString()}>
+                      {user.displayName || user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

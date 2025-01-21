@@ -1,4 +1,4 @@
-import { Card, List } from '@/db/schema';
+import { Card, List, Profile } from '@/db/schema';
 
 export type Plan = 'free' | 'basic' | 'premium';
 export type Role = 'admin' | 'guest' | 'member';

@@ -51,7 +51,7 @@ export async function getBoardById(
 }
 
 export async function getListsByBoardId(boardId: number) {
-  return (await database.query.lists.findMany({
+  return await database.query.lists.findMany({
     where: (list, { eq }) => eq(list.boardId, boardId),
     orderBy: [asc(lists.order)],
     with: {
@@ -66,7 +66,7 @@ export async function getListsByBoardId(boardId: number) {
         }
       }
     }
-  })) as ListWithCards[];
+  });
 }
 
 export async function getBoardsByUserId(

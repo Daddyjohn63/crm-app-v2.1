@@ -1,6 +1,6 @@
 'use client';
 
-import { List, User, Card } from '@/db/schema';
+import { List, User, Card, Profile } from '@/db/schema';
 import { ListForm } from './list-form';
 import { type Permission } from '@/util/auth-projects';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,11 @@ import { reorderListsAction, reorderCardsAction } from '../actions';
 
 interface ListContainerProps {
   boardId: number;
-  data: (List & { cards: Card[] })[];
+  data: (List & {
+    cards: (Card & {
+      assignedUserProfile: Profile | null;
+    })[];
+  })[];
   user: User;
   permission: Permission;
   canUseListForm: boolean;
