@@ -212,3 +212,33 @@ export const deleteCardAction = authenticatedAction
     revalidatePath(`/dashboard/projects/${boardId}`);
     return await deleteCard(cardId, user);
   });
+
+const updateCardSchema = z.object({
+  cardId: z.number(),
+  name: z.string().min(1),
+  description: z.string().optional(),
+  assignedTo: z.string().optional(),
+  dueDate: z.date().optional(),
+  listId: z.number(),
+  status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
+});
+
+export const updateCardAction = authenticatedAction
+  .createServerAction()
+  .input(updateCardSchema)
+  .handler(async ({ input, ctx: { user } }) => {
+    await rateLimitByKey({
+      key: `${user.id}-update-card`
+    });
+
+    const sanitizedInput = {
+      ...input,
+      name: sanitizeUserInput(input.name),
+      description: input.description
+        ? sanitizeUserInput(input.description)
+        : undefined
+    };
+
+    await projectsDb.updateCard(sanitizedInput);
+    revalidatePath('/dashboard/projects/[boardId]', 'page');
+  });

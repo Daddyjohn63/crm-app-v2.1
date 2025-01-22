@@ -1,10 +1,3 @@
-'use client';
-
-/**
- * CardForm Component
- * Handles the form submission for creating new cards.
- * Gets listId and boardId from the Zustand store, which is set up by CardModal.
- */
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -20,8 +13,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
-import { createCardAction, getBoardUsersAction } from '../actions';
-import { useCardDialogStore } from '@/store/cardDialogStore';
+import { getBoardUsersAction, updateCardAction } from '../actions';
+import { useEditCardDialogStore } from '@/store/editCardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
@@ -33,8 +26,10 @@ import {
 import { PopoverClose } from '@radix-ui/react-popover';
 import { Button } from '@/components/ui/button';
 import { CalendarIcon, X } from 'lucide-react';
-
 import { cn } from '@/lib/utils';
+import { CardWithProfile } from '@/use-cases/types';
+import { useEffect, useState } from 'react';
+import { Profile, usersRelations } from '@/db/schema';
 import {
   Select,
   SelectContent,
@@ -42,8 +37,20 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
 
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+  assignedTo: z.string().optional(),
+  dueDate: z.date().optional(),
+  status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
+});
+
+interface EditCardFormProps {
+  listData: CardWithProfile;
+  boardId: number;
+  cardId: number;
+}
 type BoardUser = {
   id: number;
   email: string | null;
@@ -53,25 +60,23 @@ type BoardUser = {
   // due_date: Date | null;
 };
 
-// Form validation schema
-const formSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  assignedTo: z.number().optional(),
-  dueDate: z.date().optional()
-});
-
-export const CardForm = () => {
-  const { listId, boardId, setIsOpen } = useCardDialogStore();
+export const EditCardForm = ({
+  listData,
+  boardId,
+  cardId
+}: EditCardFormProps) => {
+  console.log('listData', listData);
+  const { setIsOpen } = useEditCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
     const fetchBoardUsers = async () => {
       if (boardId) {
         try {
           const users = await getBoardUsersAction(boardId);
-          setBoardUsers(users as unknown as BoardUser[]);
+          setBoardUsers(users);
         } catch (error) {
           toast({
             title: 'Error',
@@ -84,11 +89,11 @@ export const CardForm = () => {
     fetchBoardUsers();
   }, [boardId, toast]);
 
-  const { execute, isPending } = useServerAction(createCardAction, {
+  const { execute, isPending } = useServerAction(updateCardAction, {
     onSuccess() {
       toast({
-        title: 'Card created',
-        description: 'The card has been created successfully.',
+        title: 'Card updated',
+        description: 'The card has been updated successfully.',
         duration: 3000
       });
       setIsOpen(false);
@@ -97,7 +102,7 @@ export const CardForm = () => {
       toast({
         title: 'Something went wrong',
         variant: 'destructive',
-        description: 'Something went wrong creating the card.',
+        description: 'Something went wrong updating the card.',
         duration: 3000
       });
     }
@@ -106,33 +111,26 @@ export const CardForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      assignedTo: undefined,
-      dueDate: new Date()
+      name: listData.name,
+      description: listData.description || '',
+      assignedTo: listData.assignedTo?.toString(),
+      dueDate: listData.dueDate ? new Date(listData.dueDate) : undefined,
+      status: listData.status || 'todo'
     }
   });
 
   const onSubmit = form.handleSubmit(async values => {
-    if (!listId || !boardId) {
-      toast({
-        title: 'Error',
-        description: 'Missing required list or board ID.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
     await execute({
+      cardId,
       name: values.name,
       description: values.description,
-      listId,
-      boardId,
       assignedTo: values.assignedTo,
-      dueDate: values.dueDate
+      dueDate: values.dueDate,
+      status: values.status,
+      listId: listData.listId
     });
   });
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const handleOnSelect = (date: Date | undefined) => {
     if (date) {
       form.setValue('dueDate', date);
@@ -177,21 +175,18 @@ export const CardForm = () => {
           control={form.control}
           name="assignedTo"
           render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Assignee</FormLabel>
-              <Select
-                onValueChange={value => field.onChange(parseInt(value))}
-                value={field.value?.toString()}
-              >
+            <FormItem>
+              <FormLabel>Assigned To</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select assignee" />
+                    <SelectValue placeholder="Select a user" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {boardUsers.map(user => (
                     <SelectItem key={user.id} value={user.id.toString()}>
-                      {user.displayName || user.email}
+                      {user.displayName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -226,7 +221,7 @@ export const CardForm = () => {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <div className="flex m-1 justify-end ">
+                  <div className="flex m-1 justify-end">
                     <div className="flex-1"></div>
                     <PopoverClose>
                       <X
@@ -243,9 +238,6 @@ export const CardForm = () => {
                     initialFocus
                     fixedWeeks
                     weekStartsOn={1}
-                    fromDate={new Date(new Date().getFullYear() - 30, 0, 1)} // 10 years ago
-                    toDate={new Date(new Date().getFullYear() + 10, 11, 31)} // 10 years from now
-                    captionLayout="dropdown-buttons"
                   />
                 </PopoverContent>
               </Popover>
@@ -253,9 +245,32 @@ export const CardForm = () => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="todo">To Do</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="done">Done</SelectItem>
+                  <SelectItem value="blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <LoaderButton type="submit" isLoading={isPending}>
-          Create Card
+          Update Card
         </LoaderButton>
       </form>
     </Form>

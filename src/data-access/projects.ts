@@ -353,6 +353,8 @@ export async function updateCardOrder(
   );
 }
 
+// ... existing code ...
+
 export async function getBoardUsers(boardId: number): Promise<User[]> {
   const result = await database
     .select({
@@ -372,4 +374,35 @@ export async function getBoardUsers(boardId: number): Promise<User[]> {
 
 export async function deleteCard(cardId: number, user: User): Promise<void> {
   await database.delete(cards).where(eq(cards.id, cardId));
+}
+
+export async function updateCard({
+  cardId,
+  name,
+  description,
+  assignedTo,
+  dueDate,
+  listId,
+  status = 'todo'
+}: {
+  cardId: number;
+  name: string;
+  description?: string;
+  assignedTo?: string;
+  dueDate?: Date;
+  listId: number;
+  status?: 'todo' | 'in_progress' | 'done' | 'blocked';
+}) {
+  return await database
+    .update(cards)
+    .set({
+      name,
+      description,
+      status,
+      ...(assignedTo ? { assignedTo: parseInt(assignedTo) } : {}),
+      dueDate,
+      listId,
+      updatedAt: new Date()
+    })
+    .where(eq(cards.id, cardId));
 }

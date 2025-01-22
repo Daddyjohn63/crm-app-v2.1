@@ -7,10 +7,11 @@ import { format } from 'date-fns';
 import { Calendar, Pencil, Trash } from 'lucide-react';
 import DeleteCardButton from './delete-card-button';
 import { useBoardIdParam } from '@/util/safeparam';
+import { EditCardModal } from './edit-card-modal';
 
 interface CardItemProps {
   data: CardWithProfile;
-
+  // boardId: number;
   index: number;
 }
 
@@ -59,26 +60,12 @@ export const CardItem = ({ data, index }: CardItemProps) => {
               </p>
 
               <div className="flex items-center gap-1">
-                <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    // handle edit
-                  }}
-                  className="p-1 hover:text-indigo-500 transition-colors"
-                  aria-label="Edit due date"
-                >
-                  <Pencil className="w-4 h-4 text-green-600" />
-                </button>
-                {/* <button
-                  onClick={e => {
-                    e.stopPropagation();
-                    // handle delete
-                  }}
-                  className="p-1 hover:text-red-900 transition-colors"
-                  aria-label="Remove due date"
-                >
-                  <Trash className="w-4 h-4 text-red-500" />
-                </button> */}
+                <EditCardModal
+                  listData={data}
+                  boardId={boardId}
+                  cardId={data.id}
+                />
+
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>
