@@ -15,7 +15,8 @@ import {
   createCard,
   reorderLists,
   reorderCards,
-  getBoardUsers
+  getBoardUsers,
+  deleteCard
 } from '@/use-cases/projects';
 import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
@@ -203,3 +204,11 @@ export async function getBoardUsersAction(boardId: number) {
     throw new Error('Failed to fetch board users');
   }
 }
+
+export const deleteCardAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ cardId: z.number(), boardId: z.number() }))
+  .handler(async ({ input: { cardId, boardId }, ctx: { user } }) => {
+    revalidatePath(`/dashboard/projects/${boardId}`);
+    return await deleteCard(cardId, user);
+  });

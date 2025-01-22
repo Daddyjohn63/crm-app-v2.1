@@ -369,3 +369,7 @@ export async function getBoardUsers(boardId: number): Promise<User[]> {
 
   return result;
 }
+
+export async function deleteCard(cardId: number, user: User): Promise<void> {
+  await database.delete(cards).where(eq(cards.id, cardId));
+}

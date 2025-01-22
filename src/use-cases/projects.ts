@@ -358,3 +358,7 @@ export async function reorderCards(
 export async function getBoardUsers(boardId: number): Promise<User[]> {
   return await projectsDb.getBoardUsers(boardId);
 }
+
+export async function deleteCard(cardId: number, user: User): Promise<void> {
+  return await projectsDb.deleteCard(cardId, user);
+}

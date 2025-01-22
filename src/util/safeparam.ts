@@ -14,3 +14,10 @@ export function useServiceIdParam() {
   );
   return serviceId;
 }
+
+export function useBoardIdParam() {
+  const { boardId } = useSafeParams(
+    z.object({ boardId: z.string().pipe(z.coerce.number()) })
+  );
+  return boardId;
+}

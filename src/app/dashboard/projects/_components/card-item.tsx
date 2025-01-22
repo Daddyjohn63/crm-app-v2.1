@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { CardModal } from './card-modal';
 import { format } from 'date-fns';
-import { Calendar } from 'lucide-react';
+import { Calendar, Pencil, Trash } from 'lucide-react';
+import DeleteCardButton from './delete-card-button';
+import { useBoardIdParam } from '@/util/safeparam';
 
 interface CardItemProps {
   data: CardWithProfile;
@@ -19,6 +21,7 @@ const getInitials = (name: string) => {
 };
 
 export const CardItem = ({ data, index }: CardItemProps) => {
+  const boardId = useBoardIdParam();
   console.log('data from card item', data);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -47,13 +50,37 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             <div className="line-clamp-4 text-sm text-gray-500">
               {data.description}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2">
               <p className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-indigo-500" />
                 {data.dueDate
                   ? format(data.dueDate, 'dd/MM/yyyy')
                   : 'No due date'}
               </p>
+
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    // handle edit
+                  }}
+                  className="p-1 hover:text-indigo-500 transition-colors"
+                  aria-label="Edit due date"
+                >
+                  <Pencil className="w-4 h-4 text-green-600" />
+                </button>
+                {/* <button
+                  onClick={e => {
+                    e.stopPropagation();
+                    // handle delete
+                  }}
+                  className="p-1 hover:text-red-900 transition-colors"
+                  aria-label="Remove due date"
+                >
+                  <Trash className="w-4 h-4 text-red-500" />
+                </button> */}
+                <DeleteCardButton cardId={data.id} boardId={boardId} />
+              </div>
             </div>
           </div>
         </div>
