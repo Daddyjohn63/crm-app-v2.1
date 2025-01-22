@@ -40,6 +40,7 @@ export const Sidebar = ({
     storageKey,
     {}
   );
+  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
@@ -73,8 +74,6 @@ export const Sidebar = ({
       client !== null &&
       typeof client.clientId === 'number'
   );
-
-  const pathname = usePathname();
 
   return (
     <aside className="flex flex-col w-64 h-[calc(100vh-65px)] overflow-hidden">

@@ -24,14 +24,16 @@ import { createCardAction, getBoardUsersAction } from '../actions';
 import { useCardDialogStore } from '@/store/cardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger
 } from '@/components/ui/popover';
+import { PopoverClose } from '@radix-ui/react-popover';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { CalendarIcon, X } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import {
   Select,
@@ -48,13 +50,15 @@ type BoardUser = {
   emailVerified: Date | null;
   role: 'admin' | 'guest' | 'member';
   displayName: string | null;
+  due_date: Date | null;
 };
 
 // Form validation schema
 const formSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
-  assignedTo: z.number().optional()
+  assignedTo: z.number().optional(),
+  dueDate: z.date().optional()
 });
 
 export const CardForm = () => {
@@ -103,7 +107,9 @@ export const CardForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      description: ''
+      description: '',
+      assignedTo: undefined,
+      dueDate: new Date()
     }
   });
 
@@ -122,9 +128,17 @@ export const CardForm = () => {
       description: values.description,
       listId,
       boardId,
-      assignedTo: values.assignedTo
+      assignedTo: values.assignedTo,
+      dueDate: values.dueDate
     });
   });
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const handleOnSelect = (date: Date | undefined) => {
+    if (date) {
+      form.setValue('dueDate', date);
+      setIsPopoverOpen(false);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -186,6 +200,60 @@ export const CardForm = () => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="dueDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Due Date</FormLabel>
+              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, 'PPP')
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="flex m-1 justify-end ">
+                    <div className="flex-1"></div>
+                    <PopoverClose>
+                      <X
+                        size={24}
+                        className="text-primary/60 hover:text-destructive"
+                      />
+                    </PopoverClose>
+                  </div>
+                  <Calendar
+                    mode="single"
+                    defaultMonth={field.value}
+                    selected={field.value}
+                    onSelect={handleOnSelect}
+                    initialFocus
+                    fixedWeeks
+                    weekStartsOn={1}
+                    fromDate={new Date(new Date().getFullYear() - 30, 0, 1)} // 10 years ago
+                    toDate={new Date(new Date().getFullYear() + 10, 11, 31)} // 10 years from now
+                    captionLayout="dropdown-buttons"
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <LoaderButton type="submit" isLoading={isPending}>
           Create Card
         </LoaderButton>

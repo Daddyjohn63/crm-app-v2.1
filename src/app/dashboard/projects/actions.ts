@@ -121,12 +121,13 @@ export const createCardAction = authenticatedAction
       description: z.string().optional(),
       listId: z.number(),
       boardId: z.number(),
-      assignedTo: z.number().optional()
+      assignedTo: z.number().optional(),
+      dueDate: z.date().optional()
     })
   )
   .handler(
     async ({
-      input: { name, description, listId, boardId, assignedTo },
+      input: { name, description, listId, boardId, assignedTo, dueDate },
       ctx: { user }
     }) => {
       try {
@@ -137,7 +138,8 @@ export const createCardAction = authenticatedAction
               description,
               listId,
               boardId,
-              userId: user.id
+              userId: user.id,
+              dueDate
             },
             null,
             2
@@ -151,7 +153,8 @@ export const createCardAction = authenticatedAction
               ? sanitizeUserInput(description)
               : undefined,
             listId,
-            assignedTo
+            assignedTo,
+            dueDate: dueDate
           },
           user
         );

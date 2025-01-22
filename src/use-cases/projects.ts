@@ -275,6 +275,7 @@ export async function createCard(
     description?: string;
     listId: number;
     assignedTo?: number;
+    dueDate?: Date;
   },
   user: User
 ): Promise<Card> {
@@ -308,7 +309,8 @@ export async function createCard(
     listId: params.listId,
     order: maxOrder + 1,
     status: taskStatusEnum.enumValues[0] as TaskStatus,
-    assignedTo: params.assignedTo ?? board.userId // Use board owner as default assignee
+    assignedTo: params.assignedTo ?? board.userId, // Use board owner as default assignee
+    dueDate: params.dueDate
   });
 }
 

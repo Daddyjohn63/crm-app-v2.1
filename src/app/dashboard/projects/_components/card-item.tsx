@@ -3,6 +3,7 @@ import { CardWithProfile } from '@/use-cases/types';
 import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { CardModal } from './card-modal';
+import { format } from 'date-fns';
 
 interface CardItemProps {
   data: CardWithProfile;
@@ -39,6 +40,11 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             <p>{data.name}</p>
             <p className="rounded-full bg-indigo-500 text-white text-xs w-8 h-8 flex items-center justify-center shrink-0">
               {getInitials(data.assignedUserProfile?.displayName || '')}
+            </p>
+            <p>
+              {data.dueDate
+                ? format(data.dueDate, 'MM/dd/yyyy')
+                : 'No due date'}
             </p>
           </div>
         </div>

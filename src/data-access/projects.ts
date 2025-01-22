@@ -312,6 +312,7 @@ export async function createCard(
     order: number;
     status: 'todo' | 'in_progress' | 'done' | 'blocked';
     assignedTo?: number;
+    dueDate?: Date;
   },
 
   trx = database
@@ -320,6 +321,7 @@ export async function createCard(
     .insert(cards)
     .values({
       ...data,
+      dueDate: data.dueDate || undefined,
       assignedTo: data.assignedTo || undefined
     })
     .returning();
