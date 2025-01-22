@@ -25,10 +25,12 @@ export const EditCardModal = ({
   boardId,
   cardId
 }: EditCardModalProps) => {
+  console.log('EditCardModal props:', { listData, boardId, cardId }); // Debug log
   const { isOpen, setIsOpen, openEditCardDialog } = useEditCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
   const handleEditCard = () => {
+    console.log('handleEditCard called with cardId:', cardId); // Debug log
     if (!currentBoardId) return;
 
     openEditCardDialog({

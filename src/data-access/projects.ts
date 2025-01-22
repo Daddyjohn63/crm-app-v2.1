@@ -10,7 +10,7 @@ import { eq, and, asc, sql } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients, User } from '@/db/schema/base';
-import { ListWithCards } from '@/use-cases/types';
+import { CardWithProfile, ListWithCards } from '@/use-cases/types';
 import { users } from '@/db/schema/base';
 import { profiles } from '@/db/schema/base';
 
@@ -405,4 +405,15 @@ export async function updateCard({
       updatedAt: new Date()
     })
     .where(eq(cards.id, cardId));
+}
+
+// In src/data-access/projects.ts
+export async function getCardById(cardId: number): Promise<Card | null> {
+  const [result] = await database
+    .select()
+    .from(cards)
+    .where(eq(cards.id, cardId))
+    .limit(1);
+
+  return result || null;
 }

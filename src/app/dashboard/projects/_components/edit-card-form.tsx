@@ -13,7 +13,11 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
-import { getBoardUsersAction, updateCardAction } from '../actions';
+import {
+  getBoardUsersAction,
+  getCardAction,
+  updateCardAction
+} from '../actions';
 import { useEditCardDialogStore } from '@/store/editCardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
@@ -118,6 +122,8 @@ export const EditCardForm = ({
       status: listData.status || 'todo'
     }
   });
+
+  const { execute: fetchCard } = useServerAction(getCardAction);
 
   const onSubmit = form.handleSubmit(async values => {
     await execute({

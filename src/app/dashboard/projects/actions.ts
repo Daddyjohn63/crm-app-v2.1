@@ -242,3 +242,11 @@ export const updateCardAction = authenticatedAction
     await projectsDb.updateCard(sanitizedInput);
     revalidatePath('/dashboard/projects/[boardId]', 'page');
   });
+
+// In src/app/dashboard/projects/actions.ts
+export const getCardAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ cardId: z.number() }))
+  .handler(async ({ input: { cardId } }) => {
+    return await projectsDb.getCardById(cardId);
+  });
