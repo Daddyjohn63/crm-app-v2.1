@@ -290,27 +290,6 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
             </FormItem>
           )}
         />
-        {/* <FormField
-          name="sales_stage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sales stage</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a sales stage" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[...Object.values(salesStageEnum)].map(stage => (
-                    <SelectItem key={stage} value={stage}>
-                      {stage}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        /> */}
 
         <FormField
           control={form.control}

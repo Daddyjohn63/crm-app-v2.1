@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { CardModal } from './card-modal';
 import { format } from 'date-fns';
+import { Calendar } from 'lucide-react';
 
 interface CardItemProps {
   data: CardWithProfile;
@@ -36,16 +37,24 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             isPressed ? 'bg-slate-500' : 'bg-white'
           }`}
         >
-          <div className="flex items-center justify-between">
-            <p>{data.name}</p>
-            <p className="rounded-full bg-indigo-500 text-white text-xs w-8 h-8 flex items-center justify-center shrink-0">
-              {getInitials(data.assignedUserProfile?.displayName || '')}
-            </p>
-            <p>
-              {data.dueDate
-                ? format(data.dueDate, 'MM/dd/yyyy')
-                : 'No due date'}
-            </p>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <p>{data.name}</p>
+              <p className="rounded-full bg-indigo-500 text-white text-xs w-8 h-8 flex items-center justify-center shrink-0">
+                {getInitials(data.assignedUserProfile?.displayName || '')}
+              </p>
+            </div>
+            <div className="line-clamp-4 text-sm text-gray-500">
+              {data.description}
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-indigo-500" />
+                {data.dueDate
+                  ? format(data.dueDate, 'dd/MM/yyyy')
+                  : 'No due date'}
+              </p>
+            </div>
           </div>
         </div>
       )}
