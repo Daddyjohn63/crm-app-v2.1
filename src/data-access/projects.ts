@@ -10,7 +10,11 @@ import { eq, and, asc, sql } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients, User } from '@/db/schema/base';
-import { CardWithProfile, ListWithCards } from '@/use-cases/types';
+import {
+  CardWithProfile,
+  ListWithCards,
+  UserWithProfile
+} from '@/use-cases/types';
 import { users } from '@/db/schema/base';
 import { profiles } from '@/db/schema/base';
 
@@ -353,9 +357,9 @@ export async function updateCardOrder(
   );
 }
 
-// ... existing code ...
-
-export async function getBoardUsers(boardId: number): Promise<User[]> {
+export async function getBoardUsers(
+  boardId: number
+): Promise<UserWithProfile[]> {
   const result = await database
     .select({
       id: users.id,

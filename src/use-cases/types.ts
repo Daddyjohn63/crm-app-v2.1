@@ -1,4 +1,4 @@
-import { Card, List, Profile } from '@/db/schema';
+import { Card, List, Profile, User } from '@/db/schema';
 
 export type Plan = 'free' | 'basic' | 'premium';
 export type Role = 'admin' | 'guest' | 'member';
@@ -54,3 +54,7 @@ export type CardWithProfile = Card & {
 };
 
 export type CardWithList = Card & { list: List };
+
+export type UserWithProfile = User & {
+  displayName: string | null;
+};
