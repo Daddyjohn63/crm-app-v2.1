@@ -4,7 +4,7 @@
  * When clicked, it sets up the necessary context (listId and boardId) for the CardForm.
  */
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,48 +15,57 @@ import { useCardDialogStore } from '@/store/cardDialogStore';
 import { CardForm } from './card-form';
 import { ListWithCards } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
+import { CreateEditCardForm } from './create-edit-card-form';
 
 interface CardModalProps {
   // List data passed down from ListItem component
   // Contains the list's ID and other properties needed for card creation
   data: ListWithCards;
+  cardId?: number;
 }
 
-export const CardModal = ({ data }: CardModalProps) => {
-  // Get dialog state and controls directly from Zustand store
-  const { isOpen, setIsOpen, openCardDialog, listName } = useCardDialogStore();
+export const CardModal = ({ data, cardId }: CardModalProps) => {
+  console.log('data in card modal', data);
+  console.log('cardId in card modal', cardId);
+  const { isOpen, setIsOpen, openCardDialog } = useCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
-  const handleAddCard = () => {
-    // Ensure we have a valid board ID before proceeding
+  const handleOpen = () => {
     if (!currentBoardId) return;
 
-    // Use the new convenience method instead of multiple setter calls
     openCardDialog({
       listId: data.id,
       boardId: currentBoardId,
-      cardId: 0,
+      cardId: cardId || 0,
       listName: data.name
     });
   };
 
   return (
     <div>
-      <Button
-        onClick={handleAddCard}
-        variant="ghost"
-        className="w-full justify-start text-muted-foreground font-normal h-auto p-2 rounded-none"
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        Add Card
-      </Button>
+      {cardId ? (
+        <Button onClick={handleOpen} variant="ghost">
+          <Pencil className="h-4 w-4 text-green-600 cursor-pointer hover:text-blue-700" />
+        </Button>
+      ) : (
+        <Button
+          onClick={handleOpen}
+          variant="ghost"
+          className="w-full justify-start text-muted-foreground font-normal h-auto p-2 rounded-none"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add Card
+        </Button>
+      )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Card to {listName}</DialogTitle>
+            <DialogTitle>
+              {cardId ? 'Edit Card' : `Add Card to ${data.name}`}
+            </DialogTitle>
           </DialogHeader>
-          <CardForm />
+          <CreateEditCardForm cardId={cardId} />
         </DialogContent>
       </Dialog>
     </div>

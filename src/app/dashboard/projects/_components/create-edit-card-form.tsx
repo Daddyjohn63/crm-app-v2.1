@@ -1,10 +1,5 @@
 'use client';
 
-/**
- * CardForm Component
- * Handles the form submission for creating new cards.
- * Gets listId and boardId from the Zustand store, which is set up by CardModal.
- */
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -20,8 +15,12 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useServerAction } from 'zsa-react';
-import { createCardAction, getBoardUsersAction } from '../actions';
-import { useCardDialogStore } from '@/store/cardDialogStore';
+import {
+  createCardAction,
+  getBoardUsersAction,
+  getCardAction,
+  updateCardAction
+} from '../actions';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
@@ -33,8 +32,8 @@ import {
 import { PopoverClose } from '@radix-ui/react-popover';
 import { Button } from '@/components/ui/button';
 import { CalendarIcon, X } from 'lucide-react';
-
 import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -42,7 +41,17 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
+import { useCardDialogStore } from '@/store/cardDialogStore';
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+  assignedTo: z.coerce.number().optional(),
+  dueDate: z.date().optional(),
+  status: z.enum(['todo', 'in_progress', 'done', 'blocked']).default('todo'),
+  listId: z.number(),
+  boardId: z.number()
+});
 
 type BoardUser = {
   id: number;
@@ -50,29 +59,82 @@ type BoardUser = {
   emailVerified: Date | null;
   role: 'admin' | 'guest' | 'member';
   displayName: string | null;
-  // due_date: Date | null;
 };
 
-// Form validation schema
-const formSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional(),
-  assignedTo: z.number().optional(),
-  dueDate: z.date().optional(),
-  status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
-});
+interface CreateEditCardFormProps {
+  cardId?: number;
+}
 
-export const CardForm = () => {
+export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
+  const isEditing = !!cardId;
   const { listId, boardId, setIsOpen } = useCardDialogStore();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
+
+  const { execute: executeAction, isPending } = useServerAction(
+    isEditing ? updateCardAction : createCardAction,
+    {
+      onSuccess() {
+        toast({
+          title: isEditing ? 'Card Updated' : 'Card Created',
+          description: isEditing
+            ? 'The card has been updated successfully.'
+            : 'The card has been created successfully.',
+          duration: 3000
+        });
+        setIsOpen(false);
+      },
+      onError(error) {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: `Error ${isEditing ? 'updating' : 'creating'} the card.`,
+          duration: 3000
+        });
+      }
+    }
+  );
+
+  const { execute: fetchCard } = useServerAction(getCardAction);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: isEditing
+      ? async () => {
+          const [result] = await fetchCard({ cardId: cardId! });
+          if (!result) throw new Error('Card not found');
+          return {
+            name: result.name,
+            description: result.description || '',
+            assignedTo: result.assignedTo
+              ? Number(result.assignedTo)
+              : undefined,
+            dueDate: result.dueDate ? new Date(result.dueDate) : undefined,
+            status: result.status || 'todo',
+            boardId,
+            listId: listId!
+          };
+        }
+      : {
+          name: '',
+          description: '',
+          assignedTo: undefined,
+          dueDate: new Date(),
+          status: 'todo',
+          boardId,
+          listId: listId!
+        }
+  });
 
   useEffect(() => {
     const fetchBoardUsers = async () => {
       if (boardId) {
         try {
-          const users = await getBoardUsersAction(boardId);
-          setBoardUsers(users as unknown as BoardUser[]);
+          const [users] = await getBoardUsersAction(boardId);
+          if (users && Array.isArray(users)) {
+            setBoardUsers(users);
+          }
         } catch (error) {
           toast({
             title: 'Error',
@@ -85,63 +147,30 @@ export const CardForm = () => {
     fetchBoardUsers();
   }, [boardId, toast]);
 
-  const { execute, isPending } = useServerAction(createCardAction, {
-    onSuccess() {
-      toast({
-        title: 'Card created',
-        description: 'The card has been created successfully.',
-        duration: 3000
-      });
-      setIsOpen(false);
-    },
-    onError(error) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong creating the card.',
-        duration: 3000
-      });
-    }
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      assignedTo: undefined,
-      dueDate: new Date(),
-      status: 'todo'
-    }
-  });
-
-  const onSubmit = form.handleSubmit(async values => {
-    if (!listId || !boardId) {
-      toast({
-        title: 'Error',
-        description: 'Missing required list or board ID.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    await execute({
-      name: values.name,
-      description: values.description,
-      listId,
-      boardId,
-      assignedTo: values.assignedTo,
-      dueDate: values.dueDate,
-      status: values.status
-    });
-  });
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const handleOnSelect = (date: Date | undefined) => {
     if (date) {
       form.setValue('dueDate', date);
       setIsPopoverOpen(false);
     }
   };
+
+  const onSubmit = form.handleSubmit(async values => {
+    if (isEditing && cardId) {
+      await executeAction({
+        cardId,
+        boardId,
+        ...values,
+        listId: listId!
+      });
+    } else {
+      await executeAction({
+        ...values,
+        boardId,
+        listId: listId!,
+        cardId: 0
+      });
+    }
+  });
 
   return (
     <Form {...form}>
@@ -280,9 +309,9 @@ export const CardForm = () => {
           )}
         />
         <LoaderButton type="submit" isLoading={isPending}>
-          Create Card
+          Submit
         </LoaderButton>
       </form>
     </Form>
   );
-};
+}

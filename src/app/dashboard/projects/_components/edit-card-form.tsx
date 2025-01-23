@@ -1,3 +1,5 @@
+'use client';
+
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -18,7 +20,7 @@ import {
   getCardAction,
   updateCardAction
 } from '../actions';
-import { useEditCardDialogStore } from '@/store/editCardDialogStore';
+import { useCardDialogStore } from '@/store/cardDialogStore';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
@@ -41,12 +43,13 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useEditCardDialogStore } from '@/store/editCardDialogStore';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
   assignedTo: z.string().optional(),
-  dueDate: z.date().optional(),
+  dueDate: z.date(),
   status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
 });
 
@@ -62,49 +65,87 @@ type BoardUser = {
 };
 
 export const EditCardForm = ({}: EditCardFormProps) => {
-  const { cardId, boardId } = useEditCardDialogStore();
+  const { cardId, boardId, setIsOpen } = useEditCardDialogStore();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [cardData, setCardData] = useState<CardWithProfile | null>(null);
-  const { setIsOpen } = useEditCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  // Fetch card data when modal opens
   useEffect(() => {
-    const fetchCardData = async () => {
-      if (!cardId) return;
-      try {
-        const [cardData] = await getCardAction({ cardId });
-        setCardData(cardData as CardWithProfile);
-      } catch (error) {
-        toast({
-          title: 'Error',
-          description: 'Failed to fetch card data',
-          variant: 'destructive'
-        });
+    async function fetchData() {
+      if (cardId) {
+        try {
+          const [result] = await getCardAction({ cardId });
+          if (result) {
+            const assignedUser = result.assignedTo
+              ? { displayName: null }
+              : null;
+            setCardData({
+              ...result,
+              assignedUserProfile: assignedUser
+            } as CardWithProfile);
+          }
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to fetch card data',
+            variant: 'destructive'
+          });
+        }
       }
-    };
-    fetchCardData();
+    }
+    fetchData();
   }, [cardId, toast]);
 
   useEffect(() => {
-    const fetchBoardUsers = async () => {
-      if (!boardId) return;
-      try {
-        const users = await getBoardUsersAction(boardId);
-        setBoardUsers(users);
-      } catch (error) {
-        toast({
-          title: 'Error',
-          description: 'Failed to fetch board users',
-          variant: 'destructive'
-        });
-      }
-    };
-    fetchBoardUsers();
-  }, [boardId, toast]);
+    async function fetchUsers() {
+      if (boardId) {
+        try {
+          const [result] = await getBoardUsersAction(boardId);
+          if (result && Array.isArray(result)) {
+            setBoardUsers(
+              result.map(user => ({
+                id: user.id,
+                email: user.email,
+                emailVerified: user.emailVerified,
+                role: user.role,
+                displayName: user.displayName
+              }))
+            );
 
-  const { execute, isPending } = useServerAction(updateCardAction, {
+            // Update cardData's assignedUserProfile if we have an assigned user
+            if (cardData?.assignedTo) {
+              const assignedUser = result.find(
+                user => user.id === cardData.assignedTo
+              );
+              if (assignedUser) {
+                setCardData(prev =>
+                  prev
+                    ? {
+                        ...prev,
+                        assignedUserProfile: {
+                          displayName: assignedUser.displayName
+                        }
+                      }
+                    : null
+                );
+              }
+            }
+          }
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to fetch board users',
+            variant: 'destructive'
+          });
+        }
+      }
+    }
+    fetchUsers();
+  }, [boardId, toast, cardData?.assignedTo]);
+
+  const { execute: updateCard, isPending } = useServerAction(updateCardAction, {
     onSuccess() {
       toast({
         title: 'Card updated',
@@ -125,31 +166,26 @@ export const EditCardForm = ({}: EditCardFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    values: {
       name: cardData?.name || '',
       description: cardData?.description || '',
       assignedTo: cardData?.assignedTo?.toString(),
-      dueDate: cardData?.dueDate ? new Date(cardData.dueDate) : undefined,
+      dueDate: cardData?.dueDate ? new Date(cardData.dueDate) : new Date(),
       status: cardData?.status || 'todo'
     }
   });
 
-  // Update form values when card data is loaded
-  useEffect(() => {
-    if (cardData) {
-      form.reset({
-        name: cardData.name,
-        description: cardData.description || '',
-        assignedTo: cardData.assignedTo?.toString(),
-        dueDate: cardData.dueDate ? new Date(cardData.dueDate) : undefined,
-        status: cardData.status || 'todo'
-      });
+  const handleOnSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      form.setValue('dueDate', date);
+      setIsPopoverOpen(false);
     }
-  }, [cardData, form]);
+  };
 
   const onSubmit = form.handleSubmit(async values => {
     if (!cardId || !cardData) return;
-    await execute({
+    await updateCard({
       cardId,
       name: values.name,
       description: values.description,
@@ -158,23 +194,17 @@ export const EditCardForm = ({}: EditCardFormProps) => {
       status: values.status,
       listId: cardData.listId
     });
+    setIsOpen(false);
   });
 
   if (!cardData) {
     return <div>Loading...</div>;
   }
 
-  const handleOnSelect = (date: Date | undefined) => {
-    if (date) {
-      form.setValue('dueDate', date);
-      setIsPopoverOpen(false);
-    }
-  };
-
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <FormField
+        {/* <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
@@ -186,8 +216,8 @@ export const EditCardForm = ({}: EditCardFormProps) => {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
@@ -203,8 +233,8 @@ export const EditCardForm = ({}: EditCardFormProps) => {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={form.control}
           name="assignedTo"
           render={({ field }) => (
@@ -227,17 +257,26 @@ export const EditCardForm = ({}: EditCardFormProps) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="dueDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Due Date</FormLabel>
-              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+              <Popover
+                open={isPopoverOpen}
+                onOpenChange={open => {
+                  setIsPopoverOpen(open);
+                  if (!open) {
+                    setSelectedDate(undefined);
+                  }
+                }}
+              >
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
+                      type="button"
                       variant={'outline'}
                       className={cn(
                         'pl-3 text-left font-normal',
@@ -265,12 +304,15 @@ export const EditCardForm = ({}: EditCardFormProps) => {
                   </div>
                   <Calendar
                     mode="single"
-                    defaultMonth={field.value}
-                    selected={field.value}
+                    selected={selectedDate || field.value}
+                    defaultMonth={selectedDate || field.value || new Date()}
                     onSelect={handleOnSelect}
                     initialFocus
                     fixedWeeks
                     weekStartsOn={1}
+                    fromDate={new Date(new Date().getFullYear() - 30, 0, 1)}
+                    toDate={new Date(new Date().getFullYear() + 10, 11, 31)}
+                    captionLayout="dropdown-buttons"
                   />
                 </PopoverContent>
               </Popover>
@@ -278,7 +320,7 @@ export const EditCardForm = ({}: EditCardFormProps) => {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="status"
           render={({ field }) => (
@@ -300,7 +342,7 @@ export const EditCardForm = ({}: EditCardFormProps) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <LoaderButton type="submit" isLoading={isPending}>
           Update Card

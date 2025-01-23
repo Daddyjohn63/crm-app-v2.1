@@ -10,10 +10,13 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { useEditCardDialogStore } from '@/store/editCardDialogStore';
+import { useCardDialogStore } from '@/store/cardDialogStore';
 import { CardWithProfile } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
 import { EditCardForm } from './edit-card-form';
 import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { CardForm } from './card-form';
 
 interface EditCardModalProps {
   cardId: number;
@@ -29,17 +32,16 @@ export const EditCardModal = ({ cardId }: EditCardModalProps) => {
     openEditCardDialog({
       cardId,
       boardId: currentBoardId,
-      listId: 0, // This will be set by the form when it loads the card data
-      listName: '' // This will be set by the form when it loads the card data
+      listId: 0,
+      listName: ''
     });
   };
 
   return (
     <div>
-      <Pencil
-        onClick={handleEditCard}
-        className="h-4 w-4 text-blue-500 cursor-pointer hover:text-blue-700"
-      />
+      <Button onClick={handleEditCard} variant="ghost">
+        <Pencil className="h-4 w-4 text-green-600 cursor-pointer hover:text-blue-700" />
+      </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>

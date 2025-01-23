@@ -8,6 +8,10 @@ interface EditCardDialogStore {
   cardId: number | null;
   listName: string | null;
   setIsOpen: (isOpen: boolean) => void;
+  setBoardId: (id: number | null) => void;
+  setListId: (id: number | null) => void;
+  setCardId: (id: number | null) => void;
+  setListName: (name: string | null) => void;
   openEditCardDialog: (params: {
     cardId: number;
     listId: number;
@@ -27,7 +31,7 @@ export const useEditCardDialogStore = create<EditCardDialogStore>()(
       cardId: null,
       listName: null,
 
-      // setters
+      // Individual setters
       setIsOpen: isOpen =>
         set(
           state => ({
@@ -36,6 +40,46 @@ export const useEditCardDialogStore = create<EditCardDialogStore>()(
           }),
           false,
           'setIsOpen'
+        ),
+
+      setBoardId: id =>
+        set(
+          state => ({
+            ...state,
+            boardId: id
+          }),
+          false,
+          'setBoardId'
+        ),
+
+      setListId: id =>
+        set(
+          state => ({
+            ...state,
+            listId: id
+          }),
+          false,
+          'setListId'
+        ),
+
+      setCardId: id =>
+        set(
+          state => ({
+            ...state,
+            cardId: id
+          }),
+          false,
+          'setCardId'
+        ),
+
+      setListName: name =>
+        set(
+          state => ({
+            ...state,
+            listName: name
+          }),
+          false,
+          'setListName'
         ),
 
       // Convenience method for opening dialog
