@@ -50,11 +50,8 @@ const formSchema = z.object({
   status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
 });
 
-interface EditCardFormProps {
-  listData: CardWithProfile;
-  boardId: number;
-  cardId: number;
-}
+interface EditCardFormProps {}
+
 type BoardUser = {
   id: number;
   email: string | null;
@@ -64,30 +61,44 @@ type BoardUser = {
   // due_date: Date | null;
 };
 
-export const EditCardForm = ({
-  listData,
-  boardId,
-  cardId
-}: EditCardFormProps) => {
-  console.log('EditCardForm', cardId);
+export const EditCardForm = ({}: EditCardFormProps) => {
+  const { cardId, boardId } = useEditCardDialogStore();
+  const [cardData, setCardData] = useState<CardWithProfile | null>(null);
   const { setIsOpen } = useEditCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  // Fetch card data when modal opens
+  useEffect(() => {
+    const fetchCardData = async () => {
+      if (!cardId) return;
+      try {
+        const [cardData] = await getCardAction({ cardId });
+        setCardData(cardData as CardWithProfile);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch card data',
+          variant: 'destructive'
+        });
+      }
+    };
+    fetchCardData();
+  }, [cardId, toast]);
+
   useEffect(() => {
     const fetchBoardUsers = async () => {
-      if (boardId) {
-        try {
-          const users = await getBoardUsersAction(boardId);
-          setBoardUsers(users);
-        } catch (error) {
-          toast({
-            title: 'Error',
-            description: 'Failed to fetch board users',
-            variant: 'destructive'
-          });
-        }
+      if (!boardId) return;
+      try {
+        const users = await getBoardUsersAction(boardId);
+        setBoardUsers(users);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch board users',
+          variant: 'destructive'
+        });
       }
     };
     fetchBoardUsers();
@@ -115,17 +126,29 @@ export const EditCardForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: listData.name,
-      description: listData.description || '',
-      assignedTo: listData.assignedTo?.toString(),
-      dueDate: listData.dueDate ? new Date(listData.dueDate) : undefined,
-      status: listData.status || 'todo'
+      name: cardData?.name || '',
+      description: cardData?.description || '',
+      assignedTo: cardData?.assignedTo?.toString(),
+      dueDate: cardData?.dueDate ? new Date(cardData.dueDate) : undefined,
+      status: cardData?.status || 'todo'
     }
   });
 
-  const { execute: fetchCard } = useServerAction(getCardAction);
+  // Update form values when card data is loaded
+  useEffect(() => {
+    if (cardData) {
+      form.reset({
+        name: cardData.name,
+        description: cardData.description || '',
+        assignedTo: cardData.assignedTo?.toString(),
+        dueDate: cardData.dueDate ? new Date(cardData.dueDate) : undefined,
+        status: cardData.status || 'todo'
+      });
+    }
+  }, [cardData, form]);
 
   const onSubmit = form.handleSubmit(async values => {
+    if (!cardId || !cardData) return;
     await execute({
       cardId,
       name: values.name,
@@ -133,9 +156,13 @@ export const EditCardForm = ({
       assignedTo: values.assignedTo,
       dueDate: values.dueDate,
       status: values.status,
-      listId: listData.listId
+      listId: cardData.listId
     });
   });
+
+  if (!cardData) {
+    return <div>Loading...</div>;
+  }
 
   const handleOnSelect = (date: Date | undefined) => {
     if (date) {

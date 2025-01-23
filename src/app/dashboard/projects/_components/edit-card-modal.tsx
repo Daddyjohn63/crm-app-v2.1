@@ -16,49 +16,22 @@ import { EditCardForm } from './edit-card-form';
 import { useEffect } from 'react';
 
 interface EditCardModalProps {
-  listData: CardWithProfile;
   cardId: number;
-  boardId: number;
 }
 
-export const EditCardModal = ({
-  listData,
-  boardId,
-  cardId
-}: EditCardModalProps) => {
-  console.log('EditCardModal props:', { listData, boardId, cardId }); // Debug log
+export const EditCardModal = ({ cardId }: EditCardModalProps) => {
   const { isOpen, setIsOpen, openEditCardDialog } = useEditCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
-  // Add store state monitoring
-  useEffect(() => {
-    const unsubscribe = useEditCardDialogStore.subscribe(state =>
-      console.log('EditCardDialog Store State:', {
-        cardId: state.cardId,
-        listId: state.listId,
-        boardId: state.boardId,
-        listName: state.listName,
-        isOpen: state.isOpen
-      })
-    );
-    return () => unsubscribe();
-  }, []);
-
   const handleEditCard = () => {
-    console.log('handleEditCard called with cardId:', cardId); // Debug log
     if (!currentBoardId) return;
 
     openEditCardDialog({
-      listId: listData.id,
+      cardId,
       boardId: currentBoardId,
-      cardId: cardId,
-      listName: listData.name
+      listId: 0, // This will be set by the form when it loads the card data
+      listName: '' // This will be set by the form when it loads the card data
     });
-
-    console.log(
-      'After openEditCardDialog - Store State:',
-      useEditCardDialogStore.getState()
-    );
   };
 
   return (
@@ -73,7 +46,7 @@ export const EditCardModal = ({
           <DialogHeader>
             <DialogTitle>Edit Card</DialogTitle>
           </DialogHeader>
-          <EditCardForm listData={listData} boardId={boardId} cardId={cardId} />
+          <EditCardForm />
         </DialogContent>
       </Dialog>
     </div>
