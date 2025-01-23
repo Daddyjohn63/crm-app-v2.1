@@ -64,6 +64,7 @@ const formSchema = z.object({
 export const CardForm = () => {
   const { listId, boardId, setIsOpen } = useCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
+  const [taskStatus, setTaskStatus] = useState<TaskStatusEnum[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
