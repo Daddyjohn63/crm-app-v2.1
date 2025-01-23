@@ -13,6 +13,7 @@ import { useEditCardDialogStore } from '@/store/editCardDialogStore';
 import { CardWithProfile } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
 import { EditCardForm } from './edit-card-form';
+import { useEffect } from 'react';
 
 interface EditCardModalProps {
   listData: CardWithProfile;
@@ -29,6 +30,20 @@ export const EditCardModal = ({
   const { isOpen, setIsOpen, openEditCardDialog } = useEditCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
+  // Add store state monitoring
+  useEffect(() => {
+    const unsubscribe = useEditCardDialogStore.subscribe(state =>
+      console.log('EditCardDialog Store State:', {
+        cardId: state.cardId,
+        listId: state.listId,
+        boardId: state.boardId,
+        listName: state.listName,
+        isOpen: state.isOpen
+      })
+    );
+    return () => unsubscribe();
+  }, []);
+
   const handleEditCard = () => {
     console.log('handleEditCard called with cardId:', cardId); // Debug log
     if (!currentBoardId) return;
@@ -39,6 +54,11 @@ export const EditCardModal = ({
       cardId: cardId,
       listName: listData.name
     });
+
+    console.log(
+      'After openEditCardDialog - Store State:',
+      useEditCardDialogStore.getState()
+    );
   };
 
   return (

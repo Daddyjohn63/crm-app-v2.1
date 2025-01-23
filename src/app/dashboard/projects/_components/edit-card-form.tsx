@@ -69,7 +69,7 @@ export const EditCardForm = ({
   boardId,
   cardId
 }: EditCardFormProps) => {
-  console.log('listData', listData);
+  console.log('EditCardForm', cardId);
   const { setIsOpen } = useEditCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
