@@ -58,13 +58,13 @@ const formSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   assignedTo: z.number().optional(),
-  dueDate: z.date().optional()
+  dueDate: z.date().optional(),
+  status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
 });
 
 export const CardForm = () => {
   const { listId, boardId, setIsOpen } = useCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
-  const [taskStatus, setTaskStatus] = useState<TaskStatusEnum[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -110,7 +110,8 @@ export const CardForm = () => {
       name: '',
       description: '',
       assignedTo: undefined,
-      dueDate: new Date()
+      dueDate: new Date(),
+      status: 'todo'
     }
   });
 
@@ -130,7 +131,8 @@ export const CardForm = () => {
       listId,
       boardId,
       assignedTo: values.assignedTo,
-      dueDate: values.dueDate
+      dueDate: values.dueDate,
+      status: values.status
     });
   });
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -254,7 +256,29 @@ export const CardForm = () => {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="todo">Not Started</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="done">Done</SelectItem>
+                  <SelectItem value="blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <LoaderButton type="submit" isLoading={isPending}>
           Create Card
         </LoaderButton>

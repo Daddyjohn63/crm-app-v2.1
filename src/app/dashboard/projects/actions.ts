@@ -123,12 +123,21 @@ export const createCardAction = authenticatedAction
       listId: z.number(),
       boardId: z.number(),
       assignedTo: z.number().optional(),
-      dueDate: z.date().optional()
+      dueDate: z.date().optional(),
+      status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
     })
   )
   .handler(
     async ({
-      input: { name, description, listId, boardId, assignedTo, dueDate },
+      input: {
+        name,
+        description,
+        listId,
+        boardId,
+        assignedTo,
+        dueDate,
+        status
+      },
       ctx: { user }
     }) => {
       try {
@@ -155,7 +164,8 @@ export const createCardAction = authenticatedAction
               : undefined,
             listId,
             assignedTo,
-            dueDate: dueDate
+            dueDate: dueDate,
+            status: status
           },
           user
         );

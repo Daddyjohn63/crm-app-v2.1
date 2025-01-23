@@ -21,6 +21,15 @@ const getInitials = (name: string) => {
   return initials;
 };
 
+const getDisplayStatus = (status: string) => {
+  switch (status) {
+    case 'todo':
+      return 'Not Started';
+    default:
+      return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+};
+
 export const CardItem = ({ data, index }: CardItemProps) => {
   const boardId = useBoardIdParam();
   console.log('data from card item', data);
@@ -64,6 +73,9 @@ export const CardItem = ({ data, index }: CardItemProps) => {
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>
+            <p className="text-xs text-gray-500">
+              {getDisplayStatus(data.status)}
+            </p>
           </div>
         </div>
       )}

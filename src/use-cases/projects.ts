@@ -276,6 +276,7 @@ export async function createCard(
     listId: number;
     assignedTo?: number;
     dueDate?: Date;
+    status: TaskStatus;
   },
   user: User
 ): Promise<Card> {
