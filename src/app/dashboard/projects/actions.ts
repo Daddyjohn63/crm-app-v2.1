@@ -208,10 +208,10 @@ export async function getBoardUsersAction(boardId: number) {
 
   try {
     const users = await getBoardUsers(boardId);
-    return users;
+    return [users, null] as const;
   } catch (error) {
     console.error('Error fetching board users:', error);
-    throw new Error('Failed to fetch board users');
+    return [null, error] as const;
   }
 }
 
@@ -227,7 +227,7 @@ const updateCardSchema = z.object({
   cardId: z.number(),
   name: z.string().min(1),
   description: z.string().optional(),
-  assignedTo: z.string().optional(),
+  assignedTo: z.coerce.number().optional(),
   dueDate: z.date().optional(),
   listId: z.number(),
   status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
@@ -246,17 +246,27 @@ export const updateCardAction = authenticatedAction
       name: sanitizeUserInput(input.name),
       description: input.description
         ? sanitizeUserInput(input.description)
-        : undefined
+        : undefined,
+      assignedTo: input.assignedTo?.toString()
     };
 
     await projectsDb.updateCard(sanitizedInput);
     revalidatePath('/dashboard/projects/[boardId]', 'page');
+    return [true, null] as const;
   });
 
-// In src/app/dashboard/projects/actions.ts
 export const getCardAction = authenticatedAction
   .createServerAction()
   .input(z.object({ cardId: z.number() }))
   .handler(async ({ input: { cardId } }) => {
-    return await projectsDb.getCardById(cardId);
+    try {
+      const card = await projectsDb.getCardById(cardId);
+      if (!card) {
+        return [null, new Error('Card not found')] as const;
+      }
+      return [card, null] as const;
+    } catch (error) {
+      console.error('Error in getCardAction:', error);
+      return [null, error] as const;
+    }
   });

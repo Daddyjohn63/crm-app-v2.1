@@ -42,6 +42,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { useCardDialogStore } from '@/store/cardDialogStore';
+import { Card } from '@/db/schema';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -68,6 +69,11 @@ interface CreateEditCardFormProps {
 export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
   const isEditing = !!cardId;
   const { listId, boardId, setIsOpen } = useCardDialogStore();
+
+  if (!boardId) {
+    throw new Error('Board ID is required');
+  }
+
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
@@ -98,35 +104,6 @@ export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
 
   const { execute: fetchCard } = useServerAction(getCardAction);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: isEditing
-      ? async () => {
-          const [result] = await fetchCard({ cardId: cardId! });
-          if (!result) throw new Error('Card not found');
-          return {
-            name: result.name,
-            description: result.description || '',
-            assignedTo: result.assignedTo
-              ? Number(result.assignedTo)
-              : undefined,
-            dueDate: result.dueDate ? new Date(result.dueDate) : undefined,
-            status: result.status || 'todo',
-            boardId,
-            listId: listId!
-          };
-        }
-      : {
-          name: '',
-          description: '',
-          assignedTo: undefined,
-          dueDate: new Date(),
-          status: 'todo',
-          boardId,
-          listId: listId!
-        }
-  });
-
   useEffect(() => {
     const fetchBoardUsers = async () => {
       if (boardId) {
@@ -147,6 +124,53 @@ export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
     fetchBoardUsers();
   }, [boardId, toast]);
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: async () => {
+      if (isEditing && cardId) {
+        const result = await fetchCard({ cardId });
+        if (!result || result[1]) {
+          toast({
+            title: 'Error',
+            description: 'Failed to fetch card details',
+            variant: 'destructive'
+          });
+          throw new Error('Failed to fetch card details');
+        }
+        const cardData = result[0] as {
+          name: string;
+          description: string | null;
+          assignedTo: number | null;
+          dueDate: Date | null;
+          status: 'todo' | 'in_progress' | 'done' | 'blocked';
+        };
+        if (!cardData) {
+          throw new Error('Card not found');
+        }
+        return {
+          name: cardData.name,
+          description: cardData.description || '',
+          assignedTo: cardData.assignedTo
+            ? Number(cardData.assignedTo)
+            : undefined,
+          dueDate: cardData.dueDate ? new Date(cardData.dueDate) : undefined,
+          status: cardData.status || 'todo',
+          boardId,
+          listId: listId!
+        };
+      }
+      return {
+        name: '',
+        description: '',
+        assignedTo: undefined,
+        dueDate: undefined,
+        status: 'todo',
+        boardId,
+        listId: listId!
+      };
+    }
+  });
+
   const handleOnSelect = (date: Date | undefined) => {
     if (date) {
       form.setValue('dueDate', date);
@@ -158,16 +182,22 @@ export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
     if (isEditing && cardId) {
       await executeAction({
         cardId,
-        boardId,
-        ...values,
+        name: values.name,
+        description: values.description || '',
+        assignedTo: values.assignedTo,
+        dueDate: values.dueDate,
+        status: values.status,
         listId: listId!
       });
     } else {
       await executeAction({
-        ...values,
-        boardId,
+        name: values.name,
+        description: values.description || '',
         listId: listId!,
-        cardId: 0
+        boardId,
+        assignedTo: values.assignedTo,
+        dueDate: values.dueDate,
+        status: values.status
       });
     }
   });
