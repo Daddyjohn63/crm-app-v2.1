@@ -8,6 +8,7 @@ import { Calendar, Pencil, Trash } from 'lucide-react';
 import DeleteCardButton from './delete-card-button';
 import { useBoardIdParam } from '@/util/safeparam';
 import { EditCardModal } from './edit-card-modal';
+import { Badge } from '@/components/ui/badge';
 
 interface CardItemProps {
   data: CardWithProfile;
@@ -76,9 +77,12 @@ export const CardItem = ({ data, index }: CardItemProps) => {
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>
-            <p className="text-xs text-gray-500">
+            <Badge
+              variant="outline"
+              className="text-xs w-fit bg-indigo-500 text-white"
+            >
               {getDisplayStatus(data.status)}
-            </p>
+            </Badge>
           </div>
         </div>
       )}
