@@ -1,6 +1,6 @@
 'use client';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
-import { ListWithCards } from '@/use-cases/types';
+import { CardWithProfile, ListWithCards } from '@/use-cases/types';
 import { ListHeader } from './list-header';
 //import { ElementRef, useRef, useState } from 'react';
 import { CardModal } from './card-modal';
@@ -42,14 +42,19 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                     snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
                   )}
                 >
-                  {data.cards.map((card, index) => (
+                  {data.cards.map((card: CardWithProfile, index: number) => (
                     <CardItem key={card.id} data={card} index={index} />
                   ))}
                   {provided.placeholder}
                 </ol>
               )}
             </Droppable>
-            <CardModal data={data} />
+            <CardModal
+              data={{
+                id: data.id,
+                name: data.name
+              }}
+            />
           </div>
         </li>
       )}

@@ -309,8 +309,8 @@ export async function createCard(
     description: params.description ?? null,
     listId: params.listId,
     order: maxOrder + 1,
-    status: taskStatusEnum.enumValues[0] as TaskStatus,
-    assignedTo: params.assignedTo ?? board.userId, // Use board owner as default assignee
+    status: params.status,
+    assignedTo: params.assignedTo ?? board.userId, // Use board admin as default assignee
     dueDate: params.dueDate
   });
 }

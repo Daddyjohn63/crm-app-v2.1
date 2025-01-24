@@ -47,7 +47,7 @@ import { Card } from '@/db/schema';
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  assignedTo: z.coerce.number().optional(),
+  assignedTo: z.coerce.number(),
   dueDate: z.date().optional(),
   status: z.enum(['todo', 'in_progress', 'done', 'blocked']).default('todo'),
   listId: z.number(),
@@ -64,11 +64,17 @@ type BoardUser = {
 
 interface CreateEditCardFormProps {
   cardId?: number;
+  listId: number;
+  listName: string;
 }
 
-export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
+export function CreateEditCardForm({
+  cardId,
+  listId,
+  listName
+}: CreateEditCardFormProps) {
   const isEditing = !!cardId;
-  const { listId, boardId, setIsOpen } = useCardDialogStore();
+  const { boardId, setIsOpen } = useCardDialogStore();
 
   if (!boardId) {
     throw new Error('Board ID is required');
@@ -140,7 +146,7 @@ export function CreateEditCardForm({ cardId }: CreateEditCardFormProps) {
         const cardData = result[0] as {
           name: string;
           description: string | null;
-          assignedTo: number | null;
+          assignedTo: number;
           dueDate: Date | null;
           status: 'todo' | 'in_progress' | 'done' | 'blocked';
         };

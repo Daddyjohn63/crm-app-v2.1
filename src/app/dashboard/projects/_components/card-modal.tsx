@@ -18,15 +18,16 @@ import { useBoardStore } from '@/store/boardStore';
 import { CreateEditCardForm } from './create-edit-card-form';
 
 interface CardModalProps {
-  // List data passed down from ListItem component
-  // Contains the list's ID and other properties needed for card creation
-  data: ListWithCards;
+  data: {
+    id: number;
+    name: string;
+  };
   cardId?: number;
 }
 
 export const CardModal = ({ data, cardId }: CardModalProps) => {
-  console.log('data in card modal', data);
-  console.log('cardId in card modal', cardId);
+  // console.log('data in card modal', data);
+  // console.log('cardId in card modal', cardId);
   const { isOpen, setIsOpen, openCardDialog } = useCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
 
@@ -34,10 +35,8 @@ export const CardModal = ({ data, cardId }: CardModalProps) => {
     if (!currentBoardId) return;
 
     openCardDialog({
-      listId: data.id,
       boardId: currentBoardId,
-      cardId: cardId || 0,
-      listName: data.name
+      cardId: cardId || 0
     });
   };
 
@@ -65,7 +64,11 @@ export const CardModal = ({ data, cardId }: CardModalProps) => {
               {cardId ? 'Edit Card' : `Add Card to ${data.name}`}
             </DialogTitle>
           </DialogHeader>
-          <CreateEditCardForm cardId={cardId} />
+          <CreateEditCardForm
+            cardId={cardId}
+            listId={data.id}
+            listName={data.name}
+          />
         </DialogContent>
       </Dialog>
     </div>

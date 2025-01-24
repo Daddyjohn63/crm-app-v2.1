@@ -11,6 +11,7 @@ import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients, User } from '@/db/schema/base';
 import {
+  CardUpdate,
   CardWithProfile,
   ListWithCards,
   UserWithProfile
@@ -380,35 +381,19 @@ export async function deleteCard(cardId: number, user: User): Promise<void> {
   await database.delete(cards).where(eq(cards.id, cardId));
 }
 
-export async function updateCard({
-  cardId,
-  name,
-  description,
-  assignedTo,
-  dueDate,
-  listId,
-  status = 'todo'
-}: {
-  cardId: number;
-  name: string;
-  description?: string;
-  assignedTo?: string;
-  dueDate?: Date;
-  listId: number;
-  status?: 'todo' | 'in_progress' | 'done' | 'blocked';
-}) {
+export async function updateCard(data: CardUpdate) {
   return await database
     .update(cards)
     .set({
-      name,
-      description,
-      status,
-      ...(assignedTo ? { assignedTo: parseInt(assignedTo) } : {}),
-      dueDate,
-      listId,
+      name: data.name,
+      description: data.description,
+      status: data.status,
+      assignedTo: data.assignedTo,
+      dueDate: data.dueDate,
+      listId: data.listId,
       updatedAt: new Date()
     })
-    .where(eq(cards.id, cardId));
+    .where(eq(cards.id, data.cardId));
 }
 
 // In src/data-access/projects.ts

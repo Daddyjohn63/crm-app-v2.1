@@ -58,3 +58,14 @@ export type CardWithList = Card & { list: List };
 export type UserWithProfile = User & {
   displayName: string | null;
 };
+
+// First, define our base types
+export type CardUpdate = {
+  cardId: number;
+  name: string;
+  description?: string | null;
+  assignedTo: number; // Changed from string to number since that's what DB expects
+  dueDate?: Date | null;
+  listId: number;
+  status: 'todo' | 'in_progress' | 'done' | 'blocked';
+};

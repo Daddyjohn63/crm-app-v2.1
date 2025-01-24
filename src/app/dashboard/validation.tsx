@@ -1,3 +1,4 @@
+import { CardUpdate } from '@/use-cases/types';
 import { sanitizeUserInput } from '@/util/sanitize';
 import { z } from 'zod';
 
@@ -79,3 +80,26 @@ export const cardMoveSchema = z.object({
   destinationListId: z.number(),
   order: z.number().min(0)
 });
+
+export const updateCardSchema = z.object({
+  cardId: z.number({
+    required_error: 'Card ID is required',
+    invalid_type_error: 'Card ID must be a number'
+  }),
+  name: z
+    .string({
+      required_error: 'Name is required'
+    })
+    .min(1, 'Name cannot be empty'),
+  description: z.string().nullable().optional(),
+  assignedTo: z.coerce.number({
+    required_error: 'Card must be assigned to a user',
+    invalid_type_error: 'Invalid user ID'
+  }),
+  dueDate: z.date().nullable().optional(),
+  listId: z.number({
+    required_error: 'List ID is required',
+    invalid_type_error: 'List ID must be a number'
+  }),
+  status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
+}) satisfies z.ZodType<CardUpdate>;

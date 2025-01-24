@@ -60,7 +60,7 @@ async function getProject(boardId: string): Promise<Board> {
     if (isNaN(id)) {
       throw new Error('Invalid project ID');
     }
-
+    //get all the data on the board from the board table in db.
     const project = await getProjectById(id);
 
     if (!project) {
@@ -127,6 +127,7 @@ export default function ProjectPage({ params }: PageProps) {
 }
 
 async function AsyncProjectContent({ boardId }: { boardId: string }) {
+  //get all the data on the board from the board table in db. and deconstruct it into board and user.
   const [board, user] = await Promise.all([
     getProject(boardId),
     getCurrentUserData()
@@ -150,6 +151,7 @@ async function AsyncProjectContent({ boardId }: { boardId: string }) {
   }
 
   return (
+    //pass all the data - board, user, lists, permission - to the project details component. Remember this is the system user.
     <ProjectDetails
       board={board}
       user={user}

@@ -69,7 +69,7 @@ export const CardItem = ({ data, index }: CardItemProps) => {
               </p>
 
               <div className="flex items-center gap-1">
-                <CardModal
+                {/* <CardModal
                   cardId={data.id}
                   data={{
                     id: data.listId,
@@ -80,7 +80,7 @@ export const CardItem = ({ data, index }: CardItemProps) => {
                     boardId: boardId,
                     order: 0
                   }}
-                />
+                /> */}
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>

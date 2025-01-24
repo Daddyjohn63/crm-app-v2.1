@@ -20,7 +20,13 @@ import {
 } from '@/use-cases/projects';
 import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
-import { listReorderSchema, cardReorderSchema } from '../validation';
+import {
+  listReorderSchema,
+  cardReorderSchema,
+  updateCardSchema
+} from '../validation';
+import { CardUpdate } from '@/use-cases/types';
+//import type { CardUpdate } from '@/db/schema/projects';
 
 const projectSchema = z.object({
   name: z.string().min(1),
@@ -122,7 +128,7 @@ export const createCardAction = authenticatedAction
       description: z.string().optional(),
       listId: z.number(),
       boardId: z.number(),
-      assignedTo: z.number().optional(),
+      assignedTo: z.number(),
       dueDate: z.date().optional(),
       status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
     })
@@ -223,15 +229,16 @@ export const deleteCardAction = authenticatedAction
     return await deleteCard(cardId, user);
   });
 
-const updateCardSchema = z.object({
-  cardId: z.number(),
-  name: z.string().min(1),
-  description: z.string().optional(),
-  assignedTo: z.coerce.number().optional(),
-  dueDate: z.date().optional(),
-  listId: z.number(),
-  status: z.enum(['todo', 'in_progress', 'done', 'blocked']).optional()
-});
+// Move schema definition before the action
+// const updateCardSchema = z.object({
+//   cardId: z.number(),
+//   name: z.string().min(1),
+//   description: z.string().nullable().optional(),
+//   assignedTo: z.number(),
+//   dueDate: z.date().nullable().optional(),
+//   listId: z.number(),
+//   status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
+// }) satisfies z.ZodType<CardUpdate>;
 
 export const updateCardAction = authenticatedAction
   .createServerAction()
@@ -241,16 +248,7 @@ export const updateCardAction = authenticatedAction
       key: `${user.id}-update-card`
     });
 
-    const sanitizedInput = {
-      ...input,
-      name: sanitizeUserInput(input.name),
-      description: input.description
-        ? sanitizeUserInput(input.description)
-        : undefined,
-      assignedTo: input.assignedTo?.toString()
-    };
-
-    await projectsDb.updateCard(sanitizedInput);
+    await projectsDb.updateCard(input);
     revalidatePath('/dashboard/projects/[boardId]', 'page');
     return [true, null] as const;
   });
