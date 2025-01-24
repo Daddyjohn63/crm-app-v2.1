@@ -21,6 +21,11 @@ interface CardModalProps {
   data: {
     id: number;
     name: string;
+    description?: string | null;
+    dueDate?: Date | null;
+    status?: 'todo' | 'in_progress' | 'done' | 'blocked';
+    assignedTo?: number;
+    listId?: number;
   };
   cardId?: number;
 }
@@ -66,8 +71,12 @@ export const CardModal = ({ data, cardId }: CardModalProps) => {
           </DialogHeader>
           <CreateEditCardForm
             cardId={cardId}
-            listId={data.id}
+            listId={data.listId || 0}
             listName={data.name}
+            description={data.description || null}
+            dueDate={data.dueDate || null}
+            status={data.status || 'todo'}
+            assignedTo={data.assignedTo || 0}
           />
         </DialogContent>
       </Dialog>

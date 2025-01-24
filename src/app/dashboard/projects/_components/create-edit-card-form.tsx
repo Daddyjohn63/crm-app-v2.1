@@ -66,12 +66,20 @@ interface CreateEditCardFormProps {
   cardId?: number;
   listId: number;
   listName: string;
+  description?: string | null;
+  dueDate?: Date | null;
+  status?: 'todo' | 'in_progress' | 'done' | 'blocked';
+  assignedTo?: number;
 }
 
 export function CreateEditCardForm({
   cardId,
   listId,
-  listName
+  listName,
+  description,
+  dueDate,
+  status,
+  assignedTo
 }: CreateEditCardFormProps) {
   const isEditing = !!cardId;
   const { boardId, setIsOpen } = useCardDialogStore();
