@@ -78,8 +78,8 @@ export function CreateEditCardForm({
   onClose
 }: CreateEditCardFormProps) {
   const isEditing = !!cardData;
-  console.log('CreateEditCardForm - cardData:', cardData);
-  console.log('CreateEditCardForm - isEditing:', isEditing);
+  // console.log('CreateEditCardForm - cardData:', cardData);
+  // console.log('CreateEditCardForm - isEditing:', isEditing);
   const { boardId } = useCardDialogStore();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
