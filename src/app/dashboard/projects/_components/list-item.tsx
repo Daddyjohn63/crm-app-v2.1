@@ -51,8 +51,14 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
             </Droppable>
             <CardModal
               data={{
-                id: data.id,
-                name: data.name
+                ...data.cards[0], // Use first card as template if it exists
+                listId: data.id,
+                id: 0,
+                name: '',
+                description: '',
+                status: 'todo',
+                dueDate: null,
+                assignedTo: 0
               }}
             />
           </div>

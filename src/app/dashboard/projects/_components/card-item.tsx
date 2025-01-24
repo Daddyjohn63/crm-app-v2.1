@@ -32,7 +32,7 @@ const getDisplayStatus = (status: string) => {
 
 export const CardItem = ({ data, index }: CardItemProps) => {
   const boardId = useBoardIdParam();
-  console.log('data from card item', data);
+  // console.log('data from card item', data);
   const [isPressed, setIsPressed] = useState(false);
 
   return (
@@ -67,9 +67,12 @@ export const CardItem = ({ data, index }: CardItemProps) => {
                   ? format(data.dueDate, 'dd/MM/yyyy')
                   : 'No due date'}
               </p>
-
+              <p className="text-xs text-gray-500">
+                <span className="hidden">List ID:</span> {data.listId}
+                <span className="hidden">Card ID:</span> {data.id}
+              </p>
               <div className="flex items-center gap-1">
-                <CardModal cardId={data.id} data={data} />
+                <EditCardModal data={data} cardId={data.id} />
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>

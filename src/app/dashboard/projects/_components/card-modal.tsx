@@ -16,34 +16,34 @@ import { CardForm } from './card-form';
 import { ListWithCards } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
 import { CreateEditCardForm } from './create-edit-card-form';
+import { CardWithProfile } from '@/use-cases/types';
+import { useEffect, useState } from 'react';
 
 interface CardModalProps {
-  data: {
-    id: number;
-    name: string;
-    description?: string | null;
-    dueDate?: Date | null;
-    status?: 'todo' | 'in_progress' | 'done' | 'blocked';
-    assignedTo?: number;
-    listId?: number;
-  };
+  data: CardWithProfile; // Just use CardWithProfile
   cardId?: number;
 }
 
 export const CardModal = ({ data, cardId }: CardModalProps) => {
-  // console.log('data in card modal', data);
-  // console.log('cardId in card modal', cardId);
+  // console.log('CardModal - data:', data);
+  // console.log('CardModal - cardId:', cardId);
   const { isOpen, setIsOpen, openCardDialog } = useCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
+  const [showDialog, setShowDialog] = useState(false);
+  const [mounted, setMounted] = useState(false); // Add mounted state
+
+  // Handle hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleOpen = () => {
     if (!currentBoardId) return;
-
-    openCardDialog({
-      boardId: currentBoardId,
-      cardId: cardId || 0
-    });
+    openCardDialog({ boardId: currentBoardId });
+    setShowDialog(true);
   };
+
+  if (!mounted) return null; // Don't render anything until client-side
 
   return (
     <div>
@@ -62,22 +62,19 @@ export const CardModal = ({ data, cardId }: CardModalProps) => {
         </Button>
       )}
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {cardId ? 'Edit Card' : `Add Card to ${data.name}`}
-            </DialogTitle>
+            <DialogTitle>{cardId ? 'Edit Card' : 'Add Card'}</DialogTitle>
           </DialogHeader>
-          <CreateEditCardForm
-            cardId={cardId}
-            listId={data.listId || 0}
-            listName={data.name}
-            description={data.description || null}
-            dueDate={data.dueDate || null}
-            status={data.status || 'todo'}
-            assignedTo={data.assignedTo || 0}
-          />
+          {showDialog && (
+            <CreateEditCardForm
+              cardData={cardId ? data : undefined}
+              listId={data.listId}
+              listName=""
+              onClose={() => setShowDialog(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

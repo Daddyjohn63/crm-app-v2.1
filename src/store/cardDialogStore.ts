@@ -3,12 +3,10 @@ import { devtools } from 'zustand/middleware';
 
 interface CardDialogStore {
   isOpen: boolean;
-  boardId: number | null;
-  cardId: number | null;
+  boardId: number | undefined;
   setIsOpen: (isOpen: boolean) => void;
   setBoardId: (id: number | null) => void;
-  setCardId: (id: number | null) => void;
-  openCardDialog: (params: { boardId: number; cardId: number }) => void;
+  openCardDialog: (params: { boardId: number }) => void;
   reset: () => void;
 }
 
@@ -17,21 +15,18 @@ export const useCardDialogStore = create<CardDialogStore>()(
     set => ({
       // initial state
       isOpen: false,
-      boardId: null,
-      cardId: null,
+      boardId: undefined,
 
       // setters
       setIsOpen: isOpen => set({ isOpen }, false, 'setIsOpen'),
-      setBoardId: id => set({ boardId: id }, false, 'setBoardId'),
-      setCardId: id => set({ cardId: id }, false, 'setCardId'),
+      setBoardId: id => set({ boardId: id ?? undefined }, false, 'setBoardId'),
 
       // convenience method for opening dialog
-      openCardDialog: ({ boardId, cardId }) =>
+      openCardDialog: ({ boardId }) =>
         set(
           {
             isOpen: true,
-            boardId,
-            cardId
+            boardId
           },
           false,
           'openCardDialog'
@@ -42,8 +37,7 @@ export const useCardDialogStore = create<CardDialogStore>()(
         set(
           {
             isOpen: false,
-            boardId: null,
-            cardId: null
+            boardId: undefined
           },
           false,
           'reset'

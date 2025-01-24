@@ -23,8 +23,6 @@ export default function DeleteCardButton({
   cardId: number;
   boardId: number;
 }) {
-  console.log('DeleteCardButton - cardId:', cardId);
-  console.log('DeleteCardButton - boardId:', boardId);
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const { execute, isPending } = useServerAction(deleteCardAction, {

@@ -43,6 +43,8 @@ import {
 } from '@/components/ui/select';
 import { useCardDialogStore } from '@/store/cardDialogStore';
 import { Card } from '@/db/schema';
+import { CardWithProfile } from '@/use-cases/types';
+// { CardWithProfile } from '@/types';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -63,30 +65,22 @@ type BoardUser = {
 };
 
 interface CreateEditCardFormProps {
-  cardId?: number;
+  cardData?: CardWithProfile;
   listId: number;
   listName: string;
-  description?: string | null;
-  dueDate?: Date | null;
-  status?: 'todo' | 'in_progress' | 'done' | 'blocked';
-  assignedTo?: number;
+  onClose: () => void;
 }
 
 export function CreateEditCardForm({
-  cardId,
+  cardData,
   listId,
   listName,
-  description,
-  dueDate,
-  status,
-  assignedTo
+  onClose
 }: CreateEditCardFormProps) {
-  const isEditing = !!cardId;
-  const { boardId, setIsOpen } = useCardDialogStore();
-
-  if (!boardId) {
-    throw new Error('Board ID is required');
-  }
+  const isEditing = !!cardData;
+  console.log('CreateEditCardForm - cardData:', cardData);
+  console.log('CreateEditCardForm - isEditing:', isEditing);
+  const { boardId } = useCardDialogStore();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
@@ -103,7 +97,7 @@ export function CreateEditCardForm({
             : 'The card has been created successfully.',
           duration: 3000
         });
-        setIsOpen(false);
+        onClose();
       },
       onError(error) {
         toast({
@@ -140,48 +134,14 @@ export function CreateEditCardForm({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: async () => {
-      if (isEditing && cardId) {
-        const result = await fetchCard({ cardId });
-        if (!result || result[1]) {
-          toast({
-            title: 'Error',
-            description: 'Failed to fetch card details',
-            variant: 'destructive'
-          });
-          throw new Error('Failed to fetch card details');
-        }
-        const cardData = result[0] as {
-          name: string;
-          description: string | null;
-          assignedTo: number;
-          dueDate: Date | null;
-          status: 'todo' | 'in_progress' | 'done' | 'blocked';
-        };
-        if (!cardData) {
-          throw new Error('Card not found');
-        }
-        return {
-          name: cardData.name,
-          description: cardData.description || '',
-          assignedTo: cardData.assignedTo
-            ? Number(cardData.assignedTo)
-            : undefined,
-          dueDate: cardData.dueDate ? new Date(cardData.dueDate) : undefined,
-          status: cardData.status || 'todo',
-          boardId,
-          listId: listId!
-        };
-      }
-      return {
-        name: '',
-        description: '',
-        assignedTo: undefined,
-        dueDate: undefined,
-        status: 'todo',
-        boardId,
-        listId: listId!
-      };
+    defaultValues: {
+      name: cardData?.name || '',
+      description: cardData?.description || '',
+      assignedTo: cardData?.assignedTo || undefined,
+      dueDate: cardData?.dueDate ? new Date(cardData.dueDate) : undefined,
+      status: cardData?.status || 'todo',
+      boardId: boardId || undefined,
+      listId
     }
   });
 
@@ -192,33 +152,23 @@ export function CreateEditCardForm({
     }
   };
 
-  const onSubmit = form.handleSubmit(async values => {
-    if (isEditing && cardId) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (isEditing && cardData) {
       await executeAction({
-        cardId,
-        name: values.name,
-        description: values.description || '',
-        assignedTo: values.assignedTo,
-        dueDate: values.dueDate,
-        status: values.status,
-        listId: listId!
+        ...values,
+        cardId: cardData.id
       });
     } else {
-      await executeAction({
-        name: values.name,
-        description: values.description || '',
-        listId: listId!,
-        boardId,
-        assignedTo: values.assignedTo,
-        dueDate: values.dueDate,
-        status: values.status
-      });
+      await executeAction(values);
     }
-  });
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         <FormField
           control={form.control}
           name="name"

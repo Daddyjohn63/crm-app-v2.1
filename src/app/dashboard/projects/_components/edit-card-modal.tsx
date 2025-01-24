@@ -1,54 +1,66 @@
 /**
- * EditCardModal Component
- * Renders a pencil icon that opens a dialog for editing an existing card.
+ * CardModal Component
+ * Renders an "Add Card" button and manages the card creation dialog.
+ * When clicked, it sets up the necessary context (listId and boardId) for the CardForm.
  */
-import { Pencil } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Plus, Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { useEditCardDialogStore } from '@/store/editCardDialogStore';
 import { useCardDialogStore } from '@/store/cardDialogStore';
-import { CardWithProfile } from '@/use-cases/types';
-import { useBoardStore } from '@/store/boardStore';
-import { EditCardForm } from './edit-card-form';
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { CardForm } from './card-form';
+import { ListWithCards } from '@/use-cases/types';
+import { useBoardStore } from '@/store/boardStore';
+import { CreateEditCardForm } from './create-edit-card-form';
+import { CardWithProfile } from '@/use-cases/types';
+import { useEffect, useState } from 'react';
 
-interface EditCardModalProps {
-  cardId: number;
+interface CardModalProps {
+  data: CardWithProfile; // Just use CardWithProfile
+  cardId?: number;
 }
 
-export const EditCardModal = ({ cardId }: EditCardModalProps) => {
-  const { isOpen, setIsOpen, openEditCardDialog } = useEditCardDialogStore();
+export const EditCardModal = ({ data, cardId }: CardModalProps) => {
+  const { isOpen, setIsOpen, openCardDialog } = useCardDialogStore();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
+  const [showDialog, setShowDialog] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const handleEditCard = () => {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleOpen = () => {
     if (!currentBoardId) return;
-
-    openEditCardDialog({
-      cardId,
-      boardId: currentBoardId,
-      listId: 0,
-      listName: ''
-    });
+    openCardDialog({ boardId: currentBoardId });
+    setShowDialog(true);
   };
+
+  if (!mounted) return null;
 
   return (
     <div>
-      <Button onClick={handleEditCard} variant="ghost">
+      <Button onClick={handleOpen} variant="ghost">
         <Pencil className="h-4 w-4 text-green-600 cursor-pointer hover:text-blue-700" />
       </Button>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Card</DialogTitle>
           </DialogHeader>
-          <EditCardForm />
+          {showDialog && (
+            <CreateEditCardForm
+              cardData={data} // Always pass data for editing
+              listId={data.listId}
+              listName=""
+              onClose={() => setShowDialog(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>
