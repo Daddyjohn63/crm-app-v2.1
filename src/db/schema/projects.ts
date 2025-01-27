@@ -250,3 +250,22 @@ export type NewTimeEntry = typeof timeEntries.$inferInsert;
 
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type NewAuditLog = typeof auditLogs.$inferInsert;
+
+export type AddGuestUser = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  permissionLevel: string;
+};
+
+export type BoardCreationandEdit = {
+  name: string;
+  description: string;
+  clientId: number;
+};
+
+export type AddBoardandGuestUser = {
+  board: BoardCreationandEdit;
+  guestUser: AddGuestUser;
+};

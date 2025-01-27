@@ -20,6 +20,7 @@ import {
 } from '@/util/auth-projects';
 import { BoardStoreInitializer } from '../_components/board-store-initializer';
 import { ListWithCards } from '@/use-cases/types';
+import CreateEditBoardButton from '../_components/create-edit-board-button';
 
 interface PageProps {
   params: {
@@ -97,7 +98,10 @@ function ProjectDetails({
         <nav className="flex bg-indigo-900 rounded-lg max-w-7xl">
           <div className="flex justify-between items-center w-full p-2">
             <h1 className="text-3xl font-bold ">{board.name}</h1>
+            <CreateEditBoardButton board={board} />
             {canAccessSettings(permission) && (
+              //this is were I will put the edit board button.
+
               <Settings className="w-6 h-6 cursor-pointer" />
             )}
           </div>
