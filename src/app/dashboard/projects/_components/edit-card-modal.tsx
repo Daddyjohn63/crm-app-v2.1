@@ -4,7 +4,7 @@
  * When clicked, it sets up the necessary context (listId and boardId) for the CardForm.
  */
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,6 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { useCardDialogStore } from '@/store/cardDialogStore';
-import { CardForm } from './card-form';
-import { ListWithCards } from '@/use-cases/types';
 import { useBoardStore } from '@/store/boardStore';
 import { CreateEditCardForm } from './create-edit-card-form';
 import { CardWithProfile } from '@/use-cases/types';
@@ -44,7 +42,11 @@ export const EditCardModal = ({ data, cardId }: CardModalProps) => {
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="ghost">
+      <Button
+        onClick={handleOpen}
+        variant="ghost"
+        className="hover:bg-transparent"
+      >
         <Pencil className="h-4 w-4 text-green-600 cursor-pointer hover:text-blue-700" />
       </Button>
 

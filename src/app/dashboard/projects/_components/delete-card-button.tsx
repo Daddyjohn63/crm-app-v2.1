@@ -46,7 +46,7 @@ export default function DeleteCardButton({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Trash className="w-4 h-4 text-red-500" />
+        <Trash className="w-4 h-4 text-red-500 cursor-pointer hover:text-red-700" />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

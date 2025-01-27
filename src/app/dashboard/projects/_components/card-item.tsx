@@ -1,10 +1,9 @@
-import { Card } from '@/db/schema';
 import { CardWithProfile } from '@/use-cases/types';
 import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
-import { CardModal } from './card-modal';
+
 import { format } from 'date-fns';
-import { Calendar, Pencil, Trash } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import DeleteCardButton from './delete-card-button';
 import { useBoardIdParam } from '@/util/safeparam';
 import { EditCardModal } from './edit-card-modal';
@@ -28,6 +27,21 @@ const getDisplayStatus = (status: string) => {
       return 'Not Started';
     default:
       return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'todo':
+      return 'bg-indigo-500';
+    case 'in_progress':
+      return 'bg-yellow-500';
+    case 'done':
+      return 'bg-green-500';
+    case 'blocked':
+      return 'bg-black';
+    default:
+      return 'bg-indigo-500';
   }
 };
 
@@ -79,7 +93,9 @@ export const CardItem = ({ data, index }: CardItemProps) => {
             </div>
             <Badge
               variant="outline"
-              className="text-xs w-fit bg-indigo-500 text-white"
+              className={`text-xs w-fit ${getStatusColor(
+                data.status
+              )} text-white`}
             >
               {getDisplayStatus(data.status)}
             </Badge>
