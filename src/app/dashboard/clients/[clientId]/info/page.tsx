@@ -3,6 +3,7 @@ import {
   getClientByIdUseCase,
   getServicesByClientIdUseCase
 } from '@/use-cases/clients';
+import { getBoardsByClientId } from '@/data-access/projects';
 import { notFound } from 'next/navigation';
 import { NotFoundError } from '@/app/util';
 import { User } from '@/db/schema/index';
@@ -37,6 +38,9 @@ export default async function ClientInfoPage({
   const { clientId } = params;
   const user = await getCurrentUser();
 
+  const boards = await getBoardsByClientId(parseInt(clientId));
+  console.log('boards', boards);
+
   if (!user) {
     return notFound();
   }
@@ -52,137 +56,191 @@ export default async function ClientInfoPage({
     return (
       <>
         <div className="container mx-auto px-4 sm:px-6 md:px-8 py-9">
-          {/* div grid with two columns 50 50 responsive */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* column 1 */}
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Skeleton for column 1 */}
+                <div className={cn(cardStyles, 'overflow-hidden')}>
+                  <CardHeader>
+                    <Skeleton className="h-8 w-48" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[...Array(8)].map((_, i) => (
+                        <div key={i} className="space-y-2">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-4 w-full" />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between pt-4">
+                      <Skeleton className="h-10 w-24" />
+                      <Skeleton className="h-10 w-24" />
+                    </div>
+                  </CardContent>
+                </div>
 
-            <div className={cn(cardStyles, 'overflow-hidden')}>
-              <CardHeader>
-                <CardTitle>Client Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 text-sm ">
-                  <p className="truncate flex items-center">
-                    <span className=" text-muted-foreground mr-1 flex items-center">
-                      Client name:
-                    </span>
-                    <span className="capitalize">{client.business_name}</span>
-                  </p>
-                  <p className="truncate flex items-center">
-                    <span className=" text-muted-foreground mr-1 flex items-center">
-                      Sales stage:
-                    </span>
-                    <span className="capitalize">
-                      {client.sales_stage.replace(/_/g, ' ')}
-                    </span>
-                  </p>
-                  <p className="flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 flex items-start">
-                      Email:
-                    </span>
-                    <span className="flex items-center">
-                      <span className="flex items-center">
-                        {client.primary_email}
-                        <CopyToClipboardButton
-                          className="text-blue-500 ml-1"
-                          text={client.primary_email}
-                        />
+                {/* Skeleton for column 2 */}
+                <div className={cn(cardStyles, 'overflow-hidden')}>
+                  <CardHeader>
+                    <Skeleton className="h-8 w-48" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {[...Array(4)].map((_, i) => (
+                        <Skeleton key={i} className="h-6 w-24" />
+                      ))}
+                    </div>
+                  </CardContent>
+                  <CardHeader>
+                    <Skeleton className="h-8 w-48" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="space-y-2">
+                          <Skeleton className="h-4 w-full" />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </div>
+              </div>
+            }
+          >
+            {/* Existing grid content */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* column 1 */}
+
+              <div className={cn(cardStyles, 'overflow-hidden')}>
+                <CardHeader>
+                  <CardTitle>Client Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 text-sm ">
+                    <p className="truncate flex items-center">
+                      <span className=" text-muted-foreground mr-1 flex items-center">
+                        Client name:
                       </span>
-                    </span>
-                  </p>
-                  <p className=" flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 flex items-center">
-                      Phone:
-                    </span>
-                    <span className="mt-1">{client.primary_phone}</span>
-                  </p>
-                  <p className="  flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 flex items-center">
-                      Address:
-                    </span>
-                    <span className="mt-1">{client.primary_address}</span>
-                  </p>
-                  <p className="flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 items-center">
-                      Description:
-                    </span>
-                    <span className="mt-1"> {client.business_description}</span>
-                  </p>
-                  <p className=" flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 flex items-center">
-                      Date Onboarded:
-                    </span>
-                    <span className="mt-1">
-                      {client.date_onboarded.toDateString()}
-                    </span>
-                  </p>
-                  <p className=" flex flex-col items-start">
-                    <span className="text-muted-foreground mr-1 flex items-center whitespace-nowrap">
-                      Additional Info:
-                    </span>
-                    <span className="mt-1"> {client.additional_info}</span>
-                  </p>
-                </div>
-
-                <div className="flex justify-between">
-                  <div className="pt-4  ">
-                    <CreateEditClientButton
-                      params={params}
-                      user={user as User}
-                    />
+                      <span className="capitalize">{client.business_name}</span>
+                    </p>
+                    <p className="truncate flex items-center">
+                      <span className=" text-muted-foreground mr-1 flex items-center">
+                        Sales stage:
+                      </span>
+                      <span className="capitalize">
+                        {client.sales_stage.replace(/_/g, ' ')}
+                      </span>
+                    </p>
+                    <p className="flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 flex items-start">
+                        Email:
+                      </span>
+                      <span className="flex items-center">
+                        <span className="flex items-center">
+                          {client.primary_email}
+                          <CopyToClipboardButton
+                            className="text-blue-500 ml-1"
+                            text={client.primary_email}
+                          />
+                        </span>
+                      </span>
+                    </p>
+                    <p className=" flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 flex items-center">
+                        Phone:
+                      </span>
+                      <span className="mt-1">{client.primary_phone}</span>
+                    </p>
+                    <p className="  flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 flex items-center">
+                        Address:
+                      </span>
+                      <span className="mt-1">{client.primary_address}</span>
+                    </p>
+                    <p className="flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 items-center">
+                        Description:
+                      </span>
+                      <span className="mt-1">
+                        {' '}
+                        {client.business_description}
+                      </span>
+                    </p>
+                    <p className=" flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 flex items-center">
+                        Date Onboarded:
+                      </span>
+                      <span className="mt-1">
+                        {client.date_onboarded.toDateString()}
+                      </span>
+                    </p>
+                    <p className=" flex flex-col items-start">
+                      <span className="text-muted-foreground mr-1 flex items-center whitespace-nowrap">
+                        Additional Info:
+                      </span>
+                      <span className="mt-1"> {client.additional_info}</span>
+                    </p>
                   </div>
-                  <div className="  pt-4">
-                    <DeleteClientButton />
+
+                  <div className="flex justify-between">
+                    <div className="pt-4  ">
+                      <CreateEditClientButton
+                        params={params}
+                        user={user as User}
+                      />
+                    </div>
+                    <div className="  pt-4">
+                      <DeleteClientButton />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </div>
+                </CardContent>
+              </div>
 
-            {/* column 2 */}
+              {/* column 2 */}
 
-            <div className={cn(cardStyles, 'overflow-hidden')}>
-              <CardHeader>
-                <CardTitle>
-                  <ClientToServiceButton clientId={parseInt(clientId)} />
-                </CardTitle>
-              </CardHeader>
-              {/* service list here */}
-              <CardContent>
-                {clientServices.length > 0 ? (
-                  <ul className=" flex flex-wrap gap-2">
-                    {clientServices.map(service => (
-                      <li key={service.id}>
-                        <Link href={`/dashboard/services/${service.id}`}>
-                          <Badge className="bg-gray-600 dark:bg-gray-400">
-                            {service.name}
-                          </Badge>
-                        </Link>
-                      </li>
+              <div className={cn(cardStyles, 'overflow-hidden')}>
+                <CardHeader>
+                  <CardTitle>
+                    <ClientToServiceButton clientId={parseInt(clientId)} />
+                  </CardTitle>
+                </CardHeader>
+                {/* service list here */}
+                <CardContent>
+                  {clientServices.length > 0 ? (
+                    <ul className=" flex flex-wrap gap-2">
+                      {clientServices.map(service => (
+                        <li key={service.id}>
+                          <Link href={`/dashboard/services/${service.id}`}>
+                            <Badge className="bg-gray-600 dark:bg-gray-400">
+                              {service.name}
+                            </Badge>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No services assigned to this client.</p>
+                  )}
+                </CardContent>
+                {/* <Separator /> */}
+                <CardHeader>
+                  <CardTitle>Current Projects</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-4">
+                    {boards.map(board => (
+                      <Link href={`/dashboard/projects/${board.id}`}>
+                        <li className="hover:underline pb-2" key={board.id}>
+                          <strong>{board.name}</strong>
+                        </li>
+                      </Link>
                     ))}
                   </ul>
-                ) : (
-                  <p>No services assigned to this client.</p>
-                )}
-              </CardContent>
-              {/* <Separator /> */}
-              <CardHeader>
-                <CardTitle>Reminders Here</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  <li>
-                    <strong>Service 1:</strong> Reminder 1
-                  </li>
-                  <li>
-                    <strong>Service 2:</strong> Reminder 2
-                  </li>
-                  <li>
-                    <strong>Service 3:</strong> Reminder 3
-                  </li>
-                </ul>
-              </CardContent>
+                </CardContent>
+              </div>
             </div>
-          </div>
+          </Suspense>
         </div>
       </>
     );

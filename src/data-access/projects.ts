@@ -163,6 +163,13 @@ export async function deleteBoardPermission(
     );
 }
 
+//get all boards for a client
+export async function getBoardsByClientId(clientId: number) {
+  return await database.query.boards.findMany({
+    where: (board, { eq }) => eq(board.clientId, clientId)
+  });
+}
+
 // Function to get all clients and their project boards for a specific user
 // Returns an array of clients, each containing their basic info and an array of their boards
 export async function getClientBoardsByUserId(
