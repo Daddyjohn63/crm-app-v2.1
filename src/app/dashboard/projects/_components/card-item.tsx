@@ -3,11 +3,16 @@ import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 
 import { format } from 'date-fns';
-import { Calendar } from 'lucide-react';
+import { Calendar, AlertTriangle } from 'lucide-react';
 import DeleteCardButton from './delete-card-button';
 import { useBoardIdParam } from '@/util/safeparam';
 import { EditCardModal } from './edit-card-modal';
 import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 interface CardItemProps {
   data: CardWithProfile;
@@ -45,10 +50,16 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const isCardLate = (card: CardWithProfile): boolean => {
+  if (!card.dueDate || card.status === 'done') return false;
+  return new Date(card.dueDate) < new Date();
+};
+
 export const CardItem = ({ data, index }: CardItemProps) => {
   const boardId = useBoardIdParam();
   // console.log('data from card item', data);
   const [isPressed, setIsPressed] = useState(false);
+  const isLate = isCardLate(data);
 
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
@@ -91,14 +102,26 @@ export const CardItem = ({ data, index }: CardItemProps) => {
                 <DeleteCardButton cardId={data.id} boardId={boardId} />
               </div>
             </div>
-            <Badge
-              variant="outline"
-              className={`text-xs w-fit ${getStatusColor(
-                data.status
-              )} text-white`}
-            >
-              {getDisplayStatus(data.status)}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className={`text-xs w-fit ${getStatusColor(
+                  data.status
+                )} text-white`}
+              >
+                {getDisplayStatus(data.status)}
+              </Badge>
+              {isLate && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <AlertTriangle className="h-4 w-4 text-red-500" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>This card is overdue</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
           </div>
         </div>
       )}

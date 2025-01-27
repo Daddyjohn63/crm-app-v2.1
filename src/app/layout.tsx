@@ -7,6 +7,7 @@ import { Header } from './_header/header';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { getCurrentUser } from '@/lib/session';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,13 +36,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, 'dark')}>
         <NextTopLoader color="#dbb73f" />
-        <div className="flex flex-col w-full">
-          {appConfig.mode === 'live' && <Header />}
-          <div>
-            {children}
-            <Toaster />
+        <TooltipProvider>
+          <div className="flex flex-col w-full">
+            {appConfig.mode === 'live' && <Header />}
+            <div>
+              {children}
+              <Toaster />
+            </div>
           </div>
-        </div>
+        </TooltipProvider>
       </body>
     </html>
   );
