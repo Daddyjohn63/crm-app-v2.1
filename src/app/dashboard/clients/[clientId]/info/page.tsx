@@ -39,7 +39,7 @@ export default async function ClientInfoPage({
   const user = await getCurrentUser();
 
   const boards = await getBoardsByClientId(parseInt(clientId));
-  console.log('boards', boards);
+  // console.log('boards', boards);
 
   if (!user) {
     return notFound();
