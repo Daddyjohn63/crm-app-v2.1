@@ -27,12 +27,31 @@ export type CreateBoardPermissionInput = {
   permissionLevel: BoardPermission;
 };
 
+export type UpdateBoardInput = {
+  name?: string;
+  description?: string;
+};
+
 // Database operations
 export async function insertBoard(
   input: CreateBoardInput,
   trx = database
 ): Promise<Board> {
   const [board] = await trx.insert(boards).values(input).returning();
+  return board;
+}
+
+export async function updateBoard(
+  boardId: number,
+  input: UpdateBoardInput,
+  user: User,
+  trx = database
+): Promise<Board> {
+  const [board] = await trx
+    .update(boards)
+    .set(input)
+    .where(eq(boards.id, boardId))
+    .returning();
   return board;
 }
 

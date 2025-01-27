@@ -25,6 +25,7 @@ import CreateEditBoardButton from '../_components/create-edit-board-button';
 interface PageProps {
   params: {
     boardId: string;
+    user: User;
   };
 }
 
@@ -98,12 +99,21 @@ function ProjectDetails({
         <nav className="flex bg-indigo-900 rounded-lg max-w-7xl">
           <div className="flex justify-between items-center w-full p-2">
             <h1 className="text-3xl font-bold ">{board.name}</h1>
-            <CreateEditBoardButton board={board} />
-            {canAccessSettings(permission) && (
-              //this is were I will put the edit board button.
+            <div className="flex items-center gap-6">
+              {canAccessSettings(permission) && (
+                <CreateEditBoardButton
+                  boardId={board.id.toString()}
+                  boardName={board.name}
+                  boardDescription={board.description}
+                  clientId={board.clientId}
+                />
+              )}
+              {canAccessSettings(permission) && (
+                //this is were I will put the edit board button.
 
-              <Settings className="w-6 h-6 cursor-pointer" />
-            )}
+                <Settings className="w-6 h-6 cursor-pointer" />
+              )}
+            </div>
           </div>
         </nav>
         <div className="space-y-2 overflow-x-auto">
@@ -122,25 +132,32 @@ function ProjectDetails({
 
 export const revalidate = 3600;
 
-export default function ProjectPage({ params }: PageProps) {
+export default async function ProjectPage({ params }: PageProps) {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect('/sign-in');
+  }
+
   return (
     <Suspense fallback={<ProjectSkeleton />}>
-      <AsyncProjectContent boardId={params.boardId} />
+      <AsyncProjectContent boardId={params.boardId} user={user} />
     </Suspense>
   );
 }
 
-async function AsyncProjectContent({ boardId }: { boardId: string }) {
-  //get all the data on the board from the board table in db. and deconstruct it into board and user.
-  const [board, user] = await Promise.all([
-    getProject(boardId),
-    getCurrentUserData()
-  ]);
+async function AsyncProjectContent({
+  boardId,
+  user
+}: {
+  boardId: string;
+  user: User;
+}) {
+  const board = await getProject(boardId);
 
   // First check if user has basic access to this project
   const hasAccess = await checkUserBoardAccess(board.id, user.id);
   if (!hasAccess) {
-    redirect('/sign-in'); // Redirect to sign-in if no access
+    redirect('/sign-in');
   }
 
   // If they have access, get their specific permission level and lists

@@ -31,7 +31,11 @@ import {
 //   getClientsAction
 // } from './actions';
 import { useEffect, useState } from 'react';
-import { createProjectAction, getClientsAction } from '../actions';
+import {
+  createBoardAction,
+  getClientsAction,
+  updateBoardAction
+} from '../actions';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -45,12 +49,29 @@ const formSchema = z.object({
   })
 });
 
-export default function CreateEditBoardForm() {
+export default function CreateEditBoardForm({
+  boardId,
+  boardName,
+  boardDescription,
+  clientId
+}: {
+  boardId?: string;
+  boardName?: string;
+  boardDescription?: string;
+  clientId?: string;
+}) {
   const { setIsOpen } = useBoardOverlayStore();
   const { toast } = useToast();
   const [clients, setClients] = useState<
     Array<{ id: number; business_name: string }>
   >([]);
+  const isEditing = !!boardId;
+
+  useEffect(() => {
+    if (isEditing) {
+      fetchClients();
+    }
+  }, [isEditing]);
 
   const { execute: fetchClients } = useServerAction(getClientsAction, {
     onSuccess({
@@ -70,42 +91,60 @@ export default function CreateEditBoardForm() {
   });
 
   useEffect(() => {
-    fetchClients();
+    if (!boardId) {
+      // Only fetch clients when creating a new board
+      fetchClients();
+    }
   }, [fetchClients]);
 
-  const { execute, isPending } = useServerAction(createProjectAction, {
-    onSuccess() {
-      toast({
-        title: 'Project created',
-        description: 'The project has been created successfully.',
-        duration: 3000
-      });
-      setIsOpen(false);
-    },
-    onError() {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong creating the project.',
-        duration: 3000
-      });
+  const { execute, isPending } = useServerAction(
+    isEditing ? updateBoardAction : createBoardAction,
+    {
+      onSuccess() {
+        toast({
+          title: isEditing ? 'Project updated' : 'Project created',
+          description: isEditing
+            ? 'The project has been updated successfully.'
+            : 'The project has been created successfully.',
+          duration: 3000
+        });
+        setIsOpen(false);
+      },
+      onError() {
+        toast({
+          title: 'Something went wrong',
+          variant: 'destructive',
+          description: `Error ${
+            isEditing ? 'updating' : 'creating'
+          } the project.`,
+          duration: 3000
+        });
+      }
     }
-  });
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      clientId: ''
+      name: boardName || '',
+      description: boardDescription || '',
+      clientId: clientId ? clientId.toString() : ''
     }
   });
 
   const onSubmit = form.handleSubmit(async values => {
-    await execute({
-      ...values,
-      clientId: parseInt(values.clientId)
-    });
+    if (isEditing && boardId) {
+      await execute({
+        boardId: parseInt(boardId),
+        name: values.name,
+        description: values.description
+      });
+    } else {
+      await execute({
+        ...values,
+        clientId: parseInt(values.clientId)
+      });
+    }
   });
 
   return (
@@ -141,31 +180,35 @@ export default function CreateEditBoardForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="clientId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Client *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a client" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {clients.map(client => (
-                    <SelectItem key={client.id} value={client.id.toString()}>
-                      {client.business_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <LoaderButton isLoading={isPending}>Create Project</LoaderButton>
+        {!isEditing && (
+          <FormField
+            control={form.control}
+            name="clientId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Client *</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a client" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {clients.map(client => (
+                      <SelectItem key={client.id} value={client.id.toString()}>
+                        {client.business_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        <LoaderButton isLoading={isPending}>
+          {isEditing ? 'Update Project' : 'Create Project'}
+        </LoaderButton>
       </form>
     </Form>
   );

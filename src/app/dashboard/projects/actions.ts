@@ -34,7 +34,13 @@ const projectSchema = z.object({
   clientId: z.number()
 });
 
-export const createProjectAction = authenticatedAction
+const updateProjectSchema = z.object({
+  boardId: z.number(),
+  name: z.string().min(1),
+  description: z.string().min(1)
+});
+
+export const createBoardAction = authenticatedAction
   .createServerAction()
   .input(projectSchema)
   .handler(
@@ -53,6 +59,18 @@ export const createProjectAction = authenticatedAction
       revalidatePath('/dashboard/projects');
     }
   );
+
+export const updateBoardAction = authenticatedAction
+  .createServerAction()
+  .input(updateProjectSchema)
+  .handler(async ({ input: { boardId, name, description }, ctx: { user } }) => {
+    await rateLimitByKey({
+      key: `${user.id}-update-project`
+    });
+
+    await projectsDb.updateBoard(boardId, { name, description }, user);
+    revalidatePath(`/dashboard/projects/${boardId}`);
+  });
 
 export const getClientsAction = authenticatedAction
   .createServerAction()

@@ -9,10 +9,16 @@ import CreateEditBoardForm from './create-edit-board-form';
 
 interface CreateEditBoardButtonProps {
   boardId: string | null | undefined;
+  boardName: string | null | undefined;
+  boardDescription: string | null | undefined;
+  clientId: number | null | undefined;
 }
 
 export default function CreateEditBoardButton({
-  boardId
+  boardId,
+  boardName,
+  boardDescription,
+  clientId
 }: CreateEditBoardButtonProps) {
   const { openBoardOverlay } = useBoardOverlayStore();
 
@@ -23,14 +29,23 @@ export default function CreateEditBoardButton({
   return (
     <>
       <ZustandInteractiveOverlay
-        title={boardId ? 'Edit Board' : 'Create a Board'}
-        description={boardId ? 'Edit an existing Board' : 'Create a new Board'}
-        form={<CreateEditBoardForm />}
+        title={boardId ? 'Edit Project' : 'Create a Project'}
+        description={
+          boardId ? 'Edit an existing Project' : 'Create a new Project'
+        }
+        form={
+          <CreateEditBoardForm
+            boardId={boardId ?? undefined}
+            boardName={boardName ?? undefined}
+            boardDescription={boardDescription ?? undefined}
+            clientId={clientId ? clientId.toString() : undefined}
+          />
+        }
       />
 
       <Button onClick={handleCreateOrEditBoard} className={btnStyles}>
         <PlusCircle className={btnIconStyles} />
-        {boardId ? 'Edit Board' : 'Create Board'}
+        {boardId ? 'Edit Project' : 'Create Project'}
       </Button>
     </>
   );
