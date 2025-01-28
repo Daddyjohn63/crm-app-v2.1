@@ -23,9 +23,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "public"."role" AS ENUM('admin');
+ CREATE TYPE "public"."role" AS ENUM('admin', 'guest', 'member');
 EXCEPTION
- WHEN duplicate_object THEN null;
+ WHEN duplicate_object THEN 
+   -- If enum exists, add any missing values
+   ALTER TYPE "public"."role" ADD VALUE IF NOT EXISTS 'guest';
+   ALTER TYPE "public"."role" ADD VALUE IF NOT EXISTS 'member';
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
