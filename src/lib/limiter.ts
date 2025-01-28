@@ -59,8 +59,8 @@ export async function rateLimitByIp({
 
 export async function rateLimitByKey({
   key = 'global',
-  limit = 1,
-  window = 10000
+  limit = 3,
+  window = 5000
 }: {
   key?: string;
   limit?: number;

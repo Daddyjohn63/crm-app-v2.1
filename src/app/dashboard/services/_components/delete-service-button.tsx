@@ -15,11 +15,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { DoorOpen, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { useState } from 'react';
 import { useServerAction } from 'zsa-react';
 import { cn } from '@/lib/utils';
-import { useClientIdParam } from '@/util/safeparam';
 import { deleteServiceAction } from '../actions';
 
 export default function DeleteServiceButton() {
@@ -30,20 +29,31 @@ export default function DeleteServiceButton() {
     onSuccess() {
       toast({
         title: 'Success',
-        description: 'You deleted this service.'
+        description: 'You deleted this service.',
+        duration: 2000
       });
+      setIsOpen(false);
     },
     onError() {
       toast({
         title: 'Uh oh',
         variant: 'destructive',
-        description: 'Something went wrong deleting your service.'
+        description: 'Something went wrong deleting your service.',
+        duration: 2000
       });
     }
   });
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={open => {
+        // Prevent closing dialog while delete is in progress
+        if (!isPending) {
+          setIsOpen(open);
+        }
+      }}
+    >
       <AlertDialogTrigger asChild>
         <Button variant={'destructive'} className={cn(btnStyles, 'w-fit')}>
           <Trash className={btnIconStyles} /> Delete Service
@@ -58,11 +68,14 @@ export default function DeleteServiceButton() {
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <LoaderButton
+            variant="destructive"
             isLoading={isPending}
             onClick={() => {
-              execute({ serviceId });
+              if (!isPending) {
+                execute({ serviceId });
+              }
             }}
           >
             Delete Service
