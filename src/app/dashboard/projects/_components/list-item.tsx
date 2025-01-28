@@ -27,7 +27,10 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
           ref={provided.innerRef}
         >
           <div className="w-full rounded-md bg-[#f1f2f4] shadow-md py-1">
-            <div {...provided.dragHandleProps}>
+            <div
+              {...provided.dragHandleProps}
+              className="cursor-grab active:cursor-grabbing"
+            >
               <ListHeader data={data} canUseListForm={canUseListForm} />
             </div>
 
