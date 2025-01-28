@@ -38,55 +38,59 @@ export const ListContainer = ({
   }, [data]);
 
   const onDragEnd = async (result: DropResult) => {
+    console.log('Drag ended with result:', result);
+
     const { destination, source, type } = result;
+    if (!destination) {
+      console.log('No destination, dropping operation');
+      return;
+    }
 
-    if (!destination) return;
-
+    // If dropped in the same position
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) {
+      console.log('Dropped in same position, no action needed');
       return;
     }
 
-    // Moving lists
+    const newOrderedData = [...orderedData];
+
+    // Handle list reordering
     if (type === 'list') {
-      const reorderedLists = reorder(
-        orderedData,
-        source.index,
-        destination.index
-      );
-
-      // Update the order property for each list
-      reorderedLists.forEach((list, idx) => {
-        list.order = idx;
+      console.log('Reordering list');
+      const items = reorder(orderedData, source.index, destination.index);
+      items.forEach((item, idx) => {
+        item.order = idx;
       });
-
-      setOrderedData(reorderedLists);
+      setOrderedData(items);
 
       try {
         await reorderListsAction({
           boardId,
-          items: reorderedLists.map(list => ({
+          items: items.map(list => ({
             id: list.id,
             order: list.order
           }))
         });
       } catch (error) {
         console.error('Failed to reorder lists:', error);
-        setOrderedData(data);
+        setOrderedData(orderedData);
       }
       return;
     }
 
-    // Moving cards
-    const newOrderedData = [...orderedData];
+    // Find the source and destination lists
     const sourceList = newOrderedData.find(
-      list => list.id.toString() === source.droppableId
+      list => list.id === parseInt(source.droppableId)
     );
     const destList = newOrderedData.find(
-      list => list.id.toString() === destination.droppableId
+      list => list.id === parseInt(destination.droppableId)
     );
+
+    console.log('Source list:', sourceList);
+    console.log('Destination list:', destList);
 
     if (!sourceList || !destList) {
       console.error('Source or destination list not found');
@@ -98,6 +102,7 @@ export const ListContainer = ({
     if (!destList.cards) destList.cards = [];
 
     if (source.droppableId === destination.droppableId) {
+      console.log('Moving within same list');
       // Moving within the same list
       const reorderedCards = reorder(
         sourceList.cards,
@@ -123,11 +128,14 @@ export const ListContainer = ({
         });
       } catch (error) {
         console.error('Failed to reorder cards:', error);
-        setOrderedData(data);
+        setOrderedData(orderedData);
       }
     } else {
+      console.log('Moving between lists');
       // Moving between lists
       const [movedCard] = sourceList.cards.splice(source.index, 1);
+      console.log('Moved card:', movedCard);
+
       movedCard.listId = destList.id;
       destList.cards.splice(destination.index, 0, movedCard);
 
@@ -142,6 +150,19 @@ export const ListContainer = ({
       setOrderedData(newOrderedData);
 
       try {
+        console.log('Sending update to server with cards:', [
+          ...sourceList.cards.map(card => ({
+            id: card.id,
+            order: card.order,
+            listId: sourceList.id
+          })),
+          ...destList.cards.map(card => ({
+            id: card.id,
+            order: card.order,
+            listId: destList.id
+          }))
+        ]);
+
         await reorderCardsAction({
           listId: sourceList.id,
           cards: [
@@ -159,7 +180,7 @@ export const ListContainer = ({
         });
       } catch (error) {
         console.error('Failed to move card between lists:', error);
-        setOrderedData(data);
+        setOrderedData(orderedData);
       }
     }
   };
