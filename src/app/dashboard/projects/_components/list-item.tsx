@@ -26,10 +26,10 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
           {...provided.draggableProps}
           ref={provided.innerRef}
         >
-          <div className="w-full rounded-md bg-[#f1f2f4] shadow-md py-1">
+          <div className="w-full rounded-md bg-[#f1f2f4] shadow-md py-1 flex flex-col max-h-[calc(100vh-200px)]">
             <div
               {...provided.dragHandleProps}
-              className="cursor-grab active:cursor-grabbing"
+              className="cursor-grab active:cursor-grabbing flex-shrink-0"
             >
               <ListHeader data={data} canUseListForm={canUseListForm} />
             </div>
@@ -40,7 +40,7 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={cn(
-                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2 min-h-[20px] overflow-y-auto',
+                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2 min-h-[20px] overflow-y-auto flex-1',
                     data.cards.length > 0 ? 'mt-2' : 'mt-0',
                     snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
                   )}
@@ -52,18 +52,20 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                 </ol>
               )}
             </Droppable>
-            <CardModal
-              data={{
-                ...data.cards[0], // Use first card as template if it exists
-                listId: data.id,
-                id: 0,
-                name: '',
-                description: '',
-                status: 'todo',
-                dueDate: null,
-                assignedTo: 0
-              }}
-            />
+            <div className="flex-shrink-0">
+              <CardModal
+                data={{
+                  ...data.cards[0],
+                  listId: data.id,
+                  id: 0,
+                  name: '',
+                  description: '',
+                  status: 'todo',
+                  dueDate: null,
+                  assignedTo: 0
+                }}
+              />
+            </div>
           </div>
         </li>
       )}
