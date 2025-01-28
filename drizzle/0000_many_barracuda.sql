@@ -24,6 +24,8 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  CREATE TYPE "public"."role" AS ENUM('admin', 'guest', 'member');
+EXCEPTION
+ WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
