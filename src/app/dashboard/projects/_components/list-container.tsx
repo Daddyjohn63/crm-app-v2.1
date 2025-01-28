@@ -34,11 +34,12 @@ export const ListContainer = ({
   const [orderedData, setOrderedData] = useState<ListWithCards[]>(data);
 
   useEffect(() => {
+    console.log('Data prop updated:', data);
     setOrderedData(data);
   }, [data]);
 
   const onDragEnd = async (result: DropResult) => {
-    console.log('Drag ended with result:', result);
+    console.log('Starting drag end with orderedData:', orderedData);
 
     const { destination, source, type } = result;
     if (!destination) {
@@ -56,6 +57,7 @@ export const ListContainer = ({
     }
 
     const newOrderedData = [...orderedData];
+    console.log('Created newOrderedData copy:', newOrderedData);
 
     // Handle list reordering
     if (type === 'list') {
@@ -102,7 +104,7 @@ export const ListContainer = ({
     if (!destList.cards) destList.cards = [];
 
     if (source.droppableId === destination.droppableId) {
-      console.log('Moving within same list');
+      console.log('Before same-list reorder:', newOrderedData);
       // Moving within the same list
       const reorderedCards = reorder(
         sourceList.cards,
@@ -116,6 +118,7 @@ export const ListContainer = ({
 
       sourceList.cards = reorderedCards;
       setOrderedData(newOrderedData);
+      console.log('After same-list reorder:', newOrderedData);
 
       try {
         await reorderCardsAction({
@@ -131,7 +134,7 @@ export const ListContainer = ({
         setOrderedData(orderedData);
       }
     } else {
-      console.log('Moving between lists');
+      console.log('Before between-lists move:', newOrderedData);
       // Moving between lists
       const [movedCard] = sourceList.cards.splice(source.index, 1);
       console.log('Moved card:', movedCard);
@@ -148,6 +151,7 @@ export const ListContainer = ({
       });
 
       setOrderedData(newOrderedData);
+      console.log('After between-lists move:', newOrderedData);
 
       try {
         console.log('Sending update to server with cards:', [
@@ -184,6 +188,8 @@ export const ListContainer = ({
       }
     }
   };
+
+  console.log('Rendering with orderedData:', orderedData);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
