@@ -78,11 +78,11 @@ export const EditCardForm = ({}: EditCardFormProps) => {
         try {
           const [result] = await getCardAction({ cardId });
           if (result) {
-            const assignedUser = result.assignedTo
+            const assignedUser = result[0]?.assignedTo
               ? { displayName: null }
               : null;
             setCardData({
-              ...result,
+              ...result[0],
               assignedUserProfile: assignedUser
             } as CardWithProfile);
           }
@@ -189,9 +189,9 @@ export const EditCardForm = ({}: EditCardFormProps) => {
       cardId,
       name: values.name,
       description: values.description,
-      assignedTo: values.assignedTo,
+      assignedTo: values.assignedTo ? parseInt(values.assignedTo) : 0,
       dueDate: values.dueDate,
-      status: values.status,
+      status: values.status || 'todo',
       listId: cardData.listId
     });
     setIsOpen(false);
@@ -204,60 +204,6 @@ export const EditCardForm = ({}: EditCardFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        {/* <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Card Name *</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter Card Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        {/* <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Enter description"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        {/* <FormField
-          control={form.control}
-          name="assignedTo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Assigned To</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a user" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {boardUsers.map(user => (
-                    <SelectItem key={user.id} value={user.id.toString()}>
-                      {user.displayName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
         <FormField
           control={form.control}
           name="dueDate"
@@ -320,29 +266,6 @@ export const EditCardForm = ({}: EditCardFormProps) => {
             </FormItem>
           )}
         />
-        {/* <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="todo">To Do</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="done">Done</SelectItem>
-                  <SelectItem value="blocked">Blocked</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
 
         <LoaderButton type="submit" isLoading={isPending}>
           Update Card

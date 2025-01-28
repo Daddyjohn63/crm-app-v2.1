@@ -230,8 +230,11 @@ export default async function ClientInfoPage({
                 <CardContent>
                   <ul className="space-y-4">
                     {boards.map(board => (
-                      <Link href={`/dashboard/projects/${board.id}`}>
-                        <li className="hover:underline pb-2" key={board.id}>
+                      <Link
+                        key={board.id}
+                        href={`/dashboard/projects/${board.id}`}
+                      >
+                        <li className="hover:underline pb-2">
                           <strong>{board.name}</strong>
                         </li>
                       </Link>

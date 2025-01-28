@@ -67,11 +67,11 @@ export default function CreateEditBoardForm({
   >([]);
   const isEditing = !!boardId;
 
-  useEffect(() => {
-    if (isEditing) {
-      fetchClients();
-    }
-  }, [isEditing]);
+  // useEffect(() => {
+  //   if (isEditing) {
+  //     fetchClients();
+  //   }
+  // }, [isEditing]);
 
   const { execute: fetchClients } = useServerAction(getClientsAction, {
     onSuccess({
@@ -91,11 +91,10 @@ export default function CreateEditBoardForm({
   });
 
   useEffect(() => {
-    if (!boardId) {
-      // Only fetch clients when creating a new board
+    if (!boardId || isEditing) {
       fetchClients();
     }
-  }, [fetchClients]);
+  }, [boardId, isEditing, fetchClients]);
 
   const { execute, isPending } = useServerAction(
     isEditing ? updateBoardAction : createBoardAction,

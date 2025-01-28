@@ -43,7 +43,7 @@ export const ListHeader = ({
   const { toast } = useToast();
   const currentBoardId = useBoardStore(state => state.currentBoardId);
   // Get the card dialog controls from Zustand store
-  const { setIsOpen, setListId, setBoardId } = useCardDialogStore();
+  const { setIsOpen, setBoardId } = useCardDialogStore();
 
   //console.log('currentBoardId', currentBoardId);
   const [title, setTitle] = useState(data.name);
@@ -240,7 +240,7 @@ export const ListHeader = ({
     }
 
     // Set the IDs in the card dialog store and the card dialog is opened. making sure we have the ids before opening the dialog.
-    setListId(data.id);
+    //setListId(data.id);
     setBoardId(currentBoardId);
     setIsOpen(true);
   };
