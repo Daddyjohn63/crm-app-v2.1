@@ -40,7 +40,7 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={cn(
-                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2 min-h-[20px] overflow-y-auto flex-1',
+                    'mx-1 px-1 py-0.5 flex flex-col gap-y-2 min-h-[20px] overflow-y-auto overflow-x-hidden flex-1',
                     data.cards.length > 0 ? 'mt-2' : 'mt-0',
                     snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
                   )}
