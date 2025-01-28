@@ -83,7 +83,6 @@ export function AddServiceToClientForm() {
     }
   }, [clientId, fetchServices, fetchClientServices]);
 
-  //set the default values for the form based on the services and the client services.
   useEffect(() => {
     if (services && clientServices) {
       const defaultServices = services.reduce((acc, service) => {
@@ -94,6 +93,11 @@ export function AddServiceToClientForm() {
       form.reset({ services: defaultServices });
     }
   }, [services, clientServices, form]);
+
+  // Move the check here, after all hooks
+  if (!services || services.length === 0) {
+    return <div>You have no services to allocate</div>;
+  }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const selectedServiceIds = Object.entries(data.services)

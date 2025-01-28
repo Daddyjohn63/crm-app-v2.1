@@ -49,13 +49,13 @@ export default async function DashboardPage({
   if (!hasClients) {
     return (
       <PageHeader>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 ">
           <h1
             className={`${pageTitleStyles} text-2xl sm:text-3xl md:text-4xl pb-4`}
           >
             Browse Clients
           </h1>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between ">
             <form
               key={search}
               action={async (formData: FormData) => {

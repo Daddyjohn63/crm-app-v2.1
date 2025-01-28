@@ -39,7 +39,7 @@ export function ClientCard({
         <div className="space-y-1 text-sm ">
           <p className="truncate flex items-center">
             <span className=" text-muted-foreground mr-1 flex items-center">
-              <ClipboardCheck className="w-4 h-4 text-blue-500 mr-2" />
+              <ClipboardCheck className="w-4 h-4 text-primary mr-2" />
               Sales Stage:
             </span>
             <span className="capitalize">
@@ -48,18 +48,18 @@ export function ClientCard({
           </p>
           <p className="truncate flex items-center">
             <span className="text-muted-foreground mr-1 flex items-center">
-              <Mail className="w-4 h-4 text-blue-500 mr-2" />
+              <Mail className="w-4 h-4 text-primary mr-2" />
               Email:
             </span>
             {client.primary_email}
             <CopyToClipboardButton
-              className="text-blue-500"
+              className="text-primary"
               text={client.primary_email}
             />
           </p>
           <p className="truncate flex items-center">
             <span className="text-muted-foreground mr-1 flex items-center">
-              <Phone className="w-4 h-4 text-blue-500 mr-2" />
+              <Phone className="w-4 h-4 text-primary mr-2" />
               Phone:
             </span>
             {client.primary_phone}

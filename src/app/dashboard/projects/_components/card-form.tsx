@@ -62,8 +62,11 @@ const formSchema = z.object({
   status: z.enum(['todo', 'in_progress', 'done', 'blocked'])
 });
 
-export const CardForm = () => {
-  const { listId, boardId, setIsOpen } = useCardDialogStore();
+export const CardForm = (
+  { listId }: { listId: number },
+  onClose: () => void
+) => {
+  const { boardId, setIsOpen } = useCardDialogStore();
   const [boardUsers, setBoardUsers] = useState<BoardUser[]>([]);
   const { toast } = useToast();
 
@@ -130,7 +133,7 @@ export const CardForm = () => {
       description: values.description,
       listId,
       boardId,
-      assignedTo: values.assignedTo,
+      assignedTo: values.assignedTo || 0,
       dueDate: values.dueDate,
       status: values.status
     });

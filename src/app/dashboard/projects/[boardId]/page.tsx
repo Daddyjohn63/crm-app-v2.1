@@ -21,6 +21,11 @@ import {
 import { BoardStoreInitializer } from '../_components/board-store-initializer';
 import { ListWithCards } from '@/use-cases/types';
 import CreateEditBoardButton from '../_components/create-edit-board-button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 interface PageProps {
   params: {
@@ -96,7 +101,7 @@ function ProjectDetails({
     <>
       <BoardStoreInitializer boardId={board.id} />
       <div className="pt-8 space-y-6 ml-4">
-        <nav className="flex bg-indigo-900 rounded-lg max-w-7xl">
+        <nav className="flex bg-backgroundMuted  rounded-lg max-w-7xl">
           <div className="flex justify-between items-center w-full p-2">
             <h1 className="text-3xl font-bold ">{board.name}</h1>
             <div className="flex items-center gap-6">
@@ -110,8 +115,17 @@ function ProjectDetails({
               )}
               {canAccessSettings(permission) && (
                 //this is were I will put the edit board button.
-
-                <Settings className="w-6 h-6 cursor-pointer" />
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Settings className="w-6 h-6 cursor-pointer" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      Functionality Coming Soon to be able to invite clients to
+                      edit or view the board
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               )}
             </div>
           </div>

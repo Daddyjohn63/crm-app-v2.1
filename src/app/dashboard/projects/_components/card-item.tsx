@@ -30,6 +30,8 @@ const getDisplayStatus = (status: string) => {
   switch (status) {
     case 'todo':
       return 'Not Started';
+    case 'done':
+      return 'Completed';
     default:
       return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
@@ -87,16 +89,16 @@ export const CardItem = ({ data, index }: CardItemProps) => {
               {data.description}
             </div>
             <div className="flex items-center justify-between gap-2">
-              <p className="flex items-center gap-2">
+              <p className="flex items-center gap-2 text-xs">
                 <Calendar className="w-4 h-4 text-indigo-500" />
                 {data.dueDate
                   ? format(data.dueDate, 'dd/MM/yyyy')
                   : 'No due date'}
               </p>
-              <p className="text-xs text-gray-500">
+              {/* <p className="text-xs text-gray-500">
                 <span className="hidden">List ID:</span> {data.listId}
                 <span className="hidden">Card ID:</span> {data.id}
-              </p>
+              </p> */}
               <div className="flex items-center gap-1">
                 <EditCardModal data={data} cardId={data.id} />
                 <DeleteCardButton cardId={data.id} boardId={boardId} />

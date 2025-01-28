@@ -18,17 +18,17 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
       {!isLandingPage && isAuthenticated && (
         <div className="hidden md:flex items-center gap-2">
           <Button
-            variant={'link'}
+            variant={'navlink'}
             asChild
             className="flex items-center justify-center gap-2"
           >
-            <Link href={'/dashboard'}>
+            <Link href={'/dashboard'} className="text-black">
               <UsersIcon className="w-4 h-4" /> Your Clients
             </Link>
           </Button>
 
           <Button
-            variant={'link'}
+            variant={'navlink'}
             asChild
             className="flex items-center justify-center gap-2"
           >
@@ -38,7 +38,7 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
           </Button>
 
           <Button
-            variant={'link'}
+            variant={'navlink'}
             asChild
             className="flex items-center justify-center gap-2"
           >
@@ -51,11 +51,11 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
 
       {isLandingPage && !isAuthenticated && (
         <div className="hidden md:flex gap-4">
-          <Button variant={'link'} asChild>
+          <Button variant={'navlink'} asChild>
             <Link href="/#features">Features</Link>
           </Button>
 
-          <Button variant={'link'} asChild>
+          <Button variant={'navlink'} asChild>
             <Link href="/#pricing">Pricing</Link>
           </Button>
         </div>

@@ -30,14 +30,14 @@ export default function DeleteServiceButton() {
     onSuccess() {
       toast({
         title: 'Success',
-        description: 'You deleted this client.'
+        description: 'You deleted this service.'
       });
     },
     onError() {
       toast({
         title: 'Uh oh',
         variant: 'destructive',
-        description: 'Something went wrong deleting your client.'
+        description: 'Something went wrong deleting your service.'
       });
     }
   });

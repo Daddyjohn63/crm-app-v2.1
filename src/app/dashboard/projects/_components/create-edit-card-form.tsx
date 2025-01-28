@@ -294,7 +294,7 @@ export function CreateEditCardForm({
                 <SelectContent>
                   <SelectItem value="todo">Not Started</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="done">Done</SelectItem>
+                  <SelectItem value="done">Completed</SelectItem>
                   <SelectItem value="blocked">Blocked</SelectItem>
                 </SelectContent>
               </Select>
