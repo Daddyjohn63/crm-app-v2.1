@@ -4,7 +4,6 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-ALTER TYPE "role" ADD VALUE 'guest';--> statement-breakpoint
 ALTER TABLE "cards" ADD COLUMN "status" "task_status" NOT NULL;--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "cards_list_id_idx" ON "cards" USING btree ("list_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "cards_assigned_to_idx" ON "cards" USING btree ("assigned_to");--> statement-breakpoint
