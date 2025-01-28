@@ -20,9 +20,12 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
 
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
-      {provided => (
+      {(provided, snapshot) => (
         <li
-          className="shrink-0 h-full w-[272px] select-none"
+          className={cn(
+            'shrink-0 h-full w-[272px] select-none',
+            snapshot.isDragging && 'opacity-70'
+          )}
           {...provided.draggableProps}
           ref={provided.innerRef}
         >

@@ -8,6 +8,7 @@ import { ListItem } from './list-item';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { reorderListsAction, reorderCardsAction } from '../actions';
 import { ListWithCards } from '@/use-cases/types';
+import { cn } from '@/lib/utils';
 
 interface ListContainerProps {
   boardId: number;
@@ -32,13 +33,20 @@ export const ListContainer = ({
   canUseListForm
 }: ListContainerProps) => {
   const [orderedData, setOrderedData] = useState<ListWithCards[]>(data);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    console.log('Data prop updated:', data);
-    setOrderedData(data);
-  }, [data]);
+    if (!isDragging) {
+      setOrderedData(data);
+    }
+  }, [data, isDragging]);
+
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
 
   const onDragEnd = async (result: DropResult) => {
+    setIsDragging(false);
     console.log('Starting drag end with orderedData:', orderedData);
 
     const { destination, source, type } = result;
@@ -192,13 +200,16 @@ export const ListContainer = ({
   console.log('Rendering with orderedData:', orderedData);
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <Droppable droppableId="lists" type="list" direction="horizontal">
-        {provided => (
+        {(provided, snapshot) => (
           <ol
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className="flex gap-x-3 h-full"
+            className={cn(
+              'flex gap-x-3 h-full',
+              snapshot.isDraggingOver && 'bg-neutral-50'
+            )}
           >
             {orderedData.map((list, index) => (
               <ListItem

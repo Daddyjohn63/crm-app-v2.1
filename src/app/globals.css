@@ -94,3 +94,14 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+/* Add this to your global CSS */
+.placeholder {
+  transition: all 0.2s ease;
+}
+
+[data-rbd-placeholder-context-id] {
+  opacity: 1 !important;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
