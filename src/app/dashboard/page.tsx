@@ -188,6 +188,7 @@ async function ClientList({
     stage && stage !== SALES_STAGE_FILTER_OPTIONS.ALL ? stage : undefined
   );
   //console.log('CLIENTS-LIST-DATA', data);
+  //console.log('CLIENTS-LIST-DATA', data);
 
   if (data.length === 0) {
     return (
