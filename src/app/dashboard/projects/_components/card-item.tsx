@@ -1,6 +1,7 @@
 import { CardWithProfile } from '@/use-cases/types';
 import { useState } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
+import { cn } from '@/lib/utils';
 
 import { format } from 'date-fns';
 import { Calendar, AlertTriangle } from 'lucide-react';
@@ -65,18 +66,17 @@ export const CardItem = ({ data, index }: CardItemProps) => {
 
   return (
     <Draggable draggableId={data.id.toString()} index={index}>
-      {provided => (
+      {(provided, snapshot) => (
         <div
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          role="button"
-          onMouseDown={() => setIsPressed(true)}
-          onMouseUp={() => setIsPressed(false)}
-          onMouseLeave={() => setIsPressed(false)}
-          className={`border-2 border-transparent hover:border-black py-2 px-3 text-sm text-black rounded-md shadow-sm ${
-            isPressed ? 'bg-slate-500' : 'bg-white'
-          }`}
+          className={cn(
+            'border-2 border-transparent hover:border-black py-2 px-3 text-sm bg-white text-black rounded-md shadow-sm',
+            snapshot.isDragging && 'card-dragging opacity-50',
+            snapshot.isDragging && 'rotate-2'
+          )}
+          onClick={e => e.stopPropagation()}
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">

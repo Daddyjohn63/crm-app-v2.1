@@ -33,6 +33,7 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
             <div
               {...provided.dragHandleProps}
               className="cursor-grab active:cursor-grabbing flex-shrink-0"
+              onClick={e => e.stopPropagation()}
             >
               <ListHeader data={data} canUseListForm={canUseListForm} />
             </div>
@@ -47,6 +48,7 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                     data.cards.length > 0 ? 'mt-2' : 'mt-0',
                     snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
                   )}
+                  onClick={e => e.stopPropagation()}
                 >
                   {data.cards.map((card: CardWithProfile, index: number) => (
                     <CardItem key={card.id} data={card} index={index} />

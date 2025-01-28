@@ -105,3 +105,19 @@ body,
   background: rgba(0, 0, 0, 0.1);
   border-radius: 4px;
 }
+
+[data-rbd-draggable-context-id] {
+  user-select: none;
+}
+
+[data-rbd-droppable-context-id] {
+  min-height: 50px;
+}
+
+.card-dragging {
+  pointer-events: auto !important;
+}
+
+.list-dragging * {
+  pointer-events: none;
+}
