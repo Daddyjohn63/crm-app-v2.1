@@ -26,6 +26,8 @@ import {
   updateCardSchema
 } from '../validation';
 import { CardUpdate } from '@/use-cases/types';
+import { deleteBoard } from '@/data-access/projects';
+import { redirect } from 'next/navigation';
 //import type { CardUpdate } from '@/db/schema/projects';
 
 const projectSchema = z.object({
@@ -70,6 +72,15 @@ export const updateBoardAction = authenticatedAction
 
     await projectsDb.updateBoard(boardId, { name, description }, user);
     revalidatePath(`/dashboard/projects/${boardId}`);
+  });
+
+export const deleteBoardAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ boardId: z.number() }))
+  .handler(async ({ input: { boardId }, ctx: { user } }) => {
+    await deleteBoard(boardId, user);
+    revalidatePath('/dashboard/projects');
+    redirect('/dashboard/projects');
   });
 
 export const getClientsAction = authenticatedAction

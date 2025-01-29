@@ -26,6 +26,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import DeleteBoardButton from '../_components/delete-board-button';
 
 interface PageProps {
   params: {
@@ -105,6 +106,10 @@ function ProjectDetails({
           <div className="flex justify-between items-center w-full p-2">
             <h1 className="text-3xl font-bold ">{board.name}</h1>
             <div className="flex items-center gap-6">
+              {canAccessSettings(permission) && (
+                <DeleteBoardButton boardId={board.id} />
+              )}
+
               {canAccessSettings(permission) && (
                 <CreateEditBoardButton
                   boardId={board.id.toString()}

@@ -55,6 +55,14 @@ export async function updateBoard(
   return board;
 }
 
+export async function deleteBoard(
+  boardId: number,
+  user: User,
+  trx = database
+): Promise<void> {
+  await trx.delete(boards).where(eq(boards.id, boardId));
+}
+
 export async function insertBoardPermission(
   input: CreateBoardPermissionInput,
   trx = database
