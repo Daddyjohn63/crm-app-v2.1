@@ -29,7 +29,7 @@ export default function CreateEditBoardButton({
   return (
     <>
       <ZustandInteractiveOverlay
-        title={boardId ? 'Edit Project' : 'Create a Project'}
+        title={boardId ? 'Edit Your Project' : 'Create a Project'}
         description={
           boardId ? 'Edit an existing Project' : 'Create a new Project'
         }
