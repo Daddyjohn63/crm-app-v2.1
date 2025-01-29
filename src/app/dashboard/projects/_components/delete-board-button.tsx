@@ -64,7 +64,7 @@ export default function DeleteBoardButton({ boardId }: { boardId: number }) {
               execute({ boardId });
             }}
           >
-            Delete Board
+            Delete Project
           </LoaderButton>
         </AlertDialogFooter>
       </AlertDialogContent>

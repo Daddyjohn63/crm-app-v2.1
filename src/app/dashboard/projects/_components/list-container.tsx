@@ -208,7 +208,7 @@ export const ListContainer = ({
             ref={provided.innerRef}
             className={cn(
               'flex gap-x-3 h-full',
-              snapshot.isDraggingOver && 'bg-neutral-50'
+              snapshot.isDraggingOver && 'bg-blue-300 rounded-md'
             )}
           >
             {orderedData.map((list, index) => (
