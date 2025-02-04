@@ -77,10 +77,12 @@ export const Sidebar = ({
 
   return (
     <aside className="flex flex-col w-64 h-[calc(100vh-65px)] overflow-hidden">
-      <div className="font-medium flex items-center mt-8 mb-1 py-2">
-        <span className="">Projects by Client</span>
+      <div className="font-medium flex items-center mt-7 mb-1 py-2">
+        <span className="text-xl text-muted-foreground">
+          Projects by Client
+        </span>
       </div>
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
         <Accordion
           type="multiple"
           defaultValue={defaultAccordionValue}
@@ -90,16 +92,18 @@ export const Sidebar = ({
             <AccordionItem
               key={client.clientId}
               value={client.clientId.toString()}
-              className="overflow-hidden"
+              className="overflow-hidden mr-2"
             >
               <AccordionTrigger
                 className="hover:no-underline"
                 onClick={() => onExpand(client.clientId.toString())}
               >
-                {client.clientName}
+                <p className="text-sm font-medium truncate">
+                  {client.clientName}
+                </p>
               </AccordionTrigger>
-              <AccordionContent className="overflow-hidden ">
-                <div className="flex flex-col space-y-1 ">
+              <AccordionContent className="overflow-hidden">
+                <div className="flex flex-col space-y-1">
                   {client.boards.length > 0 ? (
                     <div className="pl-2 space-y-1">
                       {client.boards.map((board, index) => (
@@ -107,7 +111,7 @@ export const Sidebar = ({
                           {index > 0 && <Separator className="my-1" />}
                           <Link
                             href={`/dashboard/projects/${board.id}`}
-                            className={`block py-1 px-2 text-sm transition-colors
+                            className={`block py-1 px-2 text-sm transition-colors truncate
                               ${
                                 pathname === `/dashboard/projects/${board.id}`
                                   ? 'bg-primary text-white rounded-md py-2 px-2'

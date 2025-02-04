@@ -212,7 +212,7 @@ export default async function ClientInfoPage({
                       {clientServices.map(service => (
                         <li key={service.id}>
                           <Link href={`/dashboard/services/${service.id}`}>
-                            <Badge className="bg-primary py-1 px-2">
+                            <Badge className="bg-primary py-1 px-2 bg-gray-600 dark:bg-gray-400">
                               {service.name}
                             </Badge>
                           </Link>

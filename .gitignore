@@ -40,3 +40,13 @@ next-env.d.ts
 NOTES.md
 
 InterviewQuestions.md
+
+# seed files
+src/db/seed.ts
+src/db/seed-clients.ts
+src/db/seed-services.ts
+src/db/seed-contacts.ts
+src/db/seed-documents.ts
+src/db/seed-posts.ts
+src/db/seed-notifications.ts
+src/db/seed-subscriptions.ts
