@@ -208,7 +208,7 @@ export default async function ClientInfoPage({
                 {/* service list here */}
                 <CardContent>
                   {clientServices.length > 0 ? (
-                    <ul className=" flex flex-wrap gap-2">
+                    <ul className=" flex flex-wrap gap-2 mt-3">
                       {clientServices.map(service => (
                         <li key={service.id}>
                           <Link href={`/dashboard/services/${service.id}`}>
@@ -234,7 +234,7 @@ export default async function ClientInfoPage({
                         key={board.id}
                         href={`/dashboard/projects/${board.id}`}
                       >
-                        <li className="hover:underline pb-2">
+                        <li className=" text-muted-foreground hover:underline pb-2">
                           <strong>{board.name}</strong>
                         </li>
                       </Link>

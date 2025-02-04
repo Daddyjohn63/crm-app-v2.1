@@ -10,8 +10,8 @@ export const allowedUsers = [
   'johnspaul63@gmail.com'
 ];
 export const bannedUsers = ['none'];
-export const applicationName = 'CAPLT';
-export const companyName = 'CAPLT';
+export const applicationName = 'GigCanvas';
+export const companyName = 'GigCanvas';
 
 export const MAX_UPLOAD_IMAGE_SIZE_IN_MB = 5;
 export const MAX_UPLOAD_IMAGE_SIZE = 1024 * 1024 * MAX_UPLOAD_IMAGE_SIZE_IN_MB;

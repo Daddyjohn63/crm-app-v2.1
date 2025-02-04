@@ -8,13 +8,14 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { getCurrentUser } from '@/lib/session';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Footer } from '@/components/footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'CAPLT',
+  title: 'GigCanvas',
   description:
-    'CAPLT is a CRM, Project Management, and Task Management tool for small businesses.',
+    'GigCanvas is a Clinet Management, Project Management, and Task Management tool for small businesses.',
   robots: {
     index: false,
     follow: false,
@@ -43,6 +44,7 @@ export default function RootLayout({
               {children}
               <Toaster />
             </div>
+            <Footer />
           </div>
         </TooltipProvider>
       </body>

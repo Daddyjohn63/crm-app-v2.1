@@ -15,7 +15,7 @@ export async function createBoard(
   input: CreateBoardInput,
   user: User
 ): Promise<Board> {
-  // Only admins can create boards
+  // Only admins can create boards. This a high level user check at system level. It is not a permission check.
   if (user.role !== 'admin') {
     throw new Error('Only admins can create boards');
   }

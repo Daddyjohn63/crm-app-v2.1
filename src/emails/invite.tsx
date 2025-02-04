@@ -38,10 +38,10 @@ export function InviteEmail({
             <Container className="border border-solid border-[#eaeaea] rounded my-[40px] mx-auto p-[20px] w-[465px]">
               <Section className="mt-[32px]">
                 <Img
-                  src={`${BASE_URL}/crm-buddy-logo.png`}
-                  width="160"
-                  height="48"
-                  alt="CRM Buddy"
+                  src={`${BASE_URL}/gig-canvas-logo.png`}
+                  width="60"
+                  height="60"
+                  alt="GigCanvas"
                   className="my-0 mx-auto"
                 />
               </Section>

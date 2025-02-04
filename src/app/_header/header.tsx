@@ -29,11 +29,11 @@ export async function Header() {
         <div className="flex justify-between gap-10 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/group.jpeg"
-              alt="CRM Logo"
+              src="/gig-canvas-logo.png"
+              alt="GigCanvas Logo"
               width={40}
               height={40}
-              className="rounded-full"
+              className="rounded-full w-10 h-10 mr-2"
             />
             <span className="text-sm md:text-base lg:text-2xl font-bold">
               {applicationName}
