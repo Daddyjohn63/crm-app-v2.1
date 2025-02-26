@@ -35,6 +35,8 @@ interface PageProps {
   };
 }
 
+export const dynamic = 'force-dynamic';
+
 // Loading component for the project details
 function ProjectSkeleton() {
   return (
