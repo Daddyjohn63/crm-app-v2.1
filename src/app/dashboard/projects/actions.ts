@@ -110,6 +110,9 @@ export const createListAction = authenticatedAction
   .input(z.object({ name: z.string().min(1), boardId: z.number() }))
   .handler(async ({ input: { name, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: createListAction completed\nName: ${name}\nBoard ID: ${boardId}\n`
+    );
     return await createList(name, boardId, user);
   });
 
@@ -124,6 +127,9 @@ export const updateListAction = authenticatedAction
   )
   .handler(async ({ input: { listId, name, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: updateListAction completed\nList ID: ${listId}\nNew Name: ${name}\nBoard ID: ${boardId}\n`
+    );
     return await updateList(listId, name, user);
   });
 
@@ -137,6 +143,9 @@ export const deleteListAction = authenticatedAction
   )
   .handler(async ({ input: { listId, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: deleteListAction completed\nList ID: ${listId}\nBoard ID: ${boardId}\n`
+    );
     return await deleteList(listId, user);
   });
 
@@ -150,6 +159,9 @@ export const copyListAction = authenticatedAction
   )
   .handler(async ({ input: { listId, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: copyListAction completed\nList ID: ${listId}\nBoard ID: ${boardId}\n`
+    );
     return await copyList(listId, user);
   });
 
@@ -223,6 +235,13 @@ export const reorderListsAction = authenticatedAction
   .input(listReorderSchema)
   .handler(async ({ input: { boardId, items }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: reorderListsAction completed for board ${boardId}\nItems: ${JSON.stringify(
+        items,
+        null,
+        2
+      )}\n`
+    );
     return await reorderLists(boardId, items, user);
   });
 
@@ -239,6 +258,13 @@ export const reorderCardsAction = authenticatedAction
     if (!list) throw new Error('Source list not found');
 
     revalidatePath(`/dashboard/projects/${list.boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: reorderCardsAction completed\nSource List: ${sourceListId}\nDestination List: ${destinationListId}\nCards: ${JSON.stringify(
+        cards,
+        null,
+        2
+      )}\n`
+    );
     return await reorderCards(sourceListId, destinationListId, cards, user);
   });
 
@@ -259,6 +285,9 @@ export const deleteCardAction = authenticatedAction
   .input(z.object({ cardId: z.number(), boardId: z.number() }))
   .handler(async ({ input: { cardId, boardId }, ctx: { user } }) => {
     revalidatePath(`/dashboard/projects/${boardId}`);
+    process.stdout.write(
+      `\n[DEBUG] Server Action: deleteCardAction completed\nCard ID: ${cardId}\nBoard ID: ${boardId}\n`
+    );
     return await deleteCard(cardId, user);
   });
 
@@ -281,6 +310,13 @@ export const updateCardAction = authenticatedAction
       key: `${user.id}-update-card`
     });
 
+    process.stdout.write(
+      `\n[DEBUG] Server Action: updateCardAction completed\nCard Update: ${JSON.stringify(
+        input,
+        null,
+        2
+      )}\n`
+    );
     await projectsDb.updateCard(input);
     revalidatePath('/dashboard/projects/[boardId]', 'page');
     return [true, null] as const;
