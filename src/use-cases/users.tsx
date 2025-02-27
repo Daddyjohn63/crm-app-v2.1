@@ -78,29 +78,44 @@ export async function getUserProfileUseCase(userId: UserId) {
 }
 
 export async function registerUserUseCase(email: string, password: string) {
-  assertUserAllowed(email);
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
-    throw new PublicError('An user with that email already exists.');
+  try {
+    console.log('Checking if user is allowed:', email);
+    assertUserAllowed(email);
+
+    console.log('Checking for existing user');
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      throw new PublicError('An user with that email already exists.');
+    }
+
+    console.log('Creating user');
+    const user = await createUser(email);
+    console.log('Creating account');
+    await createAccount(user.id, password);
+
+    const displayName = uniqueNamesGenerator({
+      dictionaries: [colors, animals],
+      separator: ' ',
+      style: 'capital'
+    });
+    console.log('Creating profile:', displayName);
+    await createProfile(user.id, displayName);
+
+    console.log('Creating verification token');
+    const token = await createVerifyEmailToken(user.id);
+
+    console.log('Sending verification email');
+    await sendEmail(
+      email,
+      `Verify your email for ${applicationName}`,
+      <VerifyEmail token={token} />
+    );
+
+    return { id: user.id };
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
   }
-  const user = await createUser(email);
-  await createAccount(user.id, password);
-
-  const displayName = uniqueNamesGenerator({
-    dictionaries: [colors, animals],
-    separator: ' ',
-    style: 'capital'
-  });
-  await createProfile(user.id, displayName);
-
-  const token = await createVerifyEmailToken(user.id);
-  await sendEmail(
-    email,
-    `Verify your email for ${applicationName}`,
-    <VerifyEmail token={token} />
-  );
-
-  return { id: user.id };
 }
 
 export async function signInUseCase(email: string, password: string) {
