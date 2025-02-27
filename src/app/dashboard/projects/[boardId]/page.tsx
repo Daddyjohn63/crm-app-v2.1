@@ -149,8 +149,6 @@ function ProjectDetails({
   );
 }
 
-export const revalidate = 3600;
-
 export default async function ProjectPage({ params }: PageProps) {
   const user = await getCurrentUser();
   if (!user) {
