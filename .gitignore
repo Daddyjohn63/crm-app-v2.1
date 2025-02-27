@@ -50,3 +50,5 @@ src/db/seed-documents.ts
 src/db/seed-posts.ts
 src/db/seed-notifications.ts
 src/db/seed-subscriptions.ts
+
+.vercel

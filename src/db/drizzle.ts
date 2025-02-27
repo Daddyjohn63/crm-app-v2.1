@@ -20,17 +20,27 @@ declare global {
 let database: PostgresJsDatabase<typeof schema>;
 let pg: ReturnType<typeof postgres>;
 
-if (env.NODE_ENV === 'production') {
-  pg = postgres(env.DATABASE_URL, { max: 1 });
-  database = drizzle(pg, { schema });
-} else {
-  if (!global.database) {
-    pg = postgres(env.DATABASE_URL, { max: 1 });
-    global.pg = pg;
-    global.database = drizzle(pg, { schema });
+function createDatabase() {
+  try {
+    if (env.NODE_ENV === 'production') {
+      pg = postgres(env.DATABASE_URL, { max: 1 });
+      database = drizzle(pg, { schema });
+    } else {
+      if (!global.database) {
+        pg = postgres(env.DATABASE_URL, { max: 1 });
+        global.pg = pg;
+        global.database = drizzle(pg, { schema });
+      }
+      database = global.database;
+      pg = global.pg!;
+    }
+    console.log('Database connection initialized');
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    throw error;
   }
-  database = global.database;
-  pg = global.pg!;
 }
+
+createDatabase();
 
 export { database, pg };
