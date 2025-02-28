@@ -36,7 +36,8 @@ export const ListContainer = ({
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    if (!isDragging) {
+    // Only update if we're not dragging and the data has actually changed
+    if (!isDragging && JSON.stringify(data) !== JSON.stringify(orderedData)) {
       setOrderedData(data);
     }
   }, [data, isDragging]);
@@ -75,9 +76,9 @@ export const ListContainer = ({
       items.forEach((item, idx) => {
         item.order = idx;
       });
-      setOrderedData(items);
 
       try {
+        setOrderedData(items);
         await reorderListsAction({
           boardId,
           items: items.map(list => ({
