@@ -19,6 +19,7 @@ interface CardItemProps {
   data: CardWithProfile;
   // boardId: number;
   index: number;
+  isDisabled?: boolean;
 }
 
 const getInitials = (name: string) => {
@@ -58,14 +59,18 @@ const isCardLate = (card: CardWithProfile): boolean => {
   return new Date(card.dueDate) < new Date();
 };
 
-export const CardItem = ({ data, index }: CardItemProps) => {
+export const CardItem = ({ data, index, isDisabled }: CardItemProps) => {
   const boardId = useBoardIdParam();
   // console.log('data from card item', data);
   const [isPressed, setIsPressed] = useState(false);
   const isLate = isCardLate(data);
 
   return (
-    <Draggable draggableId={data.id.toString()} index={index}>
+    <Draggable
+      draggableId={data.id.toString()}
+      index={index}
+      isDragDisabled={isDisabled}
+    >
       {(provided, snapshot) => (
         <div
           {...provided.draggableProps}
@@ -74,7 +79,8 @@ export const CardItem = ({ data, index }: CardItemProps) => {
           className={cn(
             'border-2 border-transparent hover:border-black py-2 px-3 text-sm bg-white text-black rounded-md shadow-sm',
             snapshot.isDragging && 'card-dragging opacity-50',
-            snapshot.isDragging && 'rotate-2'
+            snapshot.isDragging && 'rotate-2',
+            isDisabled && 'opacity-90 cursor-not-allowed pointer-events-none'
           )}
           onClick={e => e.stopPropagation()}
         >

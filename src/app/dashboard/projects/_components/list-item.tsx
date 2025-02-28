@@ -13,18 +13,29 @@ interface ListItemProps {
   data: ListWithCards;
   index: number;
   canUseListForm: boolean;
+  isDisabled?: boolean;
 }
 
-export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
+export const ListItem = ({
+  data,
+  index,
+  canUseListForm,
+  isDisabled
+}: ListItemProps) => {
   //console.log('list item', data);
 
   return (
-    <Draggable draggableId={data.id.toString()} index={index}>
+    <Draggable
+      draggableId={data.id.toString()}
+      index={index}
+      isDragDisabled={isDisabled}
+    >
       {(provided, snapshot) => (
         <li
           className={cn(
             'shrink-0 h-full w-[272px] select-none',
-            snapshot.isDragging && 'opacity-70'
+            snapshot.isDragging && 'opacity-70',
+            isDisabled && 'opacity-90 cursor-not-allowed'
           )}
           {...provided.draggableProps}
           ref={provided.innerRef}
@@ -51,7 +62,12 @@ export const ListItem = ({ data, index, canUseListForm }: ListItemProps) => {
                   onClick={e => e.stopPropagation()}
                 >
                   {data.cards.map((card: CardWithProfile, index: number) => (
-                    <CardItem key={card.id} data={card} index={index} />
+                    <CardItem
+                      key={card.id}
+                      data={card}
+                      index={index}
+                      isDisabled={isDisabled}
+                    />
                   ))}
                   {provided.placeholder}
                 </ol>

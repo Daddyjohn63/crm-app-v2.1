@@ -32,6 +32,8 @@ export const ListContainer = ({
   canUseListForm
 }: ListContainerProps) => {
   const [orderedData, setOrderedData] = useState<ListWithCards[]>(data);
+  // State to disable further dragging until the server has updated.
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     console.log('Data prop updated:', data);
@@ -56,6 +58,9 @@ export const ListContainer = ({
       return;
     }
 
+    // Set updating state to true to disable further dragging
+    setIsUpdating(true);
+
     const newOrderedData = [...orderedData];
     console.log('Created newOrderedData copy:', newOrderedData);
 
@@ -79,6 +84,8 @@ export const ListContainer = ({
       } catch (error) {
         console.error('Failed to reorder lists:', error);
         setOrderedData(orderedData);
+      } finally {
+        setIsUpdating(false);
       }
       return;
     }
@@ -187,6 +194,9 @@ export const ListContainer = ({
         setOrderedData(orderedData);
       }
     }
+
+    // Reset updating state after operation
+    setIsUpdating(false);
   };
 
   console.log('Rendering with orderedData:', orderedData);
@@ -206,6 +216,7 @@ export const ListContainer = ({
                 index={index}
                 data={list}
                 canUseListForm={canUseListForm}
+                isDisabled={isUpdating}
               />
             ))}
             {provided.placeholder}
