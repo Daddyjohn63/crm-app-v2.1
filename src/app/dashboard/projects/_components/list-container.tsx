@@ -46,12 +46,12 @@ export const ListContainer = ({
   };
 
   const onDragEnd = async (result: DropResult) => {
-    setIsDragging(false);
     console.log('Starting drag end with orderedData:', orderedData);
 
     const { destination, source, type } = result;
     if (!destination) {
       console.log('No destination, dropping operation');
+      setIsDragging(false);
       return;
     }
 
@@ -61,6 +61,7 @@ export const ListContainer = ({
       destination.index === source.index
     ) {
       console.log('Dropped in same position, no action needed');
+      setIsDragging(false);
       return;
     }
 
@@ -88,6 +89,7 @@ export const ListContainer = ({
         console.error('Failed to reorder lists:', error);
         setOrderedData(orderedData);
       }
+      setIsDragging(false);
       return;
     }
 
@@ -195,6 +197,7 @@ export const ListContainer = ({
         setOrderedData(orderedData);
       }
     }
+    setIsDragging(false);
   };
 
   console.log('Rendering with orderedData:', orderedData);
