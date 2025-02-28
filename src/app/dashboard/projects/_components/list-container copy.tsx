@@ -8,6 +8,7 @@ import { ListItem } from './list-item';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { reorderListsAction, reorderCardsAction } from '../actions';
 import { ListWithCards } from '@/use-cases/types';
+import { cn } from '@/lib/utils';
 
 interface ListContainerProps {
   boardId: number;
@@ -24,7 +25,7 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
   return result;
 }
 
-export const ListContainer = ({
+export const ListContainerCopy = ({
   boardId,
   data,
   user,
@@ -32,11 +33,18 @@ export const ListContainer = ({
   canUseListForm
 }: ListContainerProps) => {
   const [orderedData, setOrderedData] = useState<ListWithCards[]>(data);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    console.log('Data prop updated:', data);
-    setOrderedData(data);
-  }, [data]);
+    // Only update if we're not dragging and the data has actually changed
+    if (!isDragging && JSON.stringify(data) !== JSON.stringify(orderedData)) {
+      setOrderedData(data);
+    }
+  }, [data, isDragging]);
+
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
 
   const onDragEnd = async (result: DropResult) => {
     console.log('Starting drag end with orderedData:', orderedData);
@@ -44,6 +52,7 @@ export const ListContainer = ({
     const { destination, source, type } = result;
     if (!destination) {
       console.log('No destination, dropping operation');
+      setIsDragging(false);
       return;
     }
 
@@ -53,6 +62,7 @@ export const ListContainer = ({
       destination.index === source.index
     ) {
       console.log('Dropped in same position, no action needed');
+      setIsDragging(false);
       return;
     }
 
@@ -62,16 +72,25 @@ export const ListContainer = ({
     // Handle list reordering
     if (type === 'list') {
       console.log('Reordering list');
-      const items = reorder(orderedData, source.index, destination.index);
-      items.forEach((item, idx) => {
+      // Create a deep copy of the data to avoid reference issues
+      const newItems = JSON.parse(
+        JSON.stringify(orderedData)
+      ) as ListWithCards[];
+      const [movedItem] = newItems.splice(source.index, 1);
+      newItems.splice(destination.index, 0, movedItem);
+
+      // Update the order
+      newItems.forEach((item: ListWithCards, idx: number) => {
         item.order = idx;
       });
-      setOrderedData(items);
 
       try {
+        // Set the optimistic update immediately
+        setOrderedData(newItems);
+
         await reorderListsAction({
           boardId,
-          items: items.map(list => ({
+          items: newItems.map((list: ListWithCards) => ({
             id: list.id,
             order: list.order
           }))
@@ -80,6 +99,7 @@ export const ListContainer = ({
         console.error('Failed to reorder lists:', error);
         setOrderedData(orderedData);
       }
+      setIsDragging(false);
       return;
     }
 
@@ -187,18 +207,22 @@ export const ListContainer = ({
         setOrderedData(orderedData);
       }
     }
+    setIsDragging(false);
   };
 
   console.log('Rendering with orderedData:', orderedData);
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
       <Droppable droppableId="lists" type="list" direction="horizontal">
-        {provided => (
+        {(provided, snapshot) => (
           <ol
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className="flex gap-x-3 h-full"
+            className={cn(
+              'flex gap-x-3 h-full',
+              snapshot.isDraggingOver && 'bg-blue-100 rounded-md'
+            )}
           >
             {orderedData.map((list, index) => (
               <ListItem
