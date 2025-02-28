@@ -72,16 +72,25 @@ export const ListContainer = ({
     // Handle list reordering
     if (type === 'list') {
       console.log('Reordering list');
-      const items = reorder(orderedData, source.index, destination.index);
-      items.forEach((item, idx) => {
+      // Create a deep copy of the data to avoid reference issues
+      const newItems = JSON.parse(
+        JSON.stringify(orderedData)
+      ) as ListWithCards[];
+      const [movedItem] = newItems.splice(source.index, 1);
+      newItems.splice(destination.index, 0, movedItem);
+
+      // Update the order
+      newItems.forEach((item: ListWithCards, idx: number) => {
         item.order = idx;
       });
 
       try {
-        setOrderedData(items);
+        // Set the optimistic update immediately
+        setOrderedData(newItems);
+
         await reorderListsAction({
           boardId,
-          items: items.map(list => ({
+          items: newItems.map((list: ListWithCards) => ({
             id: list.id,
             order: list.order
           }))
