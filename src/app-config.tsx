@@ -7,7 +7,9 @@ export const appConfig: {
 export const protectedRoutes = ['/purchases', '/dashboard/'];
 export const allowedUsers = [
   'john@webandprosper.co.uk',
-  'johnspaul63@gmail.com'
+  'johnspaul63@gmail.com',
+  'john@bernardimusicgroup.com',
+  'jon@morgan-jones.com'
 ];
 export const bannedUsers = ['none'];
 export const applicationName = 'GigCanvas';
