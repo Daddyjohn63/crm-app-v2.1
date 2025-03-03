@@ -12,13 +12,9 @@ interface CreateEditServiceButtonProps {
 }
 export default async function ServicesPage() {
   const user = await assertAuthenticated();
-  //console.log(' SERVICE-USER', user);
   const services = await getServicesUseCase(user);
-  // console.log('SERVICE-SERVICES', services);
   const hasServices = services.length > 0;
-  // if (!hasServices) {
-  //   return <div>No services found</div>;
-  // }
+
   return (
     <>
       <PageHeader>
@@ -29,35 +25,34 @@ export default async function ServicesPage() {
             >
               Services
             </h1>
-            {/* if no services, show message */}
-            {!hasServices && <div>No services found</div>}
+            {!hasServices && (
+              <div className="text-gray-600">No services found</div>
+            )}
           </div>
           <div>
             <CreateEditServiceButton serviceId={null} />
           </div>
         </div>
       </PageHeader>
-      <div
-        className={`${pageWrapperStyles} px-4 sm:px-6 transition-opacity duration-300`}
-      >
-        {/* <Suspense fallback={<ClientsListSkeleton />}> */}
-        <ServicesList services={services} />
-        {/* </Suspense> */}
-      </div>
+      {hasServices && (
+        <div
+          className={`${pageWrapperStyles} px-4 sm:px-6 transition-opacity duration-300`}
+        >
+          <ServicesList services={services} />
+        </div>
+      )}
     </>
   );
 }
 
 async function ServicesList({ services }: { services: Services[] }) {
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-        {services.map(service => (
-          <Link href={`/dashboard/services/${service.id}`} key={service.id}>
-            <ServiceCard service={service} />
-          </Link>
-        ))}
-      </div>
-    </>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+      {services.map(service => (
+        <Link href={`/dashboard/services/${service.id}`} key={service.id}>
+          <ServiceCard service={service} />
+        </Link>
+      ))}
+    </div>
   );
 }

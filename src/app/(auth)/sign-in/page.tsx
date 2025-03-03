@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { btnStyles } from "@/styles/icons";
-import { Mail } from "lucide-react";
-import Link from "next/link";
-import { MagicLinkForm } from "./magic-link-form";
+import * as React from 'react';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { btnStyles } from '@/styles/icons';
+import { Mail } from 'lucide-react';
+import Link from 'next/link';
+import { MagicLinkForm } from './magic-link-form';
 
 export default function SignInPage() {
   return (
@@ -23,9 +23,9 @@ export default function SignInPage() {
             href="/api/login/google"
             className={cn(
               buttonVariants({
-                variant: "secondary",
+                variant: 'secondary'
               }),
-              "w-full"
+              'w-full'
             )}
           >
             <GoogleIcon className="stroke-white mr-2 h-5 w-5" />
@@ -35,9 +35,9 @@ export default function SignInPage() {
             href="/api/login/github"
             className={cn(
               buttonVariants({
-                variant: "secondary",
+                variant: 'secondary'
               }),
-              "w-full"
+              'w-full'
             )}
           >
             <GithubIcon className="mr-2 h-5 w-5" />
@@ -69,7 +69,11 @@ export default function SignInPage() {
           </div>
 
           <div className="flex justify-center">
-            <Button asChild variant="ghost" className={cn(btnStyles, "w-full")}>
+            <Button
+              asChild
+              variant="secondary"
+              className={cn(btnStyles, 'w-full')}
+            >
               <Link href="/sign-in/email">
                 <Mail /> Sign in with Email
               </Link>
