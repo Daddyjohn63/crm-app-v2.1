@@ -130,7 +130,7 @@ export function AddServiceToClientForm() {
                   control={form.control}
                   name={`services.${service.id}`}
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/50 p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">
                           {service.name}
@@ -140,6 +140,7 @@ export function AddServiceToClientForm() {
                       <FormControl>
                         <Switch
                           checked={field.value}
+                          className="data-[state=unchecked]:bg-gray-500 "
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
