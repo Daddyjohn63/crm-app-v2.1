@@ -44,12 +44,12 @@ async function ProfileImageContent() {
   const imageUrl = await getProfileImageFullUrl(profile);
 
   return (
-    <div className="flex flex-col sm:items-center">
+    <div className="flex flex-col sm:items-center md:items-start">
       <Image
         src={imageUrl}
         width={200}
         height={200}
-        className="h-[200px] sm:h-[200px] w-full object-cover rounded-xl mb-4 sm:mb-6"
+        className="h-[200px] sm:h-[200px] object-cover rounded-xl mb-4 sm:mb-6"
         alt="Profile image"
       />
       <ProfileImageForm />
