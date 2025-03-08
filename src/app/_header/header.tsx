@@ -55,9 +55,10 @@ export async function Header() {
 
 async function ProfileAvatar({ userId }: { userId: number }) {
   const profile = await getUserProfileUseCase(userId);
+  const imageUrl = await getProfileImageFullUrl(profile);
   return (
     <Avatar>
-      <AvatarImage src={getProfileImageFullUrl(profile)} />
+      <AvatarImage src={imageUrl} />
       <AvatarFallback>
         {profile.displayName?.substring(0, 2).toUpperCase() ?? 'AA'}
       </AvatarFallback>
