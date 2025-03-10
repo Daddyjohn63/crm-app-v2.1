@@ -14,7 +14,6 @@ import { ClientCard } from './clients/_components/client-card';
 import { redirect } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
 import Link from 'next/link';
 import { SubmitButton } from '@/components/submit-button';
 import { Suspense } from 'react';
@@ -27,6 +26,10 @@ import {
   UserSession
 } from '@/use-cases/types';
 import { SearchFilterForm } from './clients/_components/search-filter-form';
+
+// Configure page caching behavior
+export const dynamic = 'force-dynamic';
+export const revalidate = 0; // Disable automatic revalidation since we're using force-dynamic
 
 export default async function DashboardPage({
   searchParams

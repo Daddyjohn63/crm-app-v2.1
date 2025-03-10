@@ -21,6 +21,8 @@ import {
 } from '@/data-access/clients';
 import { AuthenticationError, NotFoundError } from '@/app/util';
 import { omit } from 'lodash';
+import { cache } from 'react';
+
 //authenticatedUser will be passed when we create the server action and zsa.
 
 export async function createClientUseCase(
@@ -43,18 +45,33 @@ export async function editClientUseCase(
   return existingClient;
 }
 
-export async function getClientsUseCase(authenticatedUser: UserSession) {
-  return [...(await getClientsByUser(authenticatedUser.id))];
-}
+export const getClientsUseCase = cache(
+  async (authenticatedUser: UserSession) => {
+    console.log('Fetching clients for user:', authenticatedUser.id);
+    const clients = await getClientsByUser(authenticatedUser.id);
+    console.log('Fetched clients count:', clients.length);
+    return [...clients];
+  }
+);
 
-export async function searchClientsUseCase(
-  user: UserSession,
-  search: string,
-  page: number,
-  stage?: SalesStageFilter
-) {
-  return await searchClients(user.id, search, page, stage as SalesStage);
-}
+export const searchClientsUseCase = cache(
+  async (
+    user: UserSession,
+    search: string,
+    page: number,
+    stage?: SalesStageFilter
+  ) => {
+    console.log('Searching clients:', { userId: user.id, search, page, stage });
+    const result = await searchClients(
+      user.id,
+      search,
+      page,
+      stage as SalesStage
+    );
+    console.log('Search results count:', result.data.length);
+    return result;
+  }
+);
 
 export async function getClientByIdUseCase(
   user: UserSession,
