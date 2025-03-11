@@ -1,7 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 
 export function sanitizeUserInput(input: string): string {
-  // First sanitize HTML to remove any malicious tags/content
+  // First sanitize HTML to remove any malicious tags/content.
   const sanitized = sanitizeHtml(input, {
     allowedTags: [],
     allowedAttributes: {},
