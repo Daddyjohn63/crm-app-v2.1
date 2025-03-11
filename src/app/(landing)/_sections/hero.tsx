@@ -12,12 +12,12 @@ export function HeroSection() {
   return (
     <>
       <Container>
-        <div className="flex flex-col md:flex-row gap-y-14 w-full justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:gap-10  w-full justify-between">
           <div className="">
             <Badge className="text-sm md:text-base">
               Manage your clients and services
             </Badge>
-            <h1 className="text-3xl md:text-5xl max-w-3xl mt-10 leading-[1.2] font-semibold">
+            <h1 className="text-3xl md:text-4xl max-w-3xl mt-10 leading-[1.2] font-semibold">
               For professional freelancers who want to manage their client base
               with a professional toolset
             </h1>
