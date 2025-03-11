@@ -69,7 +69,8 @@ export const createClientAction = authenticatedAction
         primary_phone,
         business_description,
         date_onboarded,
-        additional_info
+        additional_info,
+        sales_stage
       },
       ctx: { user }
     }) => {
@@ -84,7 +85,8 @@ export const createClientAction = authenticatedAction
         primary_phone: sanitizeUserInput(primary_phone ?? ''),
         business_description: sanitizeUserInput(business_description ?? ''),
         date_onboarded,
-        additional_info: sanitizeUserInput(additional_info ?? '')
+        additional_info: sanitizeUserInput(additional_info ?? ''),
+        sales_stage
       };
 
       await createClientUseCase(user, sanitizedInput as NewClientInput);
@@ -112,7 +114,9 @@ export const editClientAction = authenticatedAction
       business_description: sanitizeUserInput(
         updatedFields.business_description ?? ''
       ),
-      additional_info: sanitizeUserInput(updatedFields.additional_info ?? '')
+      additional_info: sanitizeUserInput(updatedFields.additional_info ?? ''),
+      sales_stage: updatedFields.sales_stage,
+      date_onboarded: updatedFields.date_onboarded
     };
 
     const existingClient = await editClientUseCase(
