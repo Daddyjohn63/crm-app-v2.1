@@ -3,7 +3,7 @@
 //this is used to open the board overlay when a board is clicked on the dashboard.
 //it is availabel globally to all components in the dashboard.so we always have access to the current board id.
 import { useBoardStore } from '@/store/boardStore';
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 
 interface BoardStoreInitializerProps {
   boardId: number;
@@ -12,7 +12,7 @@ interface BoardStoreInitializerProps {
 export function BoardStoreInitializer({ boardId }: BoardStoreInitializerProps) {
   const setCurrentBoardId = useBoardStore(state => state.setCurrentBoardId);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setCurrentBoardId(boardId);
   }, [boardId, setCurrentBoardId]);
 

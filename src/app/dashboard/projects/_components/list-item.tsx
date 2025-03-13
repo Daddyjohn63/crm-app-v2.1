@@ -8,6 +8,7 @@ import { ListCards } from './list-cards';
 import { cn } from '@/lib/utils';
 import { CardItem } from './card-item';
 import { Card, List, Profile } from '@/db/schema';
+import { GripVertical } from 'lucide-react';
 
 interface ListItemProps {
   data: ListWithCards;
@@ -41,11 +42,14 @@ export const ListItem = ({
           ref={provided.innerRef}
         >
           <div className="w-full rounded-md bg-[#f1f2f4] shadow-md py-1 flex flex-col max-h-[calc(100vh-200px)]">
-            <div
-              {...provided.dragHandleProps}
-              className="cursor-grab active:cursor-grabbing flex-shrink-0"
-              onClick={e => e.stopPropagation()}
-            >
+            <div className="flex items-center gap-2 px-2">
+              <div
+                {...provided.dragHandleProps}
+                className="cursor-grab active:cursor-grabbing"
+                onClick={e => e.stopPropagation()}
+              >
+                <GripVertical className="h-4 w-4 text-gray-400" />
+              </div>
               <ListHeader data={data} canUseListForm={canUseListForm} />
             </div>
 

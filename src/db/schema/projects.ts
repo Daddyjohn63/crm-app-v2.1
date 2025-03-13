@@ -100,7 +100,8 @@ export const lists = pgTable(
     updatedAt: timestamp('updated_at').defaultNow()
   },
   table => ({
-    boardIdIdx: index('lists_board_id_idx').on(table.boardId)
+    boardIdIdx: index('lists_board_id_idx').on(table.boardId),
+    boardOrderIdx: index('lists_board_order_idx').on(table.boardId, table.order)
   })
 );
 

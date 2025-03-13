@@ -101,51 +101,48 @@ function ProjectDetails({
   permission
 }: ProjectDetailsProps) {
   return (
-    <>
-      <BoardStoreInitializer boardId={board.id} />
-      <div className="pt-8 space-y-6 ml-4">
-        <nav className="flex bg-backgroundMuted  rounded-lg max-w-7xl">
-          <div className="flex justify-between items-center w-full p-2">
-            <h1 className="text-3xl font-bold ">{board.name}</h1>
-            <div className="flex items-center gap-6">
-              <DeleteBoardButton boardId={board.id} />
+    <div className="pt-8 space-y-6 ml-4">
+      <nav className="flex bg-backgroundMuted  rounded-lg max-w-7xl">
+        <div className="flex justify-between items-center w-full p-2">
+          <h1 className="text-3xl font-bold ">{board.name}</h1>
+          <div className="flex items-center gap-6">
+            <DeleteBoardButton boardId={board.id} />
 
-              {canAccessSettings(permission) && (
-                <CreateEditBoardButton
-                  boardId={board.id.toString()}
-                  boardName={board.name}
-                  boardDescription={board.description}
-                  clientId={board.clientId}
-                />
-              )}
-              {canAccessSettings(permission) && (
-                //this is were I will put the edit board button.
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Settings className="w-6 h-6 cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>
-                      Functionality Coming Soon to be able to invite clients to
-                      edit or view the board
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </div>
+            {canAccessSettings(permission) && (
+              <CreateEditBoardButton
+                boardId={board.id.toString()}
+                boardName={board.name}
+                boardDescription={board.description}
+                clientId={board.clientId}
+              />
+            )}
+            {canAccessSettings(permission) && (
+              //this is were I will put the edit board button.
+              <Tooltip>
+                <TooltipTrigger>
+                  <Settings className="w-6 h-6 cursor-pointer" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    Functionality Coming Soon to be able to invite clients to
+                    edit or view the board
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
-        </nav>
-        <div className="space-y-2 overflow-x-auto">
-          <ListContainer
-            boardId={board.id}
-            data={lists}
-            user={user}
-            permission={permission}
-            canUseListForm={canUseListForm(permission)}
-          />
         </div>
+      </nav>
+      <div className="space-y-2 overflow-x-auto">
+        <ListContainer
+          boardId={board.id}
+          data={lists}
+          user={user}
+          permission={permission}
+          canUseListForm={canUseListForm(permission)}
+        />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -189,13 +186,15 @@ async function AsyncProjectContent({
   }
 
   return (
-    //pass all the data - board, user, lists, permission - to the project details component. Remember this is the system user.
-    <ProjectDetails
-      board={board}
-      user={user}
-      lists={lists}
-      permission={permission}
-    />
+    <>
+      <BoardStoreInitializer boardId={board.id} />
+      <ProjectDetails
+        board={board}
+        user={user}
+        lists={lists}
+        permission={permission}
+      />
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { getCurrentUser } from '@/lib/session';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Footer } from '@/components/footer';
+import { ReactScan } from '@/components/ReactScan';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,6 +36,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* <ReactScan /> */}
+
       <body className={cn(inter.className, 'dark')}>
         <NextTopLoader color="#dbb73f" />
         <TooltipProvider>
