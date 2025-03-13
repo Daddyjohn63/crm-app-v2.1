@@ -155,7 +155,7 @@ export const CardItem = memo(({ data, index, isDisabled }: CardItemProps) => {
   const boardId = useBoardIdParam();
 
   // Memoize expensive calculations
-  const isLate = useMemo(() => isCardLate(data), [data.dueDate, data.status]);
+  const isLate = useMemo(() => isCardLate(data), [data]);
   const displayName = useMemo(
     () => data.assignedUserProfile?.displayName,
     [data.assignedUserProfile?.displayName]
