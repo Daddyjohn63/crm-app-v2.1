@@ -246,7 +246,7 @@ export const ListHeader = ({
   };
 
   return (
-    <div className="px-3 py-8 text-sm font-semibold flex justify-between items-center h-9">
+    <div className="px-3 py-8 text-sm font-semibold flex justify-between items-center h-9 w-full">
       {isEditing ? (
         <Form {...form}>
           <form ref={formRef} onSubmit={onSubmit} className="w-full ">
