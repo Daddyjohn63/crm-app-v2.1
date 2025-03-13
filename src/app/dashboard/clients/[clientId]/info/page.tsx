@@ -228,18 +228,24 @@ export default async function ClientInfoPage({
                   <CardTitle>Current Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-4">
-                    {boards.map(board => (
-                      <Link
-                        key={board.id}
-                        href={`/dashboard/projects/${board.id}`}
-                      >
-                        <li className=" text-muted-foreground hover:underline pb-2">
-                          <strong>{board.name}</strong>
-                        </li>
-                      </Link>
-                    ))}
-                  </ul>
+                  {boards.length > 0 ? (
+                    <ul className="space-y-4">
+                      {boards.map(board => (
+                        <Link
+                          key={board.id}
+                          href={`/dashboard/projects/${board.id}`}
+                        >
+                          <li className=" text-muted-foreground hover:underline pb-2">
+                            <strong>{board.name}</strong>
+                          </li>
+                        </Link>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No projects are assigned to this client.
+                    </p>
+                  )}
                 </CardContent>
               </div>
             </div>
