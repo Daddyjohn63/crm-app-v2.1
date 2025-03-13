@@ -95,6 +95,9 @@ export function AddServiceToClientForm() {
   }, [services, clientServices, form]);
 
   // Move the check here, after all hooks
+  if (services === undefined) {
+    return <div>Loading services...</div>;
+  }
   if (!services || services.length === 0) {
     return <div>You have no services to allocate</div>;
   }
