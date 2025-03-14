@@ -83,15 +83,15 @@ const CardHeader = memo(
 
 CardHeader.displayName = 'CardHeader';
 
-const CardDescription = memo(
-  ({ description }: { description: string | null }) => (
-    <div className="line-clamp-4 text-sm text-gray-500">
-      {description || ''}
-    </div>
-  )
-);
+// const CardDescription = memo(
+//   ({ description }: { description: string | null }) => (
+//     <div className="line-clamp-4 text-sm text-gray-500">
+//       {description || ''}
+//     </div>
+//   )
+// );
 
-CardDescription.displayName = 'CardDescription';
+// CardDescription.displayName = 'CardDescription';
 
 const CardFooter = memo(
   ({
@@ -185,7 +185,7 @@ export const CardItem = memo(({ data, index, isDisabled }: CardItemProps) => {
               displayName={displayName}
               dragHandleProps={provided.dragHandleProps}
             />
-            <CardDescription description={data.description} />
+            {/* <CardDescription description={data.description} /> */}
             <CardFooter
               dueDate={data.dueDate}
               cardId={data.id}
