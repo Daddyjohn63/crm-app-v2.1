@@ -68,6 +68,7 @@ async function ProfileAvatar({ userId }: { userId: number }) {
 
 async function HeaderActions() {
   const user = await getCurrentUser();
+  console.log('USER FROM HEADER ACTIONS', user);
   const isSignedIn = !!user;
 
   return (
@@ -112,7 +113,7 @@ async function HeaderActions() {
           </DropdownMenu>
 
           <div className="md:hidden">
-            <MenuButton />
+            <MenuButton isAuthenticated={!!user} />
           </div>
         </>
       ) : (

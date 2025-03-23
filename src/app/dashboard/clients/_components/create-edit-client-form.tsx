@@ -47,6 +47,7 @@ import { LoaderButton } from '@/components/loader-button';
 import { btnIconStyles } from '@/styles/icons';
 import { User } from '@/db/schema/index';
 import { SALES_STAGES, SalesStage } from '@/use-cases/types';
+
 const FormSchema = z.object({
   business_name: z.string().min(1, {
     message: 'Business name must be at least 6 characters.'

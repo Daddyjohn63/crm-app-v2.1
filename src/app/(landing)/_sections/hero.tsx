@@ -12,7 +12,7 @@ export function HeroSection() {
   return (
     <>
       <Container>
-        <div className="flex flex-col gap-4 md:flex-row md:gap-10  w-full justify-between">
+        <div className="flex flex-col gap-10 md:flex-row md:gap-10  w-full justify-between">
           <div className="">
             <Badge className="text-sm md:text-base">
               Manage your clients and services
@@ -42,7 +42,7 @@ export function HeroSection() {
             </div>
           </div>
           <Image
-            className="rounded-xl w-[500px] h-[500px]"
+            className="rounded-xl md:w-[500px] md:h-[500px] w-full h-full"
             width="200"
             height="200"
             src="/gigcanvas.jpg"

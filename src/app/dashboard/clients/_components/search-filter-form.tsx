@@ -60,7 +60,7 @@ export function SearchFilterForm({
       className="flex-grow sm:flex-grow-0 sm:w-1/2 max-w-md"
     >
       <div className={formStyles}>
-        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+        <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
           <Select
             value={selectedStage}
             onValueChange={handleStageChange}
@@ -108,7 +108,9 @@ export function SearchFilterForm({
             )}
           </div>
 
-          <SubmitButton className="w-full sm:w-auto">Search</SubmitButton>
+          <SubmitButton className="w-full rounded-xl sm:w-auto mb-4 sm:mb-0">
+            Search
+          </SubmitButton>
         </div>
       </div>
     </form>

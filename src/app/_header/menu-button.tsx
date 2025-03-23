@@ -10,7 +10,7 @@ import { BookIcon, MenuIcon, SearchIcon, UsersIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export function MenuButton() {
+export function MenuButton({ isAuthenticated }: { isAuthenticated: boolean }) {
   const path = usePathname();
   const isLandingPage = path === '/';
 
@@ -20,7 +20,7 @@ export function MenuButton() {
         <MenuIcon />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="space-y-2">
-        {!isLandingPage && (
+        {isAuthenticated && (
           <>
             <DropdownMenuItem asChild>
               <Link
@@ -48,7 +48,7 @@ export function MenuButton() {
             </DropdownMenuItem>
           </>
         )}
-        {isLandingPage && (
+        {/* {isLandingPage && !isAuthenticated && (
           <>
             <DropdownMenuItem asChild>
               <Link
@@ -75,7 +75,7 @@ export function MenuButton() {
               </Link>
             </DropdownMenuItem>
           </>
-        )}
+        )} */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

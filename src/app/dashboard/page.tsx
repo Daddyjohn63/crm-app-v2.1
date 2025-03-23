@@ -123,7 +123,7 @@ export default async function DashboardPage({
           >
             Browse Clients
           </h1>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <SearchFilterForm
               initialSearch={search}
               initialStage={stage}
