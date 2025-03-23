@@ -189,7 +189,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           name="business_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Business name</FormLabel>
+              <FormLabel>
+                Business name<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Business name" {...field} />
               </FormControl>
@@ -202,7 +204,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Business address</FormLabel>
+              <FormLabel>
+                Business address<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Textarea rows={3} {...field} placeholder="Business address" />
               </FormControl>
@@ -215,7 +219,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>
+                Email<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="email"
@@ -231,7 +237,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone number</FormLabel>
+              <FormLabel>
+                Phone number<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Client's phone number" {...field} />
               </FormControl>
@@ -243,7 +251,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Business description</FormLabel>
+              <FormLabel>
+                Business description<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
@@ -258,7 +268,9 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sales stage</FormLabel>
+              <FormLabel>
+                Sales stage<span className="text-red-600"> *</span>
+              </FormLabel>
               <Select
                 onValueChange={field.onChange}
                 value={field.value}
@@ -266,7 +278,11 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
               >
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a sales stage" />
+                    <SelectValue>
+                      {field.value && (
+                        <span className="capitalize">{field.value}</span>
+                      )}
+                    </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="w-full">
@@ -297,7 +313,10 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
           name="date_onboarded"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Date that the client was on-boarded</FormLabel>
+              <FormLabel>
+                Date that the client was on-boarded
+                <span className="text-red-600"> *</span>
+              </FormLabel>
               <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>

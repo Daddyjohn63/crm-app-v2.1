@@ -117,7 +117,9 @@ export default function CreateEditServiceForm() {
           name="name"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Service Name</FormLabel>
+              <FormLabel>
+                Service Name<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Input placeholder="Enter Service Name" {...field} />
               </FormControl>
@@ -130,7 +132,9 @@ export default function CreateEditServiceForm() {
           name="description"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Service Description</FormLabel>
+              <FormLabel>
+                Service Description<span className="text-red-600"> *</span>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   rows={6}
