@@ -27,13 +27,7 @@ type Props = {
 
 export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const { isMobile } = useMediaQuery();
-  const preventCloseRef = useRef(false);
   const { isOpen, setIsOpen } = useOverlayStore();
-
-  // useEffect(() => {
-  //   console.log('ZustandInteractiveOverlay isOpen changed:', isOpen);
-  // }, [isOpen]);
-
   const Content = isMobile ? Drawer : Sheet;
   const ContentInner = isMobile ? DrawerContent : SheetContent;
   const Header = isMobile ? DrawerHeader : SheetHeader;
@@ -41,13 +35,7 @@ export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const Description = isMobile ? DrawerDescription : SheetDescription;
 
   return (
-    <Content
-      open={isOpen}
-      onOpenChange={value => {
-        if (preventCloseRef.current) return;
-        setIsOpen(value);
-      }}
-    >
+    <Content open={isOpen} onOpenChange={setIsOpen}>
       <ContentInner>
         <Header className="px-2">
           <Title>{title}</Title>
