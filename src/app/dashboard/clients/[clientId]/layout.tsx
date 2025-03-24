@@ -36,10 +36,10 @@ export default async function ClientLayout({
   }
 
   return (
-    <div>
+    <div className="min-h-screen">
       <ClientHeader client={client} />
       <TabsSection clientId={params.clientId} />
-      <div> {children}</div>
+      <div className="min-h-[calc(100vh-180px)]"> {children}</div>
     </div>
   );
 }

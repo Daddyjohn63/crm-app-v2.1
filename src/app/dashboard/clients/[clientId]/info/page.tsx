@@ -26,6 +26,7 @@ import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CreateEditClientButton } from '../../_components/create-client-button';
 import { CopyToClipboardButton } from '@/components/CopyToClipboardButton';
+import { wait } from '@/util/wait-promise';
 
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
@@ -46,6 +47,7 @@ export default async function ClientInfoPage({
   }
 
   try {
+    // await wait(6000);
     const client = await getClientByIdUseCase(user, parseInt(clientId));
     //console.log('client info', client);
 
@@ -55,7 +57,7 @@ export default async function ClientInfoPage({
 
     return (
       <>
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 py-9">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 py-9 min-h-[calc(100vh-200px)]">
           <Suspense
             fallback={
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
