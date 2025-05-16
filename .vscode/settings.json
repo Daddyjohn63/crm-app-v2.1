@@ -1,3 +1,107 @@
 {
-  "workbench.editor.enablePreview": false
+  "workbench.colorCustomizations": {
+    // Explorer tree colors
+    "tree.indentGuidesStroke": "#4a4a4a",
+    "tree.indentGuidesStrokeWidth": 1,
+    "tree.indentGuidesActiveStroke": "#ffffff",
+    "tree.indentGuidesActiveStrokeWidth": 1,
+    "tree.indentGuidesBorder": "#4a4a4a",
+    "tree.indentGuidesActiveBorder": "#ffffff",
+
+    // Tab colors
+    "tab.activeBackground": "#1a1a1a",
+    "tab.activeForeground": "#ffffff",
+    "tab.inactiveBackground": "#2d2d2d",
+    "tab.inactiveForeground": "#cccccc",
+    "tab.border": "#1a1a1a",
+    "tab.hoverBackground": "#3d3d3d",
+    "tab.hoverForeground": "#ffffff",
+
+    // Sidebar colors
+    "sideBar.background": "#1a1a1a",
+    "sideBar.foreground": "#ffffff",
+    "sideBarSectionHeader.background": "#2d2d2d",
+    "sideBarSectionHeader.foreground": "#ffffff",
+
+    // File explorer colors
+    "explorer.background": "#1a1a1a",
+    "explorer.foreground": "#ffffff",
+    "explorer.inactiveSelectionBackground": "#2d2d2d",
+    "explorer.inactiveSelectionForeground": "#cccccc",
+    "explorer.selectionBackground": "#3d3d3d",
+    "explorer.selectionForeground": "#ffffff",
+
+    // General UI colors
+    "editor.background": "#1a1a1a",
+    "editor.foreground": "#ffffff",
+    "editor.lineHighlightBackground": "#2d2d2d",
+    "editor.lineHighlightBorder": "#3d3d3d",
+
+    // Status bar colors
+    "statusBar.background": "#2d2d2d",
+    "statusBar.foreground": "#ffffff",
+    "statusBar.debuggingBackground": "#cc6633",
+    "statusBar.debuggingForeground": "#ffffff",
+
+    // Activity bar colors
+    "activityBar.background": "#1a1a1a",
+    "activityBar.foreground": "#ffffff",
+    "activityBar.inactiveForeground": "#666666",
+    "activityBar.activeBorder": "#ffffff",
+    "activityBar.activeBackground": "#3d3d3d"
+  },
+
+  // Additional UI improvements
+  "workbench.tree.indent": 20,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.tree.expandMode": "singleClick",
+  "workbench.editor.showTabs": "multiple",
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.editor.tabCloseButton": "right",
+  "workbench.editor.enablePreview": true,
+  "workbench.editor.enablePreviewFromQuickOpen": true,
+  "workbench.editor.enablePreviewFromCodeNavigation": true,
+
+  // Font settings
+  "editor.fontSize": 14,
+  "editor.lineHeight": 1.5,
+  "editor.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+
+  // Cursor and selection
+  "editor.cursorStyle": "line",
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.selectionHighlight": true,
+  "editor.selectionHighlightBorder": "#3d3d3d",
+
+  // Minimap
+  "editor.minimap.enabled": true,
+  "editor.minimap.renderCharacters": false,
+  "editor.minimap.maxColumn": 120,
+  "editor.minimap.showSlider": "always",
+  "editor.minimap.side": "right",
+
+  // Bracket pair colorization
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.guides.bracketPairsHorizontal": true,
+
+  // Word wrap
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 120,
+
+  // Smooth scrolling
+  "editor.smoothScrolling": true,
+  "editor.mouseWheelZoom": true,
+
+  // Git decorations
+  "editor.renderCommitCharacters": true,
+  "editor.renderWhitespace": "boundary",
+
+  // Terminal
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.lineHeight": 1.5,
+  "terminal.integrated.fontFamily": "'Fira Code', Consolas, 'Courier New', monospace",
+  "workbench.editor.tabActionLocation": "right"
 }

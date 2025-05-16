@@ -16,7 +16,7 @@ export default async function ProjectsLayout({
     <main className="container">
       <div>
         <div className="flex gap-x-6">
-          <div className="w-64 shrink-0 hidden md:block">
+          <div className="w-64 shrink-0 md:block">
             <ClientList />
           </div>
           <div className="flex-1">{children}</div>
