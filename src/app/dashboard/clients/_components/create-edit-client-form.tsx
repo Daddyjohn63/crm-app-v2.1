@@ -87,7 +87,7 @@ const FormSchema = z.object({
 
 export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
   const isEditing = !!id;
-
+  const [isLoading, setIsLoading] = useState(isEditing);
   const { setIsOpen, preventCloseRef } = useContext(ToggleContext);
   const { toast } = useToast();
 
@@ -132,23 +132,28 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
     resolver: zodResolver(FormSchema),
     defaultValues: isEditing
       ? async () => {
-          const result = await fetchClient({ client_id: id });
-          const existingClient = Array.isArray(result) ? result[0] : result;
-          if (!existingClient) {
-            throw new Error('Client not found');
+          setIsLoading(true);
+          try {
+            const result = await fetchClient({ client_id: id });
+            const existingClient = Array.isArray(result) ? result[0] : result;
+            if (!existingClient) {
+              throw new Error('Client not found');
+            }
+            return {
+              business_name: existingClient.business_name ?? '',
+              primary_address: existingClient.primary_address ?? '',
+              primary_email: existingClient.primary_email ?? '',
+              primary_phone: existingClient.primary_phone ?? '',
+              business_description: existingClient.business_description ?? '',
+              sales_stage: existingClient.sales_stage ?? 'lead',
+              date_onboarded: existingClient.date_onboarded
+                ? new Date(existingClient.date_onboarded)
+                : new Date(),
+              additional_info: existingClient.additional_info ?? ''
+            };
+          } finally {
+            setIsLoading(false);
           }
-          return {
-            business_name: existingClient.business_name ?? '',
-            primary_address: existingClient.primary_address ?? '',
-            primary_email: existingClient.primary_email ?? '',
-            primary_phone: existingClient.primary_phone ?? '',
-            business_description: existingClient.business_description ?? '',
-            sales_stage: existingClient.sales_stage ?? 'lead',
-            date_onboarded: existingClient.date_onboarded
-              ? new Date(existingClient.date_onboarded)
-              : new Date(),
-            additional_info: existingClient.additional_info ?? ''
-          };
         }
       : {
           business_name: '',
@@ -184,205 +189,215 @@ export function CreateEditClientForm({ id, user }: { id: string; user: User }) {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4 flex-1 px-2">
-        <FormField
-          control={form.control}
-          name="business_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Business name<span className="text-red-600"> *</span>
-              </FormLabel>
-              <FormControl>
-                <Input placeholder="Business name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="primary_address"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Business address<span className="text-red-600"> *</span>
-              </FormLabel>
-              <FormControl>
-                <Textarea rows={3} {...field} placeholder="Business address" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="primary_email"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Email<span className="text-red-600"> *</span>
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Client's email address"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="primary_phone"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Phone number<span className="text-red-600"> *</span>
-              </FormLabel>
-              <FormControl>
-                <Input placeholder="Client's phone number" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="business_description"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Business description<span className="text-red-600"> *</span>
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Description of the client's business"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="sales_stage"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Sales stage<span className="text-red-600"> *</span>
-              </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue>
-                      {field.value && (
-                        <span className="capitalize">{field.value}</span>
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="w-full">
-                  <SelectGroup>
-                    <SelectLabel></SelectLabel>
-                    {Object.values(SALES_STAGES).map(stage => (
-                      <SelectItem
-                        key={stage}
-                        value={stage}
-                        className="capitalize"
-                      >
-                        {stage.replace(/_/g, ' ')}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                Select the current stage in the sales pipeline
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="date_onboarded"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>
-                Date that the client was on-boarded
-                <span className="text-red-600"> *</span>
-              </FormLabel>
-              <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <PopoverTrigger asChild>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            <FormField
+              control={form.control}
+              name="business_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Business name<span className="text-red-600"> *</span>
+                  </FormLabel>
                   <FormControl>
-                    <Button
-                      variant={'outline'}
-                      className={cn(
-                        'pl-3 text-left font-normal',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
+                    <Input placeholder="Business name" {...field} />
                   </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="flex m-1 justify-end ">
-                    <div className="flex-1"></div>
-                    <PopoverClose>
-                      <X
-                        size={24}
-                        className="text-primary/60 hover:text-destructive"
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="primary_address"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Business address<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      rows={3}
+                      {...field}
+                      placeholder="Business address"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="primary_email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Email<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Client's email address"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="primary_phone"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Phone number<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Client's phone number" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="business_description"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Business description<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Description of the client's business"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="sales_stage"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Sales stage<span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue>
+                          {field.value && (
+                            <span className="capitalize">{field.value}</span>
+                          )}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="w-full">
+                      <SelectGroup>
+                        <SelectLabel></SelectLabel>
+                        {Object.values(SALES_STAGES).map(stage => (
+                          <SelectItem
+                            key={stage}
+                            value={stage}
+                            className="capitalize"
+                          >
+                            {stage.replace(/_/g, ' ')}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Select the current stage in the sales pipeline
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="date_onboarded"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>
+                    Date that the client was on-boarded
+                    <span className="text-red-600"> *</span>
+                  </FormLabel>
+                  <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <div className="flex m-1 justify-end ">
+                        <div className="flex-1"></div>
+                        <PopoverClose>
+                          <X
+                            size={24}
+                            className="text-primary/60 hover:text-destructive"
+                          />
+                        </PopoverClose>
+                      </div>
+                      <Calendar
+                        mode="single"
+                        defaultMonth={field.value}
+                        selected={field.value}
+                        onSelect={handleOnSelect}
+                        initialFocus
+                        fixedWeeks
+                        weekStartsOn={1}
+                        fromDate={new Date(new Date().getFullYear() - 30, 0, 1)} // 10 years ago
+                        toDate={new Date(new Date().getFullYear() + 10, 11, 31)} // 10 years from now
+                        captionLayout="dropdown-buttons"
                       />
-                    </PopoverClose>
-                  </div>
-                  <Calendar
-                    mode="single"
-                    defaultMonth={field.value}
-                    selected={field.value}
-                    onSelect={handleOnSelect}
-                    initialFocus
-                    fixedWeeks
-                    weekStartsOn={1}
-                    fromDate={new Date(new Date().getFullYear() - 30, 0, 1)} // 10 years ago
-                    toDate={new Date(new Date().getFullYear() + 10, 11, 31)} // 10 years from now
-                    captionLayout="dropdown-buttons"
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name="additional_info"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Additional Information</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="Enter any additional information"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <LoaderButton isLoading={isPending}>
-          <CheckIcon className={btnIconStyles} />{' '}
-          {isEditing ? 'Edit Client' : 'Create Client'}
-        </LoaderButton>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="additional_info"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Additional Information</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Enter any additional information"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <LoaderButton isLoading={isPending}>
+              <CheckIcon className={btnIconStyles} />{' '}
+              {isEditing ? 'Edit Client' : 'Create Client'}
+            </LoaderButton>
+          </>
+        )}
       </form>
     </Form>
   );

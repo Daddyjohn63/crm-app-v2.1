@@ -3,9 +3,12 @@ const nextConfig = {
   //output: 'standalone',
   reactStrictMode: true,
 
-  experimental: {
-    serverComponentsExternalPackages: ['@aws-sdk/s3-request-presigner']
-  },
+  serverExternalPackages: [
+    '@aws-sdk/s3-request-presigner',
+    '@aws-sdk/client-s3',
+    '@aws-sdk/lib-storage',
+    '@aws-sdk/s3-presigned-post'
+  ],
   images: {
     remotePatterns: [
       {
@@ -48,4 +51,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+module.exports = nextConfig;

@@ -11,13 +11,18 @@ import { getServiceByIdUseCase } from '@/use-cases/services';
 import { ServiceHeader } from '../_components/service-header';
 import { toast } from '@/components/ui/use-toast';
 
-export default async function ServiceLayout({
-  children,
-  params
-}: {
-  children: React.ReactNode;
-  params: { serviceId: string };
-}) {
+export default async function ServiceLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ serviceId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   //have we got a user?
   const user = await getCurrentUser();
 

@@ -27,11 +27,12 @@ import {
 } from '@/use-cases/types';
 import { SearchFilterForm } from './clients/_components/search-filter-form';
 
-export default async function DashboardPage({
-  searchParams
-}: {
-  searchParams: { search?: string; stage?: string; page?: string };
-}) {
+export default async function DashboardPage(
+  props: {
+    searchParams: Promise<{ search?: string; stage?: string; page?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const search = searchParams.search;
   const stage = Object.values(SALES_STAGE_FILTER_OPTIONS).includes(
     searchParams.stage as SalesStageFilter

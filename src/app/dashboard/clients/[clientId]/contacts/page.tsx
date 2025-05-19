@@ -8,11 +8,12 @@ import { getContactsByClientIdUseCase } from '@/use-cases/contacts';
 import CreateContactButton from './create-contact-button';
 import { ContactsOverlay } from './contacts-overlay';
 
-export default async function ContactsPage({
-  params
-}: {
-  params: { clientId: string };
-}) {
+export default async function ContactsPage(
+  props: {
+    params: Promise<{ clientId: string }>;
+  }
+) {
+  const params = await props.params;
   const { clientId } = params;
   const user = await assertAuthenticated();
 

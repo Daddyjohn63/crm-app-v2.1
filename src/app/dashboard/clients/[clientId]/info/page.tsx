@@ -31,11 +31,12 @@ import { wait } from '@/util/wait-promise';
 //TO-DO: DO I NEED TO HAVE 'FORCE-DYNAMIC ON THIS PAGE?
 export const dynamic = 'force-dynamic'; // This ensures the page is always up-to-date
 
-export default async function ClientInfoPage({
-  params
-}: {
-  params: { clientId: string };
-}) {
+export default async function ClientInfoPage(
+  props: {
+    params: Promise<{ clientId: string }>;
+  }
+) {
+  const params = await props.params;
   const { clientId } = params;
   const user = await getCurrentUser();
 

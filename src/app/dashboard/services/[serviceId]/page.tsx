@@ -18,11 +18,12 @@ import CreateEditServiceButton from '../create-edit-service-button';
 import { getClientsByServiceIdUseCase } from '@/use-cases/clients';
 import Link from 'next/link';
 
-export default async function ServicePage({
-  params
-}: {
-  params: { serviceId: string };
-}) {
+export default async function ServicePage(
+  props: {
+    params: Promise<{ serviceId: string }>;
+  }
+) {
+  const params = await props.params;
   const { serviceId } = params;
   // const user = await getCurrentUser();
 

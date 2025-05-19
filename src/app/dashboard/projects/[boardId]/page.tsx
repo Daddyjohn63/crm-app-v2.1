@@ -29,10 +29,10 @@ import {
 import DeleteBoardButton from '../_components/delete-board-button';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     boardId: string;
     user: User;
-  };
+  }>;
 }
 
 //export const dynamic = 'force-dynamic';
@@ -118,7 +118,7 @@ function ProjectDetails({
             )}
             {canAccessSettings(permission) && (
               //this is were I will put the edit board button.
-              <Tooltip>
+              (<Tooltip>
                 <TooltipTrigger>
                   <Settings className="w-6 h-6 cursor-pointer" />
                 </TooltipTrigger>
@@ -128,7 +128,7 @@ function ProjectDetails({
                     edit or view the board
                   </p>
                 </TooltipContent>
-              </Tooltip>
+              </Tooltip>)
             )}
           </div>
         </div>
@@ -146,7 +146,8 @@ function ProjectDetails({
   );
 }
 
-export default async function ProjectPage({ params }: PageProps) {
+export default async function ProjectPage(props: PageProps) {
+  const params = await props.params;
   const user = await getCurrentUser();
   if (!user) {
     redirect('/sign-in');

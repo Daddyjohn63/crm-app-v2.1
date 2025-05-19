@@ -9,13 +9,18 @@ import { NotFoundError } from '@/app/util';
 import { redirect } from 'next/navigation';
 import TabsSection from './tabs-section';
 
-export default async function ClientLayout({
-  children,
-  params
-}: {
-  children: React.ReactNode;
-  params: { clientId: string };
-}) {
+export default async function ClientLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ clientId: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   //have we got a user?
   const user = await getCurrentUser();
   //have we got a client with this id?

@@ -9,11 +9,12 @@ import { getDocumentKey } from '@/use-cases/documents';
 import { DeleteDocumentButton } from '../../_components/delete-document-button';
 //import { DeleteDocumentButton } from '../../components/delete-document-button';
 
-export default async function DocumentsPage({
-  params
-}: {
-  params: { clientId: string };
-}) {
+export default async function DocumentsPage(
+  props: {
+    params: Promise<{ clientId: string }>;
+  }
+) {
+  const params = await props.params;
   const clientId = parseInt(params.clientId, 10);
   const documents = await getDocuments(clientId);
 
