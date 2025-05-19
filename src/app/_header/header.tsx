@@ -39,7 +39,7 @@ export async function Header() {
               {applicationName}
             </span>
           </Link>
-
+          {/* do we have a user? */}
           <HeaderLinks isAuthenticated={!!user} />
         </div>
 
