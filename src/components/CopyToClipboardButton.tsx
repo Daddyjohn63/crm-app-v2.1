@@ -34,7 +34,7 @@ export function CopyToClipboardButton({
   }
 
   return (
-    <div className={`inline-flex items-center ${className}`}>
+    <span className={`inline-flex items-center ${className}`}>
       <button
         onClick={copyToClipboard}
         className="ml-2 p-1 hover:bg-gray-500 rounded-full transition-colors"
@@ -43,6 +43,6 @@ export function CopyToClipboardButton({
         <CopyIcon size={16} />
       </button>
       {copied && <span className="ml-2 text-green-500 text-sm">Copied!</span>}
-    </div>
+    </span>
   );
 }
