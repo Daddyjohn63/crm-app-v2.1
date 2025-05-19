@@ -78,12 +78,12 @@ export const ProfileNameBio = ({ initialName = '', initialBio = '' }) => {
       }
     });
 
-  useOnClickOutside(nameFormRef, () => {
+  useOnClickOutside(nameFormRef as React.RefObject<HTMLElement>, () => {
     setIsEditingName(false);
     nameForm.reset();
   });
 
-  useOnClickOutside(bioFormRef, () => {
+  useOnClickOutside(bioFormRef as React.RefObject<HTMLElement>, () => {
     setIsEditingBio(false);
     bioForm.reset();
   });

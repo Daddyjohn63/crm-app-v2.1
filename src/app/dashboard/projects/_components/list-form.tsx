@@ -76,7 +76,7 @@ export const ListForm = () => {
     }
   });
 
-  useOnClickOutside(formRef, () => {
+  useOnClickOutside(formRef as React.RefObject<HTMLElement>, () => {
     setIsEditing(false);
     form.reset();
   });
