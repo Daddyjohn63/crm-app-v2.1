@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useServerAction } from 'zsa-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -49,8 +49,8 @@ import { User } from '@/db/schema/index';
 import { SALES_STAGES, SalesStage } from '@/use-cases/types';
 
 const FormSchema = z.object({
-  business_name: z.string().min(1, {
-    message: 'Business name must be at least 6 characters.'
+  business_name: z.string().min(3, {
+    message: 'Business name must be at least 3 characters.'
   }),
   primary_address: z.string().min(1, {
     message: 'You must enter a business address.'

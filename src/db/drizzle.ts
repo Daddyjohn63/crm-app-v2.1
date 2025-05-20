@@ -34,7 +34,7 @@ function createDatabase() {
       database = global.database;
       pg = global.pg!;
     }
-    console.log('Database connection initialized');
+    //console.log('Database connection initialized');
   } catch (error) {
     console.error('Database initialization error:', error);
     throw error;

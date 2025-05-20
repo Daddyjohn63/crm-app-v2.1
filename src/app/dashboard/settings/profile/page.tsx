@@ -1,6 +1,4 @@
-//import { ProfileImage } from '@/app/dashboard/settings/profile/profile-image';
-//import { ProfileName } from '@/app/dashboard/settings/profile/profile-name';
-//import { EditBioForm } from './edit-bio-form';
+// Displays the profile image and name/bio.
 import { assertAuthenticated } from '@/lib/session';
 import { Suspense, cache } from 'react';
 import { getUserProfileUseCase } from '@/use-cases/users';
@@ -14,6 +12,8 @@ export const getUserProfileLoader = cache(getUserProfileUseCase);
 export default async function SettingsPage() {
   const user = await assertAuthenticated();
   const profile = await getUserProfileLoader(user.id);
+
+  console.log('profile', profile);
 
   return (
     <div className="space-y-8">
