@@ -80,12 +80,13 @@ export async function getUserProfileUseCase(userId: UserId) {
 export async function registerUserUseCase(email: string, password: string) {
   try {
     console.log('Checking if user is allowed:', email);
+    //check of hey are banned or not.
     assertUserAllowed(email);
 
     console.log('Checking for existing user');
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
-      throw new PublicError('An user with that email already exists.');
+      throw new PublicError('A user with that email already exists.');
     }
 
     console.log('Creating user');

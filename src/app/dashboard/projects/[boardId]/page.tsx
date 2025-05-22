@@ -27,6 +27,9 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import DeleteBoardButton from '../_components/delete-board-button';
+import Link from 'next/link';
+import { BoardSettingsIcon } from '../_components/board-settings-icon';
+import { BoardContentSwitcher } from '../_components/board-content-switcher';
 
 interface PageProps {
   params: {
@@ -102,12 +105,11 @@ function ProjectDetails({
 }: ProjectDetailsProps) {
   return (
     <div className="pt-8 space-y-6 ml-4">
-      <nav className="flex bg-backgroundMuted  rounded-lg max-w-7xl">
+      <nav className="flex bg-backgroundMuted rounded-lg max-w-7xl">
         <div className="flex justify-between items-center w-full p-2">
           <h1 className="text-3xl font-bold ">{board.name}</h1>
           <div className="flex items-center gap-6">
             <DeleteBoardButton boardId={board.id} />
-
             {canAccessSettings(permission) && (
               <CreateEditBoardButton
                 boardId={board.id.toString()}
@@ -116,28 +118,14 @@ function ProjectDetails({
                 clientId={board.clientId}
               />
             )}
-            {canAccessSettings(permission) && (
-              //this is were I will put the edit board button.
-              <Tooltip>
-                <TooltipTrigger>
-                  <Settings className="w-6 h-6 cursor-pointer" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>
-                    Functionality Coming Soon to be able to invite clients to
-                    edit or view the board
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            )}
           </div>
         </div>
       </nav>
       <div className="space-y-2 overflow-x-auto">
-        <ListContainer
+        <BoardContentSwitcher
           boardId={board.id}
-          data={lists}
           user={user}
+          lists={lists}
           permission={permission}
           canUseListForm={canUseListForm(permission)}
         />

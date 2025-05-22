@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 import {
   Body,
@@ -11,11 +11,11 @@ import {
   Preview,
   Section,
   Tailwind,
-  Text,
-} from "@react-email/components";
+  Text
+} from '@react-email/components';
 
-import { env } from "@/env";
-import { applicationName } from "@/app-config";
+import { env } from '@/env';
+import { applicationName } from '@/app-config';
 
 export const BASE_URL = env.HOST_NAME;
 
@@ -42,7 +42,7 @@ export function VerifyEmail({ token }: { token: string }) {
                 <Text className="text-black font-medium text-[14px] leading-[24px] mb-8">
                   Click the following link to verify your email
                 </Text>
-
+                {/* create a callback url */}
                 <Text className="text-black font-medium text-[14px] leading-[24px]">
                   <Link
                     href={`${BASE_URL}/api/login/verify-email?token=${token}`}

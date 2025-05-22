@@ -9,11 +9,12 @@ export const allowedUsers = [
   'john@webandprosper.co.uk',
   'johnspaul63@gmail.com',
   'john@bernardimusicgroup.com',
-  'jon@morgan-jones.com'
+  'jon@morgan-jones.com',
+  'jwebandprospertest@gmail.com'
 ];
 export const bannedUsers = ['none'];
-export const applicationName = 'GigCanvas';
-export const companyName = 'GigCanvas';
+export const applicationName = 'Gig Canvas';
+export const companyName = 'Gig Canvas';
 
 export const MAX_UPLOAD_IMAGE_SIZE_IN_MB = 5;
 export const MAX_UPLOAD_IMAGE_SIZE = 1024 * 1024 * MAX_UPLOAD_IMAGE_SIZE_IN_MB;
