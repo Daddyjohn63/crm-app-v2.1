@@ -1,7 +1,5 @@
 'use client';
-
 import { Settings } from 'lucide-react';
-import Link from 'next/link';
 
 interface BoardSettingsIconProps {
   boardId: number;
@@ -26,5 +24,5 @@ export const BoardSettingsIcon = ({
       </button>
     );
   }
-  return <Link href={`/dashboard/projects/${boardId}/settings`}>{icon}</Link>;
+  // return <Link href={`/dashboard/projects/${boardId}/settings`}>{icon}</Link>;
 };

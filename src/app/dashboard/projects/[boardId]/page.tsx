@@ -10,9 +10,9 @@ import { User } from '@/db/schema/base';
 import { Suspense } from 'react';
 import { PublicError } from '@/use-cases/errors';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Settings } from 'lucide-react';
+
 import { getCurrentUser } from '@/lib/session';
-import { ListContainer } from '../_components/list-container';
+
 import {
   canAccessSettings,
   canUseListForm,
@@ -21,14 +21,9 @@ import {
 import { BoardStoreInitializer } from '../_components/board-store-initializer';
 import { ListWithCards } from '@/use-cases/types';
 import CreateEditBoardButton from '../_components/create-edit-board-button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
+
 import DeleteBoardButton from '../_components/delete-board-button';
-import Link from 'next/link';
-import { BoardSettingsIcon } from '../_components/board-settings-icon';
+
 import { BoardContentSwitcher } from '../_components/board-content-switcher';
 
 interface PageProps {

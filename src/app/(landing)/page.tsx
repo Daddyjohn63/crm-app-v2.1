@@ -2,6 +2,7 @@ import { appConfig } from '@/app-config';
 import { getCurrentUser } from '@/lib/session';
 import { ComingSoon } from '../(coming-soon)/coming-soon';
 import { HeroSection } from './_sections/hero';
+import { PricingSection } from './_sections/pricing-section';
 
 export default async function LandingPage() {
   if (appConfig.mode === 'comingSoon') {
@@ -20,6 +21,7 @@ export default async function LandingPage() {
     return (
       <div>
         <HeroSection />
+        {/* <PricingSection /> */}
       </div>
     );
   }
