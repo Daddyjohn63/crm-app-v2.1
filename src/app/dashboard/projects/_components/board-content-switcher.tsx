@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { BoardSettingsIcon } from './board-settings-icon';
 import { ListContainer } from './list-container';
 import { Permission } from '@/util/auth-projects';
 import { User } from '@/db/schema/base';
 import { ListWithCards } from '@/use-cases/types';
+import { useBoardContentToggleStore } from '@/store/boardContentToggle';
 
 interface BoardContentSwitcherProps {
   boardId: number;
@@ -22,21 +21,14 @@ export const BoardContentSwitcher = ({
   permission,
   canUseListForm
 }: BoardContentSwitcherProps) => {
-  const [showSettings, setShowSettings] = useState(false);
+  const { isActive } = useBoardContentToggleStore();
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-4">
-        <BoardSettingsIcon
-          boardId={boardId}
-          onClick={() => setShowSettings(s => !s)}
-          isActive={showSettings}
-        />
-        {/* You can add more controls here if needed */}
-      </div>
-      {showSettings ? (
-        <div className="p-8 border rounded bg-muted">
-          Settings content goes here (dummy)
+      <div className="flex items-center gap-4 mb-4"></div>
+      {isActive ? (
+        <div className="p-4 bg-gray-100 rounded text-black">
+          Settings Panel (dummy content)
         </div>
       ) : (
         <ListContainer

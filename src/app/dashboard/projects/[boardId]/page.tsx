@@ -25,6 +25,8 @@ import CreateEditBoardButton from '../_components/create-edit-board-button';
 import DeleteBoardButton from '../_components/delete-board-button';
 
 import { BoardContentSwitcher } from '../_components/board-content-switcher';
+import SettingsIcon from '../_components/_test/settings-icon';
+import { BoardSettingsIcon } from '../_components/board-settings-icon';
 
 interface PageProps {
   params: {
@@ -100,7 +102,7 @@ function ProjectDetails({
 }: ProjectDetailsProps) {
   return (
     <div className="pt-8 space-y-6 ml-4">
-      <nav className="flex bg-backgroundMuted rounded-lg max-w-7xl">
+      <nav className="flex bg-backgroundMuted rounded-lg max-w-5xl">
         <div className="flex justify-between items-center w-full p-2">
           <h1 className="text-3xl font-bold ">{board.name}</h1>
           <div className="flex items-center gap-6">
@@ -113,6 +115,7 @@ function ProjectDetails({
                 clientId={board.clientId}
               />
             )}
+            <BoardSettingsIcon />
           </div>
         </div>
       </nav>
