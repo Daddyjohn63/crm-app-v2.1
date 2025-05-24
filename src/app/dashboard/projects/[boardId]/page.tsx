@@ -167,6 +167,7 @@ async function AsyncProjectContent({
   ]);
 
   // If for some reason we couldn't get their permission level, redirect to projects
+  //TODO: CHECK THIS IS SAFE. DODGY PERHAPS?
   if (!permission.role) {
     redirect('/dashboard/projects');
   }
@@ -185,6 +186,7 @@ async function AsyncProjectContent({
 }
 
 //user currently returns system role, we also need project permissions.
+//TODO: duplication of code. with the getCurrentUser function?? and it does not appear to be used anywhere.
 async function getCurrentUserData() {
   const user = await getCurrentUser();
   if (!user) {
@@ -192,7 +194,7 @@ async function getCurrentUserData() {
   }
   return user;
 }
-
+//TODO: CHECK THIS IS SAFE. DODGY PERHAPS?. IF WE CANT FIND PERMISSSIONS THEN SHOULD WE GO TO SIGN-IN AGAIN?
 async function getUserBoardPermission(
   userId: number,
   boardId: number

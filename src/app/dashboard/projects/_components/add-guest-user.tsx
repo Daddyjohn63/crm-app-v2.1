@@ -1,11 +1,10 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import CreateContactButton from '../../clients/[clientId]/contacts/create-contact-button';
 import { GuestUserOverlay } from './guest-user-overlay';
 import CreateGuestUserButton from './create-guest-user-button';
 
-export const AddGuestUser = () => {
+export const AddGuestUser = ({ boardId }: { boardId: number }) => {
   return (
     <>
       <div className="rounded-lg">

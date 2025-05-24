@@ -3,6 +3,7 @@
 import { useGuestUserStore } from '@/store/guestUser';
 
 import { GuestInteractiveOverlay } from './guest-interactive-overlay';
+import { CreateEditGuestForm } from './create-edit-guest-form';
 
 //this is the overlay that is used to create or edit a guest user.
 //it is used in the guest users page.
@@ -22,7 +23,7 @@ export function GuestUserOverlay() {
           ? 'Edit the details of the guest user'
           : 'Create a new guest user for the project'
       }
-      form={<div>Guest User Form</div>}
+      form={<CreateEditGuestForm />}
     />
   );
 }

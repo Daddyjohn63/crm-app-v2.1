@@ -28,8 +28,8 @@ export const BoardContentSwitcher = ({
     <div>
       <div className="flex items-center"></div>
       {isActive ? (
-        <div className="">
-          <AddGuestUser />
+        <div>
+          <AddGuestUser boardId={boardId} />
         </div>
       ) : (
         <ListContainer
