@@ -1,8 +1,4 @@
 'use client';
-//this is the overlay that is used to create or edit a contact.
-//it is used in the contacts page.
-//can be sheet or drawer depending on the screen size.
-//renders the form and the title and description of the form.
 
 import { ReactNode, useEffect, useRef } from 'react';
 import {
@@ -21,7 +17,7 @@ import {
   DrawerTitle
 } from '@/components/ui/drawer';
 import useMediaQuery from '@/hooks/use-media-query';
-import { useOverlayStore } from '@/store/overlayStore';
+import { useGuestUserStore } from '@/store/guestUser';
 
 type Props = {
   title: string;
@@ -29,9 +25,15 @@ type Props = {
   form: ReactNode;
 };
 
-export function ZustandInteractiveOverlay({ title, description, form }: Props) {
+export function GuestInteractiveOverlay({ title, description, form }: Props) {
   const { isMobile } = useMediaQuery();
-  const { isOpen, setIsOpen } = useOverlayStore();
+  const preventCloseRef = useRef(false);
+  const { isOpen, setIsOpen } = useGuestUserStore();
+
+  useEffect(() => {
+    console.log('GuestInteractiveOverlay isOpen changed:', isOpen);
+  }, [isOpen]);
+
   const Content = isMobile ? Drawer : Sheet;
   const ContentInner = isMobile ? DrawerContent : SheetContent;
   const Header = isMobile ? DrawerHeader : SheetHeader;
@@ -39,7 +41,13 @@ export function ZustandInteractiveOverlay({ title, description, form }: Props) {
   const Description = isMobile ? DrawerDescription : SheetDescription;
 
   return (
-    <Content open={isOpen} onOpenChange={setIsOpen}>
+    <Content
+      open={isOpen}
+      onOpenChange={value => {
+        if (preventCloseRef.current) return;
+        setIsOpen(value);
+      }}
+    >
       <ContentInner>
         <Header className="px-2">
           <Title>{title}</Title>

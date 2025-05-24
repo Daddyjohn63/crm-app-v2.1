@@ -18,6 +18,8 @@ export const salesStageEnum = pgEnum('sales_stage', [
 ]);
 
 // Board-specific permission enum (determines what a user can do within a specific board)
+// 'owner' seems a bit redundant with 'admin'.
+//TODO: REMOVE 'owner' and use 'admin' for all HIGH LEVEL permissions.
 export const boardPermissionEnum = pgEnum('board_permission_level', [
   'owner', // Can delete board and manage all permissions
   'admin', // Can manage board settings and permissions

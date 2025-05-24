@@ -1,4 +1,6 @@
 'use client';
+
+//zustand store is used in board view to toggle between the board content and the settings panel.
 import { Settings } from 'lucide-react';
 
 import { useBoardContentToggleStore } from '@/store/boardContentToggle';
@@ -8,6 +10,9 @@ interface BoardSettingsIconProps {
   isActive?: boolean;
 }
 
+// destructure isActive and toggle from the useBoardContentToggleStore.
+// when button is clicked, we toggle the isActive state.
+// the isActive state value is passed to the aria-pressed attribute.
 export const BoardSettingsIcon = () => {
   const { isActive, toggle } = useBoardContentToggleStore();
 

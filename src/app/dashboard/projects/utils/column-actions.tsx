@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Edit, MoreHorizontal } from 'lucide-react';
-import { useOverlayStore } from '@/store/overlayStore';
+import { useGuestUserStore } from '@/store/guestUser';
 
 type Props = {
   id: number;
@@ -17,11 +17,11 @@ type Props = {
 //receive the id from columns.tsx actions.
 export default function ColumnActions({ id }: Props) {
   //started using Zustand here.
-  const { setIsOpen, setContactId } = useOverlayStore();
+  const { setIsOpen, setGuestId } = useGuestUserStore();
 
   const handleEdit = () => {
     // console.log('Edit button clicked for id:', id);
-    setContactId(id);
+    setGuestId(id);
     setIsOpen(true);
     // console.log('Zustand store updated:', useOverlayStore.getState());
   };
@@ -41,7 +41,7 @@ export default function ColumnActions({ id }: Props) {
             onClick={handleEdit}
           >
             <Edit className="size-4 mr-2" />
-            Edit Contact
+            Edit Guest User
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

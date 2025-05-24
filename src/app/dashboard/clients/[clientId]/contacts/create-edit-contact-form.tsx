@@ -1,6 +1,10 @@
 'use client';
 
-// import { ClientId } from '@/db/schema/index';
+//this is the form that is used to create or edit a contact.
+//it is used in the contacts page.
+//it is a zustand store that is used to store the contact id.
+//it is used to determine if the form is in edit mode or create mode.
+
 import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';

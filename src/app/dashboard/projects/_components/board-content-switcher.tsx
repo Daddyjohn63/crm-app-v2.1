@@ -5,6 +5,7 @@ import { Permission } from '@/util/auth-projects';
 import { User } from '@/db/schema/base';
 import { ListWithCards } from '@/use-cases/types';
 import { useBoardContentToggleStore } from '@/store/boardContentToggle';
+import { AddGuestUser } from './add-guest-user';
 
 interface BoardContentSwitcherProps {
   boardId: number;
@@ -25,10 +26,10 @@ export const BoardContentSwitcher = ({
 
   return (
     <div>
-      <div className="flex items-center gap-4 mb-4"></div>
+      <div className="flex items-center"></div>
       {isActive ? (
-        <div className="p-4 bg-gray-100 rounded text-black">
-          Settings Panel (dummy content)
+        <div className="">
+          <AddGuestUser />
         </div>
       ) : (
         <ListContainer

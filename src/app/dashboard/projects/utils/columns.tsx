@@ -5,24 +5,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import ColumnActions from './column-actions';
+import { AddGuestUser } from '@/db/schema';
 // import { ContactWithStringId as Contact } from '@/db/schema/index';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Contacts = {
-  id: number;
-  last_name: string;
-  first_name: string;
-  job_title: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  county: string;
-  postcode: string;
-  country: string;
-};
 
-export const columns: ColumnDef<Contacts>[] = [
+export const columns: ColumnDef<AddGuestUser>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -47,7 +35,7 @@ export const columns: ColumnDef<Contacts>[] = [
   },
 
   {
-    accessorKey: 'last_name',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
@@ -61,30 +49,12 @@ export const columns: ColumnDef<Contacts>[] = [
       );
     }
   },
-  {
-    accessorKey: 'first_name',
-    header: 'First Name'
-  },
-  {
-    accessorKey: 'job_title',
-    header: 'Job Title'
-  },
+
   {
     accessorKey: 'email',
     header: 'Email'
   },
-  {
-    accessorKey: 'phone',
-    header: 'Phone'
-  },
-  {
-    accessorKey: 'address',
-    header: 'Address'
-  },
-  {
-    accessorKey: 'country',
-    header: 'Country'
-  },
+
   {
     //id is passed down to ColumnActions
     id: 'actions',

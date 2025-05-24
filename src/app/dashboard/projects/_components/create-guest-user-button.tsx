@@ -3,20 +3,20 @@
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import { btnIconStyles, btnStyles } from '@/styles/icons';
-import { useOverlayStore } from '@/store/overlayStore';
+import { useGuestUserStore } from '@/store/guestUser';
 
-export default function CreateContactButton() {
-  const { setIsOpen, setContactId } = useOverlayStore();
+export default function CreateGuestUserButton() {
+  const { setIsOpen, setGuestId } = useGuestUserStore();
 
-  const handleCreateContact = () => {
-    setContactId(null);
+  const handleCreateGuestUser = () => {
+    setGuestId(null);
     setIsOpen(true);
   };
 
   return (
-    <Button onClick={handleCreateContact} className={btnStyles}>
+    <Button onClick={handleCreateGuestUser} className={btnStyles}>
       <PlusCircle className={btnIconStyles} />
-      Create Contact
+      Create Guest User
     </Button>
   );
 }

@@ -25,7 +25,7 @@ import CreateEditBoardButton from '../_components/create-edit-board-button';
 import DeleteBoardButton from '../_components/delete-board-button';
 
 import { BoardContentSwitcher } from '../_components/board-content-switcher';
-import SettingsIcon from '../_components/_test/settings-icon';
+
 import { BoardSettingsIcon } from '../_components/board-settings-icon';
 
 interface PageProps {

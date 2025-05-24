@@ -252,12 +252,21 @@ export type NewTimeEntry = typeof timeEntries.$inferInsert;
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type NewAuditLog = typeof auditLogs.$inferInsert;
 
+// export type AddGuestUser = {
+//   name: string;
+//   email: string;
+//   password: string;
+//   role: string;
+//   permissionLevel: string;
+// };
+
 export type AddGuestUser = {
+  id: number;
   name: string;
   email: string;
   password: string;
-  role: string;
-  permissionLevel: string;
+  role: 'guest'; // Only 'guest' allowed
+  permissionLevel: 'editor' | 'viewer'; // Only 'editor' or 'viewer' allowed
 };
 
 export type BoardCreationandEdit = {
