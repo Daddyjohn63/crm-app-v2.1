@@ -337,3 +337,53 @@ export const getCardAction = authenticatedAction
       return [null, error] as const;
     }
   });
+
+export const addGuestUserAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(1),
+      email: z.string().email(),
+      permissionLevel: z.enum(['editor', 'viewer'])
+    })
+  )
+  .handler(
+    async ({ input: { name, email, permissionLevel }, ctx: { user } }) => {
+      await rateLimitByKey({
+        key: `${user.id}-add-guest-user`
+      });
+      console.log('[addGuestUserAction] Triggered with:', {
+        name,
+        email,
+        permissionLevel,
+        userId: user.id
+      });
+      return { success: true };
+    }
+  );
+
+export const editGuestUserAction = authenticatedAction
+  .createServerAction()
+  .input(
+    z.object({
+      guestId: z.number(),
+      name: z.string().min(1),
+      email: z.string().email(),
+      permissionLevel: z.enum(['editor', 'viewer'])
+    })
+  )
+  .handler(
+    async ({
+      input: { guestId, name, email, permissionLevel },
+      ctx: { user }
+    }) => {
+      console.log('[editGuestUserAction] Triggered with:', {
+        guestId,
+        name,
+        email,
+        permissionLevel,
+        userId: user.id
+      });
+      return { success: true };
+    }
+  );
