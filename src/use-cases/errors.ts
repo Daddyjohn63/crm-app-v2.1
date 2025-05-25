@@ -38,3 +38,10 @@ export class LoginError extends PublicError {
     this.name = 'LoginError';
   }
 }
+
+export class GuestAlreadyOnBoardError extends PublicError {
+  constructor() {
+    super('A user with this email is already a guest on this board.');
+    this.name = 'GuestAlreadyOnBoardError';
+  }
+}

@@ -18,6 +18,7 @@ import {
 } from '@/use-cases/types';
 import { users } from '@/db/schema/base';
 import { profiles } from '@/db/schema/base';
+import { GuestAlreadyOnBoardError } from '@/use-cases/errors';
 
 // Raw database types
 export type CreateBoardInput = Omit<NewBoard, 'id' | 'createdAt' | 'updatedAt'>;
@@ -439,4 +440,52 @@ export async function getCardById(cardId: number): Promise<Card | null> {
     .limit(1);
 
   return result || null;
+}
+
+export async function createGuestUser(
+  user: User,
+  input: {
+    name: string;
+    email: string;
+    permissionLevel: BoardPermission;
+    boardId: number;
+  }
+): Promise<void> {
+  // 1. Check if a user with this email already has a boardPermission for this board
+  const existing = await database
+    .select({ id: users.id })
+    .from(users)
+    .innerJoin(boardPermissions, eq(users.id, boardPermissions.userId))
+    .where(
+      and(
+        eq(users.email, input.email),
+        eq(boardPermissions.boardId, input.boardId)
+      )
+    )
+    .limit(1);
+
+  if (existing.length > 0) {
+    throw new GuestAlreadyOnBoardError();
+  }
+
+  // 2. Create the user, boardPermission, and profile as before
+  const [newGuestUser] = await database
+    .insert(users)
+    .values({
+      email: input.email,
+      role: 'guest',
+      emailVerified: null
+    })
+    .returning({ id: users.id });
+
+  await database.insert(boardPermissions).values({
+    userId: newGuestUser.id,
+    boardId: input.boardId,
+    permissionLevel: input.permissionLevel
+  });
+
+  await database.insert(profiles).values({
+    userId: newGuestUser.id,
+    displayName: input.name
+  });
 }

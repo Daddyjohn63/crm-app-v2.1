@@ -109,6 +109,7 @@ export function CreateEditGuestForm() {
 
   const onSubmit = (values: FormValues) => {
     const safeBoardId = currentBoardId ?? 0;
+
     if (isEditing) {
       editAction.execute({
         guestId: guestId ?? 0,

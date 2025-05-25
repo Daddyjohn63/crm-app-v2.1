@@ -16,7 +16,8 @@ import {
   reorderLists,
   reorderCards,
   getBoardUsers,
-  deleteCard
+  deleteCard,
+  createGuestUser
 } from '@/use-cases/projects';
 import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
@@ -356,6 +357,16 @@ export const addGuestUserAction = authenticatedAction
       await rateLimitByKey({
         key: `${user.id}-add-guest-user`
       });
+
+      const sanitizedInput = {
+        name: sanitizeUserInput(name),
+        email: sanitizeUserInput(email),
+        permissionLevel,
+        boardId
+      };
+
+      await createGuestUser(user, sanitizedInput);
+      revalidatePath('/dashboard/projects/[boardId]', 'page');
       console.log('[addGuestUserAction] Triggered with:', {
         name,
         email,

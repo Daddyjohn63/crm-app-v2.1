@@ -376,3 +376,15 @@ export async function getBoardUsers(boardId: number): Promise<
 export async function deleteCard(cardId: number, user: User): Promise<void> {
   return await projectsDb.deleteCard(cardId, user);
 }
+
+export async function createGuestUser(
+  user: User,
+  input: {
+    name: string;
+    email: string;
+    permissionLevel: BoardPermission;
+    boardId: number;
+  }
+): Promise<void> {
+  return await projectsDb.createGuestUser(user, input);
+}
