@@ -344,11 +344,15 @@ export const addGuestUserAction = authenticatedAction
     z.object({
       name: z.string().min(1),
       email: z.string().email(),
-      permissionLevel: z.enum(['editor', 'viewer'])
+      permissionLevel: z.enum(['editor', 'viewer']),
+      boardId: z.number()
     })
   )
   .handler(
-    async ({ input: { name, email, permissionLevel }, ctx: { user } }) => {
+    async ({
+      input: { name, email, permissionLevel, boardId },
+      ctx: { user }
+    }) => {
       await rateLimitByKey({
         key: `${user.id}-add-guest-user`
       });
@@ -356,6 +360,7 @@ export const addGuestUserAction = authenticatedAction
         name,
         email,
         permissionLevel,
+        boardId,
         userId: user.id
       });
       return { success: true };
@@ -369,12 +374,13 @@ export const editGuestUserAction = authenticatedAction
       guestId: z.number(),
       name: z.string().min(1),
       email: z.string().email(),
-      permissionLevel: z.enum(['editor', 'viewer'])
+      permissionLevel: z.enum(['editor', 'viewer']),
+      boardId: z.number()
     })
   )
   .handler(
     async ({
-      input: { guestId, name, email, permissionLevel },
+      input: { guestId, name, email, permissionLevel, boardId },
       ctx: { user }
     }) => {
       console.log('[editGuestUserAction] Triggered with:', {
@@ -382,6 +388,7 @@ export const editGuestUserAction = authenticatedAction
         name,
         email,
         permissionLevel,
+        boardId,
         userId: user.id
       });
       return { success: true };
