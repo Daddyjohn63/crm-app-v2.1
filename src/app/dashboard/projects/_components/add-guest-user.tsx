@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GuestUserOverlay } from './guest-user-overlay';
 import CreateGuestUserButton from './create-guest-user-button';
 
+import { User } from '@/db/schema/base';
 export const AddGuestUser = ({ boardId }: { boardId: number }) => {
+  console.log('[AddGuestUser] boardId:', boardId); //confirmed.
   return (
     <>
       <div className="rounded-lg">

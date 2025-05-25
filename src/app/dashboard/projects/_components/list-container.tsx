@@ -36,7 +36,7 @@ export const ListContainer = ({
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    console.log('Data prop updated:', data);
+    //console.log('Data prop updated:', data);
     setOrderedData(data);
   }, [data]);
 
@@ -199,7 +199,7 @@ export const ListContainer = ({
     setIsUpdating(false);
   };
 
-  console.log('Rendering with orderedData:', orderedData);
+  //console.log('Rendering with orderedData:', orderedData);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

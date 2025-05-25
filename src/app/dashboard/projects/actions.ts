@@ -387,3 +387,14 @@ export const editGuestUserAction = authenticatedAction
       return { success: true };
     }
   );
+
+export const getGuestUsersAction = authenticatedAction
+  .createServerAction()
+  .input(z.object({ boardId: z.number() }))
+  .handler(async ({ input: { boardId }, ctx: { user } }) => {
+    console.log('[getGuestUsersAction] Triggered with:', {
+      boardId,
+      userId: user.id
+    });
+    return { success: true };
+  });
