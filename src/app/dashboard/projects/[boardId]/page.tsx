@@ -3,7 +3,8 @@ import {
   getProjectById,
   getListsByBoardId,
   getBoardPermission,
-  checkUserBoardAccess
+  checkUserBoardAccess,
+  getGuestUsersByBoardId
 } from '@/use-cases/projects';
 import { Board } from '@/db/schema/projects';
 import { User } from '@/db/schema/base';
@@ -27,6 +28,8 @@ import DeleteBoardButton from '../_components/delete-board-button';
 import { BoardContentSwitcher } from '../_components/board-content-switcher';
 
 import { BoardSettingsIcon } from '../_components/board-settings-icon';
+
+import type { AddGuestUser } from '@/db/schema/projects';
 
 interface PageProps {
   params: {
@@ -98,8 +101,11 @@ function ProjectDetails({
   board,
   user,
   lists,
-  permission
-}: ProjectDetailsProps) {
+  permission,
+  guestUsers
+}: ProjectDetailsProps & {
+  guestUsers: import('@/db/schema/projects').AddGuestUser[];
+}) {
   return (
     <div className="pt-8 space-y-6 ml-4">
       <nav className="flex bg-backgroundMuted rounded-lg max-w-5xl">
@@ -126,6 +132,7 @@ function ProjectDetails({
           lists={lists}
           permission={permission}
           canUseListForm={canUseListForm(permission)}
+          guestUsers={guestUsers}
         />
       </div>
     </div>
@@ -138,19 +145,29 @@ export default async function ProjectPage({ params }: PageProps) {
     redirect('/sign-in');
   }
 
+  // Fetch guest users here
+  const guestUsers = await getGuestUsersByBoardId(Number(params.boardId));
+  console.log('[ProjectPage] guestUsers:', guestUsers);
+
   return (
     <Suspense fallback={<ProjectSkeleton />}>
-      <AsyncProjectContent boardId={params.boardId} user={user} />
+      <AsyncProjectContent
+        boardId={params.boardId}
+        user={user}
+        guestUsers={guestUsers}
+      />
     </Suspense>
   );
 }
 
 async function AsyncProjectContent({
   boardId,
-  user
+  user,
+  guestUsers
 }: {
   boardId: string;
   user: User;
+  guestUsers: any[]; // Accept any[] here, map below
 }) {
   const board = await getProject(boardId);
 
@@ -167,10 +184,18 @@ async function AsyncProjectContent({
   ]);
 
   // If for some reason we couldn't get their permission level, redirect to projects
-  //TODO: CHECK THIS IS SAFE. DODGY PERHAPS?
   if (!permission.role) {
     redirect('/dashboard/projects');
   }
+
+  // Map guestUsers to AddGuestUser type
+  const mappedGuestUsers: AddGuestUser[] = guestUsers.map(user => ({
+    id: user.id,
+    name: user.displayName || '',
+    email: user.email || '',
+    role: 'guest',
+    permissionLevel: user.permissionLevel as 'editor' | 'viewer'
+  }));
 
   return (
     <>
@@ -180,6 +205,7 @@ async function AsyncProjectContent({
         user={user}
         lists={lists}
         permission={permission}
+        guestUsers={mappedGuestUsers}
       />
     </>
   );

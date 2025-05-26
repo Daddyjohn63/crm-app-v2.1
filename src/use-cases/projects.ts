@@ -388,3 +388,7 @@ export async function createGuestUser(
 ): Promise<void> {
   return await projectsDb.createGuestUser(user, input);
 }
+
+export async function getGuestUsersByBoardId(boardId: number) {
+  return await projectsDb.getGuestUsersByBoardId(boardId);
+}

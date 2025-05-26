@@ -366,14 +366,14 @@ export const addGuestUserAction = authenticatedAction
       };
 
       await createGuestUser(user, sanitizedInput);
-      revalidatePath('/dashboard/projects/[boardId]', 'page');
-      console.log('[addGuestUserAction] Triggered with:', {
-        name,
-        email,
-        permissionLevel,
-        boardId,
-        userId: user.id
-      });
+      revalidatePath('/dashboard/projects/[boardId]');
+      // console.log('[addGuestUserAction] Triggered with:', {
+      //   name,
+      //   email,
+      //   permissionLevel,
+      //   boardId,
+      //   userId: user.id
+      // });
       return { success: true };
     }
   );

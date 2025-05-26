@@ -278,3 +278,7 @@ export type AddBoardandGuestUser = {
   board: BoardCreationandEdit;
   guestUser: AddGuestUser;
 };
+
+// export const AddGuestUser = ({ boardId, initialGuestUsers }) => {
+//   // Use initialGuestUsers to initialize Zustand or local state
+// };

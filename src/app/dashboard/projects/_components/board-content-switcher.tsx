@@ -6,6 +6,7 @@ import { User } from '@/db/schema/base';
 import { ListWithCards } from '@/use-cases/types';
 import { useBoardContentToggleStore } from '@/store/boardContentToggle';
 import { AddGuestUser } from './add-guest-user';
+import type { AddGuestUser as AddGuestUserType } from '@/db/schema/projects';
 
 interface BoardContentSwitcherProps {
   boardId: number;
@@ -13,6 +14,7 @@ interface BoardContentSwitcherProps {
   lists: ListWithCards[];
   permission: Permission;
   canUseListForm: boolean;
+  guestUsers: AddGuestUserType[];
 }
 
 export const BoardContentSwitcher = ({
@@ -20,7 +22,8 @@ export const BoardContentSwitcher = ({
   user,
   lists,
   permission,
-  canUseListForm
+  canUseListForm,
+  guestUsers
 }: BoardContentSwitcherProps) => {
   const { isActive } = useBoardContentToggleStore();
 
@@ -29,7 +32,7 @@ export const BoardContentSwitcher = ({
       <div className="flex items-center"></div>
       {isActive ? (
         <div>
-          <AddGuestUser boardId={boardId} />
+          <AddGuestUser boardId={boardId} initialGuestUsers={guestUsers} />
         </div>
       ) : (
         <ListContainer

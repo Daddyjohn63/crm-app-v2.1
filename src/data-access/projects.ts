@@ -6,7 +6,7 @@ import type {
   NewBoard,
   NewList
 } from '@/db/schema/projects';
-import { eq, and, asc, sql } from 'drizzle-orm';
+import { eq, and, asc, sql, or } from 'drizzle-orm';
 import { BoardPermission } from '@/db/schema/enums';
 import { database } from '@/db/drizzle';
 import { clients, User } from '@/db/schema/base';
@@ -488,4 +488,27 @@ export async function createGuestUser(
     userId: newGuestUser.id,
     displayName: input.name
   });
+}
+
+export async function getGuestUsersByBoardId(boardId: number) {
+  const result = await database
+    .select({
+      id: users.id,
+      email: users.email,
+      displayName: profiles.displayName,
+      permissionLevel: boardPermissions.permissionLevel
+    })
+    .from(boardPermissions)
+    .innerJoin(users, eq(users.id, boardPermissions.userId))
+    .leftJoin(profiles, eq(users.id, profiles.userId))
+    .where(
+      and(
+        eq(boardPermissions.boardId, boardId),
+        or(
+          eq(boardPermissions.permissionLevel, 'editor'),
+          eq(boardPermissions.permissionLevel, 'viewer')
+        )
+      )
+    );
+  return result;
 }
