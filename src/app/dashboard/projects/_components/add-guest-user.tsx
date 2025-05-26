@@ -17,16 +17,7 @@ export const AddGuestUser = ({ boardId }: { boardId: number }) => {
             </CardTitle>
             <CreateGuestUserButton />
           </CardHeader>
-          <CardContent>
-            {/* <DataTable
-              filterKey="last_name"
-              columns={columns}
-              data={data}
-              disableDeleteButton={false}
-              clientId={clientId}
-              user={user}
-            /> */}
-          </CardContent>
+          <CardContent>{/* ADD DATA TABLE HERE */}</CardContent>
         </Card>
       </div>
       <GuestUserOverlay />

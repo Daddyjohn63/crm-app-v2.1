@@ -24,33 +24,33 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Trash } from 'lucide-react';
-import { useServerAction } from 'zsa-react';
-import { deleteContactRowAction } from '@/app/dashboard/clients/[clientId]/contacts/actions';
-import { UserSession } from '@/use-cases/types';
 import { toast } from './ui/use-toast';
+import { UserSession } from '@/use-cases/types';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   filterKey: string;
-  disableDeleteButton?: boolean; //added prop to disable delete button
-  clientId: string;
-  user: UserSession;
+  filterPlaceholder?: string;
+  disableDeleteButton?: boolean;
+  clientId?: string;
+  user?: UserSession;
+  onDelete?: (selectedIds: number[]) => Promise<void>;
 }
 interface DataWithId {
-  id: number; // or number, depending on your id type
+  id: number;
 }
 
 export function DataTable<TData extends DataWithId, TValue>({
   columns,
   data,
   filterKey,
+  filterPlaceholder = 'Filter...',
   disableDeleteButton = false,
   clientId,
-  user
+  user,
+  onDelete
 }: DataTableProps<TData, TValue>) {
-  // console.log('CLIENT ID FROM TABLE', clientId);
-  // console.log('USER FROM TABLE', user);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -81,52 +81,45 @@ export function DataTable<TData extends DataWithId, TValue>({
     }
   });
 
-  const { execute, isPending } = useServerAction(deleteContactRowAction, {
-    onSuccess() {
-      setIsDeleteDisabled(false);
-      toast({
-        title: 'Contact deleted',
-        description: 'The contact has been deleted'
-      });
-
-      // Optionally refresh the table data here
-    },
-    onError() {
-      setIsDeleteDisabled(false);
-      toast({
-        title: 'Error',
-        description: 'An error occurred while deleting the contact'
-      });
-    }
-  });
-
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!onDelete) return;
     setIsDeleteDisabled(true);
     const selectedRows = table.getFilteredSelectedRowModel().rows;
     const selectedIds = selectedRows.map(row => row.original.id);
-
-    execute({ clientId: Number(clientId), rowIds: selectedIds });
+    try {
+      await onDelete(selectedIds);
+      toast({
+        title: 'Items deleted',
+        description: 'The selected items have been deleted'
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'An error occurred while deleting the items'
+      });
+    } finally {
+      setIsDeleteDisabled(false);
+    }
   };
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by Last Name..."
+          placeholder={filterPlaceholder}
           value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
           onChange={event =>
             table.getColumn(filterKey)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        {/* TODO: add dialoge to confirm delete */}
-        {table.getFilteredSelectedRowModel().rows.length > 0 && (
+        {onDelete && table.getFilteredSelectedRowModel().rows.length > 0 && (
           <Button
             className="ml-auto"
             variant="outline"
             size="sm"
             onClick={handleDelete}
-            disabled={isDeleteDisabled || isPending}
+            disabled={isDeleteDisabled}
           >
             <Trash className="w-4 h-4 mr-2" />
             Delete ({table.getFilteredSelectedRowModel().rows.length})
