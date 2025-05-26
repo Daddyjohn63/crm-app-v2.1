@@ -366,7 +366,7 @@ export const addGuestUserAction = authenticatedAction
       };
 
       await createGuestUser(user, sanitizedInput);
-      revalidatePath('/dashboard/projects/[boardId]');
+      revalidatePath(`/dashboard/projects/${sanitizedInput.boardId}`);
       // console.log('[addGuestUserAction] Triggered with:', {
       //   name,
       //   email,
