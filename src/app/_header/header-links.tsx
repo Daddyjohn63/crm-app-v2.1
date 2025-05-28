@@ -46,6 +46,15 @@ export function HeaderLinks({ isAuthenticated }: { isAuthenticated: boolean }) {
               <BookIcon className="w-4 h-4" /> Projects
             </Link>
           </Button>
+          <Button
+            variant={'navlink'}
+            asChild
+            className="flex items-center justify-center gap-2"
+          >
+            <Link href={'/dashboard/user-management'}>
+              <UsersIcon className="w-4 h-4" /> User Management
+            </Link>
+          </Button>
         </div>
       )}
 

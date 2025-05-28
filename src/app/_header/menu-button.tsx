@@ -46,6 +46,14 @@ export function MenuButton({ isAuthenticated }: { isAuthenticated: boolean }) {
                 <BookIcon className="w-4 h-4" /> Your Projects
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href="/dashboard/user-management"
+                className="flex gap-2 items-center cursor-pointer"
+              >
+                <UsersIcon className="w-4 h-4" /> User Management
+              </Link>
+            </DropdownMenuItem>
           </>
         )}
         {/* {isLandingPage && !isAuthenticated && (
