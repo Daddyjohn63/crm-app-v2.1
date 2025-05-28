@@ -1,14 +1,4 @@
-import { LoaderButton } from '@/components/loader-button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { z } from 'zod';
 import {
   Form,
@@ -20,21 +10,18 @@ import {
 } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useServerAction } from 'zsa-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useGuestUserStore } from '@/store/guestUser';
-import { PersonStanding, Terminal } from 'lucide-react';
-import { btnIconStyles } from '@/styles/icons';
-import { useBoardStore } from '@/store/boardStore';
 import {
-  addGuestUserAction,
-  getGuestUsersAction,
-  editGuestUserAction
-} from '../actions';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
+  boardName: z.string().min(1, { message: 'Board name is required' }),
   permissionLevel: z.enum(['editor', 'viewer'], {
     message: 'Invalid permission level'
   })
@@ -42,83 +29,27 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function CreateEditGuestForm() {
-  const { currentBoardId } = useBoardStore();
-  const { guestId, setIsOpen } = useGuestUserStore();
-  const isEditing = !!guestId;
-  const { toast } = useToast();
+interface CreateGuestFormProps {
+  boards?: { id: number; name: string }[];
+}
 
-  // Use two separate useServerAction hooks for type safety
-  const addAction = useServerAction(addGuestUserAction, {
-    onSuccess() {
-      toast({
-        title: 'Guest User created',
-        description: 'The guest user has been created successfully.',
-        duration: 3000
-      });
-      setIsOpen(false);
-    },
-    onError({ err }) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong creating the guest user.',
-        duration: 3000
-      });
-    }
-  });
-
-  const editAction = useServerAction(editGuestUserAction, {
-    onSuccess() {
-      toast({
-        title: 'Guest User Updated',
-        description: 'The guest user has been updated successfully',
-        duration: 3000
-      });
-      setIsOpen(false);
-    },
-    onError({ err }) {
-      toast({
-        title: 'Something went wrong',
-        variant: 'destructive',
-        description: 'Something went wrong updating the guest user',
-        duration: 3000
-      });
-    }
-  });
-
+export function CreateEditGuestForm({ boards = [] }: CreateGuestFormProps) {
+  console.log(
+    'boards:',
+    boards.map(b => b.id)
+  );
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: async () => {
-      if (isEditing && guestId) {
-        // In a real app, fetch guest details here
-        // For now, just return empty (or could add fetchGuestUsers logic)
-        return {
-          name: '',
-          email: '',
-          permissionLevel: 'viewer'
-        };
-      }
-      return {
-        name: '',
-        email: '',
-        permissionLevel: 'viewer'
-      };
+    defaultValues: {
+      name: '',
+      email: '',
+      boardName: '',
+      permissionLevel: 'viewer'
     }
   });
 
   const onSubmit = (values: FormValues) => {
-    const safeBoardId = currentBoardId ?? 0;
-
-    if (isEditing) {
-      editAction.execute({
-        guestId: guestId ?? 0,
-        ...values,
-        boardId: safeBoardId
-      });
-    } else {
-      addAction.execute({ ...values, boardId: safeBoardId });
-    }
+    console.log('Guest user form submitted:', values);
   };
 
   return (
@@ -155,6 +86,34 @@ export function CreateEditGuestForm() {
         />
         <FormField
           control={form.control}
+          name="boardName"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Board</FormLabel>
+              <FormControl>
+                {/* <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {boards.map((board, index) => (
+                      <SelectItem key={board.id} value={board.name}>
+                        {board.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select> */}
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="permissionLevel"
           render={({ field }) => (
             <FormItem className="flex-1">
@@ -178,18 +137,12 @@ export function CreateEditGuestForm() {
             </FormItem>
           )}
         />
-        <LoaderButton
+        <button
           type="submit"
-          isLoading={isEditing ? editAction.isPending : addAction.isPending}
-          className="mt-2"
+          className="mt-2 bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700"
         >
-          {isEditing ? 'Update Guest User' : 'Create Guest User'}
-        </LoaderButton>
-        {(isEditing ? editAction.error : addAction.error) && (
-          <div className="text-red-500 text-sm mt-2">
-            {(isEditing ? editAction.error : addAction.error)?.message}
-          </div>
-        )}
+          Create Guest User
+        </button>
       </form>
     </Form>
   );

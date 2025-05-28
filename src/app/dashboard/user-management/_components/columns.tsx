@@ -46,6 +46,10 @@ export const guestUserColumns: ColumnDef<AddGuestUser>[] = [
     header: 'Email'
   },
   {
+    accessorKey: 'boardName',
+    header: 'Board Name'
+  },
+  {
     accessorKey: 'permissionLevel',
     header: 'Permission Level'
   },

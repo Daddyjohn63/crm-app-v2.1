@@ -3,13 +3,15 @@ import { pageTitleStyles } from '@/styles/common';
 import CreateGuestUserButton from './_components/create-guest-user-button';
 import { guestUserColumns } from './_components/columns';
 import { AddGuestUser } from './_components/add-guest-user';
-import { getGuestUsers } from '@/use-cases/user-management';
+import { getGuestUsers, getAllBoards } from '@/use-cases/user-management';
 import { Card } from '@/components/ui/card';
 
 const UserManagementPage = async () => {
-  // Fetch guest users here
+  // Fetch guest users and boards here
   const guestUsers = await getGuestUsers();
-  console.log('[ProjectPage] guestUsers:', guestUsers);
+  const boards = await getAllBoards();
+  console.log('[UserManagementPage] guestUsers:', guestUsers);
+  console.log('[UserManagementPage] boards:', boards);
   return (
     <>
       <PageHeader>
@@ -25,7 +27,7 @@ const UserManagementPage = async () => {
             </div> */}
             <div className="rounded-lg w-full">
               <Card className="border-none drop-shadow-sm w-full">
-                <AddGuestUser initialGuestUsers={guestUsers} />
+                <AddGuestUser initialGuestUsers={guestUsers} boards={boards} />
               </Card>
             </div>
           </div>

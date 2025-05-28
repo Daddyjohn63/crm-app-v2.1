@@ -264,6 +264,8 @@ export type AddGuestUser = {
   id: number;
   name: string;
   email: string;
+  boardId: number;
+  boardName: string;
   role: 'guest'; // Only 'guest' allowed. user table will be updated to include this role.
   permissionLevel: 'editor' | 'viewer'; // Only 'editor' or 'viewer' allowed. boardPermissions table will be updated to include this permission level.
 };

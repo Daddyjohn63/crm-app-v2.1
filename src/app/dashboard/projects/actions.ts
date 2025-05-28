@@ -16,8 +16,7 @@ import {
   reorderLists,
   reorderCards,
   getBoardUsers,
-  deleteCard,
-  createGuestUser
+  deleteCard
 } from '@/use-cases/projects';
 import * as projectsDb from '@/data-access/projects';
 import { getClientsByUser } from '@/data-access/clients';
@@ -339,80 +338,80 @@ export const getCardAction = authenticatedAction
     }
   });
 
-export const addGuestUserAction = authenticatedAction
-  .createServerAction()
-  .input(
-    z.object({
-      name: z.string().min(1),
-      email: z.string().email(),
-      permissionLevel: z.enum(['editor', 'viewer']),
-      boardId: z.number()
-    })
-  )
-  .handler(
-    async ({
-      input: { name, email, permissionLevel, boardId },
-      ctx: { user }
-    }) => {
-      await rateLimitByKey({
-        key: `${user.id}-add-guest-user`
-      });
+// export const addGuestUserAction = authenticatedAction
+//   .createServerAction()
+//   .input(
+//     z.object({
+//       name: z.string().min(1),
+//       email: z.string().email(),
+//       permissionLevel: z.enum(['editor', 'viewer']),
+//       boardId: z.number()
+//     })
+//   )
+//   .handler(
+//     async ({
+//       input: { name, email, permissionLevel, boardId },
+//       ctx: { user }
+//     }) => {
+//       await rateLimitByKey({
+//         key: `${user.id}-add-guest-user`
+//       });
 
-      const sanitizedInput = {
-        name: sanitizeUserInput(name),
-        email: sanitizeUserInput(email),
-        permissionLevel,
-        boardId
-      };
+//       const sanitizedInput = {
+//         name: sanitizeUserInput(name),
+//         email: sanitizeUserInput(email),
+//         permissionLevel,
+//         boardId
+//       };
 
-      await createGuestUser(user, sanitizedInput);
-      revalidatePath(`/dashboard/projects/${sanitizedInput.boardId}`);
-      // console.log('[addGuestUserAction] Triggered with:', {
-      //   name,
-      //   email,
-      //   permissionLevel,
-      //   boardId,
-      //   userId: user.id
-      // });
-      return { success: true };
-    }
-  );
+//       await createGuestUser(user, sanitizedInput);
+//       revalidatePath(`/dashboard/projects/${sanitizedInput.boardId}`);
+//       // console.log('[addGuestUserAction] Triggered with:', {
+//       //   name,
+//       //   email,
+//       //   permissionLevel,
+//       //   boardId,
+//       //   userId: user.id
+//       // });
+//       return { success: true };
+//     }
+//   );
 
-export const editGuestUserAction = authenticatedAction
-  .createServerAction()
-  .input(
-    z.object({
-      guestId: z.number(),
-      name: z.string().min(1),
-      email: z.string().email(),
-      permissionLevel: z.enum(['editor', 'viewer']),
-      boardId: z.number()
-    })
-  )
-  .handler(
-    async ({
-      input: { guestId, name, email, permissionLevel, boardId },
-      ctx: { user }
-    }) => {
-      console.log('[editGuestUserAction] Triggered with:', {
-        guestId,
-        name,
-        email,
-        permissionLevel,
-        boardId,
-        userId: user.id
-      });
-      return { success: true };
-    }
-  );
+// export const editGuestUserAction = authenticatedAction
+//   .createServerAction()
+//   .input(
+//     z.object({
+//       guestId: z.number(),
+//       name: z.string().min(1),
+//       email: z.string().email(),
+//       permissionLevel: z.enum(['editor', 'viewer']),
+//       boardId: z.number()
+//     })
+//   )
+//   .handler(
+//     async ({
+//       input: { guestId, name, email, permissionLevel, boardId },
+//       ctx: { user }
+//     }) => {
+//       console.log('[editGuestUserAction] Triggered with:', {
+//         guestId,
+//         name,
+//         email,
+//         permissionLevel,
+//         boardId,
+//         userId: user.id
+//       });
+//       return { success: true };
+//     }
+//   );
 
-export const getGuestUsersAction = authenticatedAction
-  .createServerAction()
-  .input(z.object({ boardId: z.number() }))
-  .handler(async ({ input: { boardId }, ctx: { user } }) => {
-    console.log('[getGuestUsersAction] Triggered with:', {
-      boardId,
-      userId: user.id
-    });
-    return { success: true };
-  });
+// export const getGuestUsersAction = authenticatedAction
+//   .createServerAction()
+//   .input(z.object({ boardId: z.number() }))
+//   .handler(async ({ input: { boardId }, ctx: { user } }) => {
+//     console.log('[getGuestUsersAction] Triggered with:', {
+//       boardId,
+//       userId: user.id
+//     });
+//     return { success: true };
+//   });

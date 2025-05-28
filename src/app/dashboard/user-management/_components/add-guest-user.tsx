@@ -7,13 +7,16 @@ import CreateGuestUserButton from './create-guest-user-button';
 import { DataTable } from '@/components/data-table';
 import { guestUserColumns } from './columns';
 import { useGuestUserStore } from '@/store/guestUser';
-import { getGuestUsersByBoardId } from '@/use-cases/projects';
 
 interface AddGuestUserProps {
   initialGuestUsers?: any[]; // Use a more specific type if available
+  boards?: { id: number; name: string }[];
 }
 
-export const AddGuestUser = ({ initialGuestUsers = [] }: AddGuestUserProps) => {
+export const AddGuestUser = ({
+  initialGuestUsers = [],
+  boards = []
+}: AddGuestUserProps) => {
   const { guestUsers, setGuestUsers } = useGuestUserStore();
   console.log('[AddGuestUser] guestUsers:', guestUsers);
   const initialized = useRef(false);
@@ -23,8 +26,10 @@ export const AddGuestUser = ({ initialGuestUsers = [] }: AddGuestUserProps) => {
       setGuestUsers(
         initialGuestUsers.map(user => ({
           id: user.id,
-          name: user.name || '',
+          name: user.displayName || '',
           email: user.email || '',
+          boardId: user.boardId,
+          boardName: user.boardName || '',
           role: 'guest' as const,
           permissionLevel: user.permissionLevel as 'editor' | 'viewer'
         }))
@@ -55,7 +60,7 @@ export const AddGuestUser = ({ initialGuestUsers = [] }: AddGuestUserProps) => {
           </CardContent>
         </Card>
       </div>
-      <GuestUserOverlay />
+      <GuestUserOverlay boards={boards} />
     </>
   );
 };

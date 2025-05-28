@@ -11,7 +11,11 @@ import { CreateEditGuestForm } from './create-edit-guest-form';
 //it is used to determine if the form is in edit mode or create mode.
 //if there is a guest id available, it is assumed to be in edit mode.
 
-export function GuestUserOverlay() {
+interface GuestUserOverlayProps {
+  boards?: { id: number; name: string }[];
+}
+
+export function GuestUserOverlay({ boards = [] }: GuestUserOverlayProps) {
   const { guestId } = useGuestUserStore();
   const isEditing = !!guestId;
 
@@ -23,7 +27,7 @@ export function GuestUserOverlay() {
           ? 'Edit the details of the guest user'
           : 'Create a new guest user for the project'
       }
-      form={<CreateEditGuestForm />}
+      form={<CreateEditGuestForm boards={boards} />}
     />
   );
 }
